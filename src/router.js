@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Index from './views/Index'
+import Home from './views/Index/components/Home'
 import App from './views/Index/components/App'
 import My from './views/Index/components/My'
 
@@ -13,14 +14,22 @@ export default new Router({
     {
       path: '/',
       name: 'index',
+      redirect: { name: 'index/home' },
       component: Index,
       children: [
         {
+          path: 'home',
+          name: 'index/home',
+          component: Home,
+        },
+        {
           path: 'app',
+          name: 'index/app',
           component: App,
         },
         {
           path: 'my',
+          name: 'index/my',
           component: My,
         },
       ],

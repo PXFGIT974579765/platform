@@ -1,6 +1,5 @@
 <template>
-  <div class="home">
-    <p>home</p>
+  <div class="index">
     <router-view />
     <BottomNav />
   </div>

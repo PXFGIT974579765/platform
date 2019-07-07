@@ -1,3 +1,3 @@
 <template>
-  <van-search placeholder="请输入搜索关键词" />
+  <div>应用</div>
 </template>
