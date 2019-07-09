@@ -4,6 +4,7 @@ import Index from './views/Index'
 import Home from './views/Index/components/Home'
 import App from './views/Index/components/App'
 import My from './views/Index/components/My'
+import BaseInfo from './views/Index/components/My/BaseInfo'
 
 Vue.use(Router)
 
@@ -41,6 +42,12 @@ export default new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ './views/About'),
+    },
+    {
+      // 个人信息
+      path: '/my/base-info',
+      name: 'index/my/base-info',
+      component: BaseInfo,
     },
   ],
 })
