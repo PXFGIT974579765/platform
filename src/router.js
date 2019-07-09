@@ -5,6 +5,7 @@ import Home from './views/Index/components/Home'
 import App from './views/Index/components/App'
 import My from './views/Index/components/My'
 import BaseInfo from './views/Index/components/My/BaseInfo'
+import Score from './views/Index/components/My/Score'
 
 Vue.use(Router)
 
@@ -44,10 +45,16 @@ export default new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/About'),
     },
     {
-      // 个人信息
       path: '/my/base-info',
       name: 'index/my/base-info',
       component: BaseInfo,
+      meta: { title: '个人信息', keepAlive: false },
+    },
+    {
+      path: '/my/score',
+      name: 'index/my/score',
+      component: Score,
+      meta: { title: '个人积分', keepAlive: false },
     },
   ],
 })

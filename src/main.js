@@ -7,8 +7,10 @@ import '@/assets/styles/base.less'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import VueWechatTitle from 'vue-wechat-title'
 
 Vue.use(Vant)
+Vue.use(VueWechatTitle)
 
 Vue.config.productionTip = false
 
