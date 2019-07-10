@@ -81,45 +81,27 @@
     <div class="block news">
       <div class="block-header">
         <div class="block-title">动态</div>
-        <router-link to="/" class="block-header-link">更多动态</router-link>
+        <router-link to="/news" class="block-header-link">更多动态</router-link>
       </div>
       <div class="block-content">
-        <div class="new">
-          <div class="new-desc">
-            <div class="new-title">
-              庆祝改革开放40周年贵州启动首届师生摄影大赛
-            </div>
-            <div class="new-info">
-              <span class="new-date">01.25</span>
-              <span class="new-read">阅读：452 次</span>
-            </div>
-          </div>
-          <img src="./images/new.png" alt />
-        </div>
-        <div class="new">
-          <div class="new-desc">
-            <div class="new-title">
-              庆祝改革开放40周年贵州启动首届师生摄影大赛
-            </div>
-            <div class="new-info">
-              <span class="new-date">01.25</span>
-              <span class="new-read">阅读：452 次</span>
-            </div>
-          </div>
-          <img src="./images/new.png" alt />
-        </div>
-        <div class="new">
-          <div class="new-desc">
-            <div class="new-title">
-              庆祝改革开放40周年贵州启动首届师生摄影大赛
-            </div>
-            <div class="new-info">
-              <span class="new-date">01.25</span>
-              <span class="new-read">阅读：452 次</span>
-            </div>
-          </div>
-          <img src="./images/new.png" alt />
-        </div>
+        <new-item
+          :title="'庆祝改革开放40周年贵州启动首届师生摄影大赛'"
+          :date="'01.25'"
+          :read="452"
+          :image="require('@/assets/images/new.png')"
+        />
+        <new-item
+          :title="'庆祝改革开放40周年贵州启动首届师生摄影大赛'"
+          :date="'01.25'"
+          :read="452"
+          :image="require('@/assets/images/new.png')"
+        />
+        <new-item
+          :title="'庆祝改革开放40周年贵州启动首届师生摄影大赛'"
+          :date="'01.25'"
+          :read="452"
+          :image="require('@/assets/images/new.png')"
+        />
       </div>
     </div>
 
@@ -172,11 +154,13 @@
 <script>
 import Search from '@/components/Search'
 import PersonDesc from '@/components/PersonDesc'
+import NewItem from '@/components/NewItem'
 
 export default {
   components: {
     Search,
     PersonDesc,
+    NewItem,
   },
 
   data() {
@@ -369,34 +353,6 @@ nav {
 
 .news {
   margin-top: 50px;
-  .new {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #e5e5e5;
-  }
-  .new-desc {
-    flex: 1;
-  }
-  .new-title {
-    margin-bottom: 12px;
-    line-height: 1.4;
-    font-size: 16px;
-    color: #212121;
-  }
-  .new-info {
-    font-size: 12px;
-    color: #b4b4b4;
-  }
-  .new-date {
-    margin-right: 15px;
-  }
-  img {
-    width: 112px;
-    height: 70px;
-    margin-left: 30px;
-  }
 }
 
 .group {

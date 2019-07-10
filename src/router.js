@@ -1,9 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+
 import Index from './views/Index'
 import Home from './views/Index/components/Home'
 import App from './views/Index/components/App'
 import My from './views/Index/components/My'
+import News from './views/Index/components/News'
+import New from './views/Index/components/New'
 
 Vue.use(Router)
 
@@ -31,6 +34,16 @@ export default new Router({
           path: 'my',
           name: 'index/my',
           component: My,
+        },
+        {
+          path: 'news',
+          name: 'index/news',
+          component: News,
+        },
+        {
+          path: 'news/:id',
+          name: 'index/new',
+          component: New,
         },
       ],
     },
