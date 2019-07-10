@@ -118,7 +118,7 @@
           <div class="link-desc flex-col">
             <span>
               分享链接
-              <span>+500 积分</span>
+              <span class="link_score">+500 积分</span>
             </span>
             <span>把你喜欢的活动分享到朋友圈</span>
           </div>
@@ -131,7 +131,7 @@
           <div class="link-desc flex-col">
             <span>
               发起平团
-              <span>+1000 积分</span>
+              <span class="link_score">+1000 积分</span>
             </span>
             <span>成功发起一次拼团活动</span>
           </div>
@@ -144,7 +144,7 @@
           <div class="link-desc flex-col">
             <span>
               公益活动
-              <span>+1500 积分</span>
+              <span class="link_score">+1500 积分</span>
             </span>
             <span>成功参加一次公益活动</span>
           </div>
@@ -324,6 +324,7 @@ export default {
         font-size: 20px;
         text-align: center;
       }
+
       .link-desc {
         margin-left: 12px;
         justify-content: center;
@@ -342,6 +343,11 @@ export default {
             font-size: 12px;
             color: #b9b9b9;
           }
+        }
+
+        .link_score {
+          color: #ffa200 !important;
+          font-size: 12px;
         }
       }
       .btn_go {
