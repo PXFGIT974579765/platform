@@ -1,12 +1,16 @@
 <template>
-  <div class="search">
+  <div :class="['search', { light: !!light }]">
     <span class="iconfont">&#xe74a;</span>
     <input type="search" placeholder="输入关键字搜索" />
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  props: {
+    light: Boolean,
+  },
+}
 </script>
 
 <style lang="less" scoped>
@@ -15,6 +19,11 @@ export default {}
   border-radius: 15px;
   color: #fff;
   background-color: rgba(255, 255, 255, 0.1);
+
+  &.light {
+    color: #919191;
+    background-color: #f4f4f4;
+  }
 }
 
 input {
@@ -26,12 +35,15 @@ input {
   border: 0;
   outline: 0;
   font-size: 12px;
-  color: #fff;
   background: transparent;
 
   &::placeholder {
     color: #fff;
   }
+}
+
+.search.light input::placeholder {
+  color: #919191;
 }
 
 .iconfont {
