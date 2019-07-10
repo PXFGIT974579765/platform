@@ -7,6 +7,9 @@ import App from './views/Index/components/App'
 import My from './views/Index/components/My'
 import News from './views/Index/components/News'
 import New from './views/Index/components/New'
+import BaseInfo from './views/Index/components/My/BaseInfo'
+import Score from './views/Index/components/My/Score'
+import Sign from './views/Index/components/My/Sign'
 
 Vue.use(Router)
 
@@ -54,6 +57,24 @@ export default new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ './views/About'),
+    },
+    {
+      path: '/my/base-info',
+      name: 'index/my/base-info',
+      component: BaseInfo,
+      meta: { title: '个人信息', keepAlive: false },
+    },
+    {
+      path: '/my/score',
+      name: 'index/my/score',
+      component: Score,
+      meta: { title: '个人积分', keepAlive: false },
+    },
+    {
+      path: '/my/sign',
+      name: 'index/my/sign',
+      component: Sign,
+      meta: { title: '签到', keepAlive: false },
     },
   ],
 })

@@ -1,6 +1,6 @@
 <template>
   <div class="index">
-    <router-view />
+    <router-view v-wechat-title="$route.meta.title" />
     <BottomNav />
   </div>
 </template>
