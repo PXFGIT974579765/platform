@@ -6,6 +6,7 @@ import App from './views/Index/components/App'
 import My from './views/Index/components/My'
 import BaseInfo from './views/Index/components/My/BaseInfo'
 import Score from './views/Index/components/My/Score'
+import Sign from './views/Index/components/My/Sign'
 
 Vue.use(Router)
 
@@ -55,6 +56,12 @@ export default new Router({
       name: 'index/my/score',
       component: Score,
       meta: { title: '个人积分', keepAlive: false },
+    },
+    {
+      path: '/my/sign',
+      name: 'index/my/sign',
+      component: Sign,
+      meta: { title: '签到', keepAlive: false },
     },
   ],
 })

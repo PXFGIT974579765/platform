@@ -106,7 +106,7 @@ export default {
 
 <style lang="less" scoped>
 .page-my-score {
-  background-color: #eee;
+  background-color: #fff;
 
   .page-header {
     position: relative;
@@ -116,7 +116,7 @@ export default {
     width: 100%;
     height: 200px;
     background-image: url('./images/bg_score.png');
-    background-size: 100%;
+    background-size: 100% 100%;
     color: #fff;
 
     .btn_exchange {
@@ -158,7 +158,7 @@ export default {
     padding: 17px 18px;
     margin-right: 15px;
     border-radius: 3px;
-    height: 300px;
+    box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.1);
     background-color: #fff;
 
     .title {
