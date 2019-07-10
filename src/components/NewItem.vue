@@ -2,17 +2,20 @@
   <div class="new">
     <div class="new-desc">
       <div class="new-title">{{ title }}</div>
-      <div class="new-info">
-        <span class="new-date">{{ date }}</span>
-        <span class="new-read">阅读：{{ read }} 次</span>
-      </div>
+      <new-info :date="date" :read="read" />
     </div>
     <img :src="image" alt />
   </div>
 </template>
 
 <script>
+import NewInfo from './NewInfo'
+
 export default {
+  components: {
+    NewInfo,
+  },
+
   props: {
     title: String,
     date: String,
