@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="new-page">
     <div class="article">
       <h1>2019 年数据和人工智能全景图</h1>
       <new-info :date="'01.24'" :read="300" />
@@ -49,8 +49,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.new-page {
+  padding: 20px 0 80px;
+}
+
 .article {
-  padding: 20px 15px 15px;
+  padding: 0 15px;
 }
 
 h1 {
