@@ -4,11 +4,9 @@
       <div class="score-box flex-col">
         <span>可用积分</span>
         <span>{{ sign.score }}</span>
-        <span
-          >{{ sign.latestTime | formatDate }} 签到 积分+{{
-            sign.latestScore
-          }}</span
-        >
+        <span>
+          {{ sign.latestTime | formatDate }} 签到 积分+{{ sign.latestScore }}
+        </span>
       </div>
       <span class="btn_score_detail">积分明细</span>
     </div>
@@ -29,35 +27,129 @@
       </div>
       <div class="days-card flex">
         <div class="icon-day flex-col">
-          <div class="icon">+5</div>
+          <div :class="['icon', sign.day === 1 ? 'icon_cur' : 'icon_before']">
+            +5
+          </div>
           <div class="day">1天</div>
         </div>
         <div class="icon-day flex-col">
-          <div class="icon">+10</div>
+          <div
+            :class="[
+              'icon',
+              sign.day > 2
+                ? 'icon_before'
+                : sign.day === 2
+                ? 'icon_cur'
+                : 'icon_after',
+            ]"
+          >
+            +10
+          </div>
           <div class="day">2天</div>
         </div>
         <div class="icon-day flex-col">
-          <div class="icon">+15</div>
+          <div
+            :class="[
+              'icon',
+              sign.day > 3
+                ? 'icon_before'
+                : sign.day === 3
+                ? 'icon_cur'
+                : 'icon_after',
+            ]"
+          >
+            +15
+          </div>
           <div class="day">3天</div>
         </div>
         <div class="icon-day flex-col">
-          <div class="icon">+20</div>
+          <div
+            :class="[
+              'icon',
+              sign.day > 4
+                ? 'icon_before'
+                : sign.day === 4
+                ? 'icon_cur'
+                : 'icon_after',
+            ]"
+          >
+            +20
+          </div>
           <div class="day">4天</div>
         </div>
         <div class="icon-day flex-col">
-          <div class="icon">+25</div>
+          <div
+            :class="[
+              'icon',
+              sign.day > 5
+                ? 'icon_before'
+                : sign.day === 5
+                ? 'icon_cur'
+                : 'icon_after',
+            ]"
+          >
+            +25
+          </div>
           <div class="day">5天</div>
         </div>
         <div class="icon-day flex-col">
-          <div class="icon">+30</div>
+          <div
+            :class="[
+              'icon',
+              sign.day > 6
+                ? 'icon_before'
+                : sign.day === 6
+                ? 'icon_cur'
+                : 'icon_after',
+            ]"
+          >
+            +30
+          </div>
           <div class="day">6天</div>
         </div>
       </div>
+      <div class="sign-desc">连续签到6天及以上，每日签到积分+30</div>
     </div>
     <div class="sign-links card-item">
-      <div class="title">
-        <span>积分明细</span>
-        <span>积分规则</span>
+      <div class="title">去完成任务赚更多积分</div>
+      <div class="link-item flex">
+        <div class="flex">
+          <span class="iconfont icon-link">&#xe760;</span>
+          <div class="link-desc flex-col">
+            <span>
+              分享链接
+              <span>+500 积分</span>
+            </span>
+            <span>把你喜欢的活动分享到朋友圈</span>
+          </div>
+        </div>
+        <div class="btn_go">GO</div>
+      </div>
+      <div class="link-item flex">
+        <div class="flex">
+          <span class="iconfont icon-link">&#xe760;</span>
+          <div class="link-desc flex-col">
+            <span>
+              发起平团
+              <span>+1000 积分</span>
+            </span>
+            <span>成功发起一次拼团活动</span>
+          </div>
+        </div>
+        <div class="btn_go">GO</div>
+      </div>
+      <div class="link-item flex">
+        <div class="flex">
+          <span class="iconfont icon-link">&#xe760;</span>
+          <div class="link-desc flex-col">
+            <span>
+              公益活动
+              <span>+1500 积分</span>
+            </span>
+            <span>成功参加一次公益活动</span>
+          </div>
+        </div>
+        <div class="btn_go">GO</div>
       </div>
     </div>
   </div>
@@ -205,6 +297,65 @@ export default {
 
   .sign-links {
     margin-top: 15px;
+
+    .title {
+      height: 15px;
+      line-height: 15px;
+      font-size: 15px;
+      font-weight: bold;
+      color: #323232;
+    }
+
+    .link-item {
+      position: relative;
+      align-items: center;
+      justify-content: space-between;
+      padding: 17px 0px;
+      background-color: #fff;
+      border-bottom: 1px solid #dedede;
+
+      .icon-link {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        line-height: 45px;
+        background-color: #e3fffd;
+        color: #07c1b2;
+        font-size: 20px;
+        text-align: center;
+      }
+      .link-desc {
+        margin-left: 12px;
+        justify-content: center;
+
+        span {
+          &:first-child {
+            height: 20px;
+            line-height: 20px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #323232;
+          }
+
+          &:last-child {
+            margin-top: 6px;
+            font-size: 12px;
+            color: #b9b9b9;
+          }
+        }
+      }
+      .btn_go {
+        width: 41px;
+        height: 28px;
+        line-height: 28px;
+        text-align: center;
+        border-radius: 14px;
+        color: #fff;
+        background-color: #07c1b2;
+        font-size: 15px;
+        font-weight: bold;
+      }
+    }
   }
 
   .sign-days {
@@ -250,13 +401,41 @@ export default {
           line-height: 42px;
           text-align: center;
           border-radius: 50%;
+        }
+
+        .icon_before {
+          color: #606060;
+          background-color: #efefef;
+        }
+
+        .icon_cur {
+          color: #fff;
+          background-color: #07c1b2;
+        }
+
+        .icon_after {
+          color: #07c1b2;
           background-color: #efefef;
         }
 
         .day {
           margin-top: 10px;
         }
+
+        .day_cur {
+          color: #07c1b2;
+        }
+        .day_other {
+          color: #606060;
+        }
       }
+    }
+
+    .sign-desc {
+      height: 35px;
+      line-height: 35px;
+      font-size: 13px;
+      color: #979797;
     }
   }
 }
