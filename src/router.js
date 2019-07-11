@@ -14,6 +14,7 @@ import Score from './views/Index/components/My/Score'
 import Sign from './views/Index/components/My/Sign'
 import Level from './views/Index/components/My/Level'
 import OrderFirst from './views/Index/components/My/OrderFirst'
+import AddressList from './views/Index/components/My/AddressList'
 
 // 跑腿
 import ErrandLobby from './views/Errand/Lobby'
@@ -123,6 +124,12 @@ export default new Router({
       name: 'index/my/order-first',
       component: OrderFirst,
       meta: { title: '我的订单' },
+    },
+    {
+      path: '/my/address-list',
+      name: 'index/my/address-list',
+      component: AddressList,
+      meta: { title: '收货地址' },
     },
   ],
 })

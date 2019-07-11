@@ -25,7 +25,7 @@
 
     <van-cell-group class="cell-group">
       <van-cell title="个人信息" is-link to="/my/base-info" />
-      <van-cell title="收货地址" is-link />
+      <van-cell title="收货地址" is-link to="/my/address-list" />
       <van-cell title="咨询投诉" is-link />
     </van-cell-group>
   </div>
