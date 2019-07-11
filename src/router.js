@@ -11,6 +11,12 @@ import BaseInfo from './views/Index/components/My/BaseInfo'
 import Score from './views/Index/components/My/Score'
 import Sign from './views/Index/components/My/Sign'
 
+// 跑腿
+import ErrandLobby from './views/Errand/Lobby'
+import ErrandOrder from './views/Errand/Order'
+import ErrandDetail from './views/Errand/Detail'
+import ErrandOrders from './views/Errand/Orders'
+
 Vue.use(Router)
 
 export default new Router({
@@ -49,6 +55,31 @@ export default new Router({
           component: New,
         },
       ],
+    },
+    {
+      path: '/errand',
+      name: 'errand',
+      redirect: { name: 'errand/lobby' },
+    },
+    {
+      path: '/errand/lobby',
+      name: 'errand/lobby',
+      component: ErrandLobby,
+    },
+    {
+      path: '/errand/order',
+      name: 'errand/order',
+      component: ErrandOrder,
+    },
+    {
+      path: '/errand/detail',
+      name: 'errand/detail',
+      component: ErrandDetail,
+    },
+    {
+      path: '/errand/orders',
+      name: 'errand/orders',
+      component: ErrandOrders,
     },
     {
       path: '/about',
