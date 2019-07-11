@@ -4,13 +4,18 @@ import Router from 'vue-router'
 import Index from './views/Index'
 import Home from './views/Index/components/Home'
 import App from './views/Index/components/App'
-import My from './views/Index/components/My'
 import News from './views/Index/components/News'
 import New from './views/Index/components/New'
+
+// 个人中心
+import My from './views/Index/components/My'
 import BaseInfo from './views/Index/components/My/BaseInfo'
 import Score from './views/Index/components/My/Score'
 import Sign from './views/Index/components/My/Sign'
 import Level from './views/Index/components/My/Level'
+import OrderFirst from './views/Index/components/My/OrderFirst'
+import AddressList from './views/Index/components/My/AddressList'
+import AddressEdit from './views/Index/components/My/AddressEdit'
 
 // 跑腿
 import ErrandLobby from './views/Errand/Lobby'
@@ -114,6 +119,24 @@ export default new Router({
       name: 'index/my/level',
       component: Level,
       meta: { title: '用户等级' },
+    },
+    {
+      path: '/my/order-first',
+      name: 'index/my/order-first',
+      component: OrderFirst,
+      meta: { title: '我的订单' },
+    },
+    {
+      path: '/my/address-list',
+      name: 'index/my/address-list',
+      component: AddressList,
+      meta: { title: '收货地址' },
+    },
+    {
+      path: '/my/address-edit',
+      name: 'index/my/address-edit',
+      component: AddressEdit,
+      meta: { title: '新建收货地址' },
     },
   ],
 })
