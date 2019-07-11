@@ -72,7 +72,7 @@ export default new Router({
       meta: { title: '跑腿大厅' },
     },
     {
-      path: '/errand/order',
+      path: '/errand/order/:id',
       name: 'errand/order',
       component: ErrandOrder,
     },
