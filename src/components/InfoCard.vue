@@ -13,15 +13,15 @@
       <hr />
 
       <div class="score">
-        <div :class="{ isSign: !isSign }" v-if="!isSign">
+        <div :class="{ isSign: !isSign }" v-if="!isSign" @click="signRoute">
           <span>一键签到</span>
           <span>未签到</span>
         </div>
-        <div :class="{ isSign: !isSign }">
+        <div :class="{ isSign: !isSign }" @click="scoreRoute">
           <span>个人积分</span>
           <span>1724</span>
         </div>
-        <div :class="{ isSign: !isSign }">
+        <div :class="{ isSign: !isSign }" @click="levelRoute">
           <span>我的排名</span>
           <span>450</span>
         </div>
@@ -62,6 +62,15 @@ export default {
   methods: {
     onSearch() {
       //
+    },
+    signRoute() {
+      this.$router.push('/my/sign')
+    },
+    scoreRoute() {
+      this.$router.push('/my/score')
+    },
+    levelRoute() {
+      this.$router.push('/my/level')
     },
   },
 }
