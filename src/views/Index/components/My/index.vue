@@ -9,6 +9,7 @@
       value="你有未处理的订单"
       icon="location-o"
       is-link
+      to="/my/order-first"
     />
 
     <van-cell-group class="cell-group">
