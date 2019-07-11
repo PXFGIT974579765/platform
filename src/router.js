@@ -10,6 +10,7 @@ import New from './views/Index/components/New'
 import BaseInfo from './views/Index/components/My/BaseInfo'
 import Score from './views/Index/components/My/Score'
 import Sign from './views/Index/components/My/Sign'
+import Level from './views/Index/components/My/Level'
 
 // 跑腿
 import ErrandLobby from './views/Errand/Lobby'
@@ -106,6 +107,12 @@ export default new Router({
       name: 'index/my/sign',
       component: Sign,
       meta: { title: '签到', keepAlive: false },
+    },
+    {
+      path: '/my/level',
+      name: 'index/my/level',
+      component: Level,
+      meta: { title: '用户等级', keepAlive: false },
     },
   ],
 })

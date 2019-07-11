@@ -97,9 +97,7 @@ export default {
     },
   },
   filters: {
-    formatDate: function(value) {
-      return dateTime(value)
-    },
+    formatDate: dateTime,
   },
 }
 </script>
