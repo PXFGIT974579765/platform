@@ -1,5 +1,5 @@
 <template>
-  <div class="page-my-sign">
+  <div class="page-my-sign" v-wechat-title="$route.meta.title">
     <div class="page-header">
       <div class="score-box flex-col">
         <span>可用积分</span>

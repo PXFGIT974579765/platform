@@ -1,5 +1,5 @@
 <template>
-  <div class="page-my-level">
+  <div class="page-my-level" v-wechat-title="$route.meta.title">
     <div class="page-header">
       <div class="level-box flex-col">
         <div class="level-icon">

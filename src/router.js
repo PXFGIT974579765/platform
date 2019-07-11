@@ -69,19 +69,19 @@ export default new Router({
       path: '/my/score',
       name: 'index/my/score',
       component: Score,
-      meta: { title: '个人积分', keepAlive: false },
+      meta: { title: '个人积分' },
     },
     {
       path: '/my/sign',
       name: 'index/my/sign',
       component: Sign,
-      meta: { title: '签到', keepAlive: false },
+      meta: { title: '签到' },
     },
     {
       path: '/my/level',
       name: 'index/my/level',
       component: Level,
-      meta: { title: '用户等级', keepAlive: false },
+      meta: { title: '用户等级' },
     },
   ],
 })
