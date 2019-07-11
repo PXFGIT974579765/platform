@@ -66,6 +66,7 @@ export default new Router({
       path: '/errand/lobby',
       name: 'errand/lobby',
       component: ErrandLobby,
+      meta: { title: '跑腿大厅' },
     },
     {
       path: '/errand/order',
