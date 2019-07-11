@@ -1,5 +1,5 @@
 <template>
-  <div class="page-my-base-info">
+  <div class="page-my-base-info" v-wechat-title="$route.meta.title">
     <van-cell-group class="cell-group">
       <van-cell title="头像" class="cell" is-link>
         <div class="avatar-box">

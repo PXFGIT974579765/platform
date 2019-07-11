@@ -1,5 +1,5 @@
 <template>
-  <div class="page-my-score">
+  <div class="page-my-score" v-wechat-title="$route.meta.title">
     <div class="page-header">
       <div class="score-box flex-col">
         <span>1500</span>
