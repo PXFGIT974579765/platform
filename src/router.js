@@ -9,13 +9,13 @@ import New from './views/Index/components/New'
 
 // 个人中心
 import My from './views/Index/components/My'
-import BaseInfo from './views/Index/components/My/BaseInfo'
-import Score from './views/Index/components/My/Score'
-import Sign from './views/Index/components/My/Sign'
-import Level from './views/Index/components/My/Level'
-import OrderFirst from './views/Index/components/My/OrderFirst'
-import AddressList from './views/Index/components/My/AddressList'
-import AddressEdit from './views/Index/components/My/AddressEdit'
+import BaseInfo from './views/Index/components/My/components/BaseInfo'
+import Score from './views/Index/components/My/components/Score'
+import Sign from './views/Index/components/My/components/Sign'
+import Level from './views/Index/components/My/components/Level'
+import OrderFirst from './views/Index/components/My/components/OrderFirst'
+import AddressList from './views/Index/components/My/components/AddressList'
+import AddressEdit from './views/Index/components/My/components/AddressEdit'
 
 // 跑腿
 import ErrandLobby from './views/Errand/Lobby'
