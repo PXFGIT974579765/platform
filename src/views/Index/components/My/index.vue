@@ -14,7 +14,7 @@
 
     <van-cell-group class="cell-group">
       <van-cell title="我的钱包" value="￥589.56" is-link />
-      <van-cell title="优惠券" is-link />
+      <van-cell title="优惠券" is-link to="/my/coupon" />
       <van-cell title="成长记录" is-link />
     </van-cell-group>
 

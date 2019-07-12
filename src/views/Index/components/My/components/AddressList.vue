@@ -54,7 +54,7 @@ export default {
 
 <style lang="less" scoped>
 .page-my-address-list {
-  padding: 15px 0;
+  padding: 0;
 
   .address-item {
     margin-top: 15px;

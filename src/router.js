@@ -16,6 +16,7 @@ import Level from './views/Index/components/My/components/Level'
 import OrderFirst from './views/Index/components/My/components/OrderFirst'
 import AddressList from './views/Index/components/My/components/AddressList'
 import AddressEdit from './views/Index/components/My/components/AddressEdit'
+import MyCoupon from './views/Index/components/My/components/MyCoupon'
 
 // 跑腿
 import ErrandLobby from './views/Errand/Lobby'
@@ -137,6 +138,12 @@ export default new Router({
       name: 'index/my/address-edit',
       component: AddressEdit,
       meta: { title: '新建收货地址' },
+    },
+    {
+      path: '/my/coupon',
+      name: 'index/my/coupon',
+      component: MyCoupon,
+      meta: { title: '我的优惠券' },
     },
   ],
 })
