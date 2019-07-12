@@ -192,7 +192,7 @@ export default {
     justify-content: center;
     width: 100%;
     height: 200px;
-    background-image: url('./images/bg_level.png');
+    background-image: url('../images/bg_level.png');
     background-size: 100% 100%;
     color: #fff;
 

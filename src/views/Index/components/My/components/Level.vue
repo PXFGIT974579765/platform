@@ -94,7 +94,7 @@ export default {
     justify-content: center;
     width: 100%;
     height: 278px;
-    background-image: url('./images/bg_level.png');
+    background-image: url('../images/bg_level.png');
     background-size: 100% 100%;
     color: #fff;
 
@@ -116,7 +116,7 @@ export default {
         position: relative;
         width: 130px;
         height: 88px;
-        background-image: url('./images/level_icon.png');
+        background-image: url('../images/level_icon.png');
         background-size: 100% 100%;
 
         .level-num {

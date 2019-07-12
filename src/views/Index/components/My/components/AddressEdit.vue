@@ -2,9 +2,6 @@
   <div class="page-my-address-edit" v-wechat-title="$route.meta.title">
     <van-address-edit
       :area-list="areaList"
-      show-postal
-      show-delete
-      show-set-default
       show-search-result
       :search-result="searchResult"
       @save="onSave"
