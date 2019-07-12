@@ -4,13 +4,7 @@
       <div class="title">跑腿订单</div>
     </div>
 
-    <div class="good-info">
-      <img src="~@/assets/images/goods.png" alt />
-      <div class="good-info-content">
-        <div class="name">华为路由器无线全千兆端口家用WIFI穿墙王大功率户型</div>
-        <div class="type">标准套餐：白色-定制版</div>
-      </div>
-    </div>
+    <commodity />
 
     <div class="address">
       <div class="address-item address-get">
@@ -35,35 +29,20 @@
 </template>
 
 <script>
-export default {}
+import Commodity from './Commodity'
+
+export default {
+  components: {
+    Commodity,
+  },
+}
 </script>
 
 <style lang="less" scoped>
-.good-info {
-  display: flex;
+.commodity {
   margin-bottom: 14px;
   padding-bottom: 20px;
   border-bottom: 1px solid #c8c8c8;
-  img {
-    width: 70px;
-    height: 70px;
-    margin-right: 14px;
-    border-radius: 2px;
-  }
-  &-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .name {
-    line-height: 1.5;
-    font-size: 15px;
-    color: #2d2d2d;
-  }
-  .type {
-    font-size: 13px;
-    color: #c0c0c0;
-  }
 }
 
 .address-item {
