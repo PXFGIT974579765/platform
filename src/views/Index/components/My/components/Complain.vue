@@ -27,7 +27,11 @@
       </van-tab>
       <van-tab title="我的咨询投诉">
         <ul>
-          <li v-for="item in myComplain" :key="item.id">
+          <li
+            v-for="item in myComplain"
+            :key="item.id"
+            @click="routeDetail(item.id)"
+          >
             <div class="title flex">
               <span class="time">{{ item.time | formatDate }}</span>
               <span :class="item.status | statusClass">{{
@@ -84,6 +88,9 @@ export default {
   },
   methods: {
     onLoad() {},
+    routeDetail(item) {
+      this.$router.push(`/my/complain-detail/${item}`)
+    },
   },
   filters: {
     formatDate: dateTime,

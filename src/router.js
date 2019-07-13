@@ -18,6 +18,7 @@ import AddressList from './views/Index/components/My/components/AddressList'
 import AddressEdit from './views/Index/components/My/components/AddressEdit'
 import MyCoupon from './views/Index/components/My/components/MyCoupon'
 import Complain from './views/Index/components/My/components/Complain'
+import ComplainDetail from './views/Index/components/My/components/ComplainDetail'
 
 // 跑腿
 import ErrandLobby from './views/Errand/Lobby'
@@ -177,6 +178,12 @@ export default new Router({
       name: 'index/my/complain',
       component: Complain,
       meta: { title: '咨询投诉' },
+    },
+    {
+      path: '/my/complain-detail/:id',
+      name: 'index/my/complain-detail',
+      component: ComplainDetail,
+      meta: { title: '咨询投诉详情' },
     },
   ],
 })
