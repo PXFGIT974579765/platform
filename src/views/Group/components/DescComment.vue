@@ -14,11 +14,23 @@
         评价
       </div>
     </div>
+
+    <div class="comments">
+      <comment />
+      <comment />
+      <comment />
+    </div>
   </div>
 </template>
 
 <script>
+import Comment from './Comment'
+
 export default {
+  components: {
+    Comment,
+  },
+
   props: {
     active: String,
   },
@@ -47,7 +59,7 @@ export default {
 .tab {
   margin-right: 50px;
   font-size: 13px;
-  color: 656565;
+  color: #656565;
 
   &.active {
     font-size: 16px;

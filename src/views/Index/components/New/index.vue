@@ -51,6 +51,7 @@ export default {
 <style lang="less" scoped>
 .new-page {
   padding: 20px 0 80px;
+  background: #fff;
 }
 
 .article {

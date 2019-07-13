@@ -60,5 +60,6 @@ export default {
 <style lang="less" scoped>
 .news {
   padding: 20px 15px;
+  background: #fff;
 }
 </style>
