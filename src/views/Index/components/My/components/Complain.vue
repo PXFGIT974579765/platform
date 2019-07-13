@@ -1,6 +1,6 @@
 <template>
   <div class="page-my-complain" v-wechat-title="$route.meta.title">
-    <van-tabs v-model="active" color="#06bcbf">
+    <van-tabs v-model="activeTab" color="#06bcbf">
       <van-tab title="我要咨询投诉">
         <div class="i-will">
           <van-radio-group v-model="complainType" class="group flex">
@@ -25,7 +25,20 @@
           <div class="btn-submit">提交</div>
         </div>
       </van-tab>
-      <van-tab title="我的咨询投诉"></van-tab>
+      <van-tab title="我的咨询投诉">
+        <ul>
+          <li v-for="item in myComplain" :key="item.id">
+            <div class="title flex">
+              <span class="time">{{ item.time | formatDate }}</span>
+              <span :class="item.status | statusClass">{{
+                item.status | statusName
+              }}</span>
+            </div>
+            <div class="tag">[{{ item.tag }}] {{ item.title }}</div>
+            <div class="content">{{ item.content }}</div>
+          </li>
+        </ul>
+      </van-tab>
     </van-tabs>
   </div>
 </template>
@@ -33,19 +46,52 @@
 <script>
 import { dateTime } from '@/lib/format'
 
+const STATUS_HASH = {
+  0: '处理中',
+  1: '已回复',
+}
+
+const SATUS_CLASS = {
+  0: 'status-0',
+  1: 'status-1',
+}
+
 export default {
   data() {
     return {
+      activeTab: '1',
       complainType: '0',
       content: '',
+      myComplain: [
+        {
+          id: '12345',
+          tag: '问题咨询',
+          title: '关于积分兑换商品的问题',
+          content: '请问积分兑换的商品可以退货吗？ 退货后积分是否会返还？',
+          time: 1500000000,
+          status: 0, // 0 处理中  1 已回复
+        },
+        {
+          id: '123456',
+          tag: '问题咨询',
+          title: '关于积分兑换商品的问题',
+          content: '请问积分兑换的商品可以退货吗？ 退货后积分是否会返还？',
+          time: 1500000000,
+          status: 1, // 0 处理中  1 已回复
+        },
+      ],
     }
   },
   methods: {
     onLoad() {},
   },
   filters: {
-    formatDate: function(value) {
-      return dateTime(value)
+    formatDate: dateTime,
+    statusName: function(status) {
+      return STATUS_HASH[status]
+    },
+    statusClass: function(status) {
+      return SATUS_CLASS[status]
     },
   },
 }
@@ -123,6 +169,46 @@ export default {
       font-size: 15px;
       color: #fff;
       background-color: #07c1b2;
+    }
+  }
+
+  ul {
+    li {
+      margin-top: 10px;
+      padding: 16px 15px 25px;
+      background-color: #fff;
+
+      .title {
+        justify-content: space-between;
+        font-size: 14px;
+      }
+
+      .time {
+        color: #9f9f9f;
+      }
+
+      .status-0 {
+        color: #ff8400;
+      }
+
+      .status-1 {
+        color: #12b54c;
+      }
+
+      .tag {
+        margin-top: 17px;
+        font-size: 16px;
+        line-height: 17px;
+        font-weight: 600;
+        color: #353434;
+      }
+
+      .content {
+        margin-top: 15px;
+        line-height: 20px;
+        font-size: 14px;
+        color: #868686;
+      }
     }
   }
 }
