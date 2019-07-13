@@ -17,6 +17,7 @@ import OrderFirst from './views/Index/components/My/components/OrderFirst'
 import AddressList from './views/Index/components/My/components/AddressList'
 import AddressEdit from './views/Index/components/My/components/AddressEdit'
 import MyCoupon from './views/Index/components/My/components/MyCoupon'
+import Complain from './views/Index/components/My/components/Complain'
 
 // 跑腿
 import ErrandLobby from './views/Errand/Lobby'
@@ -144,6 +145,12 @@ export default new Router({
       name: 'index/my/coupon',
       component: MyCoupon,
       meta: { title: '我的优惠券' },
+    },
+    {
+      path: '/my/complain',
+      name: 'index/my/complain',
+      component: Complain,
+      meta: { title: '咨询投诉' },
     },
   ],
 })
