@@ -1,0 +1,57 @@
+<template>
+  <div class="desc-comment">
+    <div class="tabs">
+      <div
+        :class="['tab', { active: active === 'desc' }]"
+        @click="onChange('desc')"
+      >
+        描述
+      </div>
+      <div
+        :class="['tab', { active: active === 'comment' }]"
+        @click="onChange('comment')"
+      >
+        评价
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    active: String,
+  },
+
+  methods: {
+    onChange(type) {
+      this.$emit('onChange', type)
+    },
+  },
+}
+</script>
+
+<style lang="less" scoped>
+.desc-comment {
+  background-color: #ffffff;
+}
+
+.tabs {
+  display: flex;
+  height: 40px;
+  line-height: 40px;
+  margin: 0 15px;
+  border-bottom: solid 1px #e5e5e5;
+}
+
+.tab {
+  margin-right: 50px;
+  font-size: 13px;
+  color: 656565;
+
+  &.active {
+    font-size: 16px;
+    color: #2d2d2d;
+  }
+}
+</style>
