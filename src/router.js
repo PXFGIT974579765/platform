@@ -13,7 +13,6 @@ import BaseInfo from './views/Index/components/My/components/BaseInfo'
 import Score from './views/Index/components/My/components/Score'
 import Sign from './views/Index/components/My/components/Sign'
 import Level from './views/Index/components/My/components/Level'
-import OrderFirst from './views/Index/components/My/components/OrderFirst'
 import AddressList from './views/Index/components/My/components/AddressList'
 import AddressEdit from './views/Index/components/My/components/AddressEdit'
 import MyCoupon from './views/Index/components/My/components/MyCoupon'
@@ -32,7 +31,91 @@ import GroupDetail from './views/Group/Detail'
 import GroupSuccess from './views/Group/GroupSuccess'
 import GroupFailure from './views/Group/GroupFailure'
 
+// 订单
+import OrderIndex from './views/Order/Index'
+import GoodsOrder from './views/Order/components/GoodsOrder'
+
 Vue.use(Router)
+
+// 个人中心
+const myRouters = [
+  {
+    path: '/my/base-info',
+    name: 'index/my/base-info',
+    component: BaseInfo,
+    meta: { title: '个人信息', keepAlive: false },
+  },
+  {
+    path: '/my/score',
+    name: 'index/my/score',
+    component: Score,
+    meta: { title: '个人积分' },
+  },
+  {
+    path: '/my/sign',
+    name: 'index/my/sign',
+    component: Sign,
+    meta: { title: '签到' },
+  },
+  {
+    path: '/my/level',
+    name: 'index/my/level',
+    component: Level,
+    meta: { title: '用户等级' },
+  },
+  {
+    path: '/my/address-list',
+    name: 'index/my/address-list',
+    component: AddressList,
+    meta: { title: '收货地址' },
+  },
+  {
+    path: '/my/address-edit',
+    name: 'index/my/address-edit',
+    component: AddressEdit,
+    meta: { title: '新建收货地址' },
+  },
+  {
+    path: '/my/address-edit/:id',
+    name: 'index/my/address-edit',
+    component: AddressEdit,
+    meta: { title: '修改收货地址' },
+  },
+  {
+    path: '/my/coupon',
+    name: 'index/my/coupon',
+    component: MyCoupon,
+    meta: { title: '我的优惠券' },
+  },
+  {
+    path: '/my/complain',
+    name: 'index/my/complain',
+    component: Complain,
+    meta: { title: '咨询投诉' },
+  },
+  {
+    path: '/my/complain-detail/:id',
+    name: 'index/my/complain-detail',
+    component: ComplainDetail,
+    meta: { title: '咨询投诉详情' },
+  },
+]
+
+// 订单
+const orderRouters = [
+  {
+    path: '/my/order-first',
+    name: 'index/my/order-first',
+    component: OrderIndex,
+    meta: { title: '我的订单' },
+  },
+  {
+    path: '/order/goods',
+    name: '/order/goods',
+    component: GoodsOrder,
+    meta: { title: '商品订单' },
+  },
+]
 
 export default new Router({
   mode: 'history',
@@ -117,6 +200,11 @@ export default new Router({
       name: 'group/order_failure',
       component: GroupFailure,
     },
+
+    // 个人中心
+    ...myRouters,
+    // 订单
+    ...orderRouters,
     {
       path: '/about',
       name: 'about',
@@ -124,72 +212,6 @@ export default new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ './views/About'),
-    },
-    {
-      path: '/my/base-info',
-      name: 'index/my/base-info',
-      component: BaseInfo,
-      meta: { title: '个人信息', keepAlive: false },
-    },
-    {
-      path: '/my/score',
-      name: 'index/my/score',
-      component: Score,
-      meta: { title: '个人积分' },
-    },
-    {
-      path: '/my/sign',
-      name: 'index/my/sign',
-      component: Sign,
-      meta: { title: '签到' },
-    },
-    {
-      path: '/my/level',
-      name: 'index/my/level',
-      component: Level,
-      meta: { title: '用户等级' },
-    },
-    {
-      path: '/my/order-first',
-      name: 'index/my/order-first',
-      component: OrderFirst,
-      meta: { title: '我的订单' },
-    },
-    {
-      path: '/my/address-list',
-      name: 'index/my/address-list',
-      component: AddressList,
-      meta: { title: '收货地址' },
-    },
-    {
-      path: '/my/address-edit',
-      name: 'index/my/address-edit',
-      component: AddressEdit,
-      meta: { title: '新建收货地址' },
-    },
-    {
-      path: '/my/address-edit/:id',
-      name: 'index/my/address-edit',
-      component: AddressEdit,
-      meta: { title: '修改收货地址' },
-    },
-    {
-      path: '/my/coupon',
-      name: 'index/my/coupon',
-      component: MyCoupon,
-      meta: { title: '我的优惠券' },
-    },
-    {
-      path: '/my/complain',
-      name: 'index/my/complain',
-      component: Complain,
-      meta: { title: '咨询投诉' },
-    },
-    {
-      path: '/my/complain-detail/:id',
-      name: 'index/my/complain-detail',
-      component: ComplainDetail,
-      meta: { title: '咨询投诉详情' },
     },
   ],
 })
