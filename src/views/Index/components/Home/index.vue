@@ -180,6 +180,7 @@ export default {
 <style lang="less" scoped>
 .home {
   padding-bottom: 50px;
+  background: #fff;
 }
 
 .header {

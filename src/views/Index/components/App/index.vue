@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app">
     <search light />
 
     <div class="block apps apps-my">
@@ -7,6 +7,7 @@
         <div class="block-title">我的应用</div>
         <div class="block-header-link" @click="toggleEdit">管理应用</div>
       </div>
+
       <div class="block-content">
         <div class="app-item-wrap">
           <div class="app-item">
@@ -107,8 +108,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.app {
+  padding-top: 12px;
+  background-color: #fff;
+}
+
 .search {
-  margin: 12px 20px 0;
+  margin: 0 20px;
 }
 
 .block {
