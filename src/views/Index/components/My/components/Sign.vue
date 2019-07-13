@@ -175,9 +175,7 @@ export default {
     onLoad() {},
   },
   filters: {
-    formatDate: function(value) {
-      return dateTime(value)
-    },
+    formatDate: dateTime,
   },
 }
 </script>
