@@ -31,7 +31,9 @@
       </div>
 
       <button v-if="!complete" class="group-btn">我要参团</button>
-      <div v-else class="complete">已参团，等待满员</div>
+      <div v-else class="complete">
+        <span class="iconfont">&#xe75e;</span>已参团，等待满员
+      </div>
 
       <invitation wireframe>邀请好友参团</invitation>
     </div>
@@ -59,7 +61,7 @@ export default {
   data() {
     return {
       active: 'comment',
-      complete: false,
+      complete: true,
     }
   },
 
@@ -134,5 +136,18 @@ export default {
   color: #fff;
   background-image: linear-gradient(#f94141, #f94141),
     linear-gradient(#fe5e60, #fe5e60);
+}
+
+.complete {
+  height: 46px;
+  line-height: 46px;
+  text-align: center;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  font-size: 18px;
+  color: #1aac19;
+  .iconfont {
+    margin-right: 6px;
+  }
 }
 </style>
