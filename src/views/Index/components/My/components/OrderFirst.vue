@@ -1,15 +1,22 @@
 <template>
   <div class="page-my-order-first" v-wechat-title="$route.meta.title">
-    <div v-for="item in orderType" :key="item.name" class="type-item flex-col">
-      <div class="flex-col item-icon">
-        <span
-          :style="{ color: item.color }"
-          class="iconfont icon"
-          v-html="item.icon"
-        ></span>
-        <span class="name">{{ item.name }}</span>
-      </div>
-      <div class="tag" v-if="item.num > 0">{{ item.num }}</div>
+    <div class="menu-wapper">
+      <router-link
+        to=""
+        v-for="item in orderType"
+        :key="item.name"
+        class="type-item flex-col"
+      >
+        <div class="flex-col item-icon">
+          <span
+            :style="{ color: item.color }"
+            class="iconfont icon"
+            v-html="item.icon"
+          ></span>
+          <span class="name">{{ item.name }}</span>
+        </div>
+        <div class="tag" v-if="item.num > 0">{{ item.num }}</div>
+      </router-link>
     </div>
   </div>
 </template>
@@ -69,43 +76,48 @@ export default {
   padding: 35px 1.9%;
   display: flow-root;
 
-  .type-item {
-    position: relative;
-    width: 105px;
-    height: 105px;
-    float: left;
-    align-items: center;
-    justify-content: center;
-    margin: 14px 2.1%;
-    border-radius: 6px;
-    background-color: #fff;
+  .menu-wapper {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    padding: 7px;
 
-    .item-icon {
+    .type-item {
+      position: relative;
+      grid-column: span 4;
+      height: 105px;
       align-items: center;
       justify-content: center;
-    }
+      margin: 5px;
+      border-radius: 6px;
+      background-color: #fff;
 
-    .icon {
-      width: 29px;
-      height: 29px;
-      font-size: 29px !important;
-    }
+      .item-icon {
+        align-items: center;
+        justify-content: center;
+      }
 
-    .name {
-      margin-top: 11px;
-      font-size: 15px;
-      color: #585858;
-    }
+      .icon {
+        width: 29px;
+        height: 29px;
+        font-size: 29px !important;
+      }
 
-    .tag {
-      position: absolute;
-      right: 0;
-      top: 0;
-      padding: 3px 6px;
-      border-radius: 10px;
-      font-size: 13px;
-      background: #ff3d3d;
-      color: #fff;
+      .name {
+        margin-top: 11px;
+        font-size: 15px;
+        color: #585858;
+      }
+
+      .tag {
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: 3px 6px;
+        border-radius: 10px;
+        font-size: 13px;
+        background: #ff3d3d;
+        color: #fff;
+      }
     }
   }
 }
