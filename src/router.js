@@ -26,6 +26,12 @@ import ErrandOrder from './views/Errand/Order'
 import ErrandDetail from './views/Errand/Detail'
 import ErrandOrders from './views/Errand/Orders'
 
+// 拼团
+import GroupIndex from './views/Group/Index'
+import GroupOrder from './views/Group/Order'
+import GroupOrderSuccess from './views/Group/OrderSuccess'
+import GroupOrderFailure from './views/Group/OrderFailure'
+
 Vue.use(Router)
 
 export default new Router({
@@ -90,6 +96,26 @@ export default new Router({
       path: '/errand/orders',
       name: 'errand/orders',
       component: ErrandOrders,
+    },
+    {
+      path: '/group',
+      name: 'group',
+      component: GroupIndex,
+    },
+    {
+      path: '/group/order',
+      name: 'group/order',
+      component: GroupOrder,
+    },
+    {
+      path: '/group/order_success',
+      name: 'group/order_success',
+      component: GroupOrderSuccess,
+    },
+    {
+      path: '/group/order_failure',
+      name: 'group/order_failure',
+      component: GroupOrderFailure,
     },
     {
       path: '/about',
