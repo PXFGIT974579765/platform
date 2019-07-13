@@ -2,8 +2,8 @@
   <div class="page-my-order-first" v-wechat-title="$route.meta.title">
     <div class="menu-wapper">
       <router-link
-        to=""
         v-for="item in orderType"
+        :to="item.to"
         :key="item.name"
         class="type-item flex-col"
       >
@@ -31,36 +31,42 @@ export default {
           icon: '&#xe76b;',
           color: '#55c2ff',
           num: 12,
+          to: '',
         },
         {
           name: '拼团订单',
           icon: '&#xe76c;',
           color: '#ff766e',
           num: 0,
+          to: '',
         },
         {
           name: '打印订单',
           icon: '&#xe76a;',
           color: '#b985ff',
           num: 2,
+          to: '',
         },
         {
           name: '活动订单',
           icon: '&#xe769;',
           color: '#ffd163',
           num: 2,
+          to: '',
         },
         {
           name: '租赁订单',
           icon: '&#xe767;',
           color: '#6cf088',
           num: 2,
+          to: '',
         },
         {
           name: '跑腿订单',
           icon: '&#xe766;',
           color: '#4ac1ff',
           num: 2,
+          to: '/errand/orders',
         },
       ],
     }

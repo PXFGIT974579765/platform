@@ -23,8 +23,8 @@
     </div>
 
     <div class="operation">
-      <button>联系跑腿员</button>
-      <button>订单详情</button>
+      <button class="link">联系跑腿员</button>
+      <router-link to="/errand/detail" class="link">订单详情</router-link>
     </div>
   </div>
 </template>
@@ -67,9 +67,13 @@ export default {
     text-align: right;
   }
 
-  button {
+  .link {
+    display: inline-block;
     width: 85px;
     height: 30px;
+    line-height: 30px;
+    vertical-align: middle;
+    text-align: center;
     margin-left: 14px;
     border-radius: 15px;
     border: solid 1px #07c2af;
