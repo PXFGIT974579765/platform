@@ -66,7 +66,6 @@ export default {
 
 <style lang="less" scoped>
 .page-my-order-first {
-  background-color: #fff;
   padding: 35px 1.9%;
   display: flow-root;
 
@@ -79,7 +78,7 @@ export default {
     justify-content: center;
     margin: 14px 2.1%;
     border-radius: 6px;
-    box-shadow: 0 0 1px 1px #eee;
+    background-color: #fff;
 
     .item-icon {
       align-items: center;
