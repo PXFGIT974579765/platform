@@ -52,6 +52,6 @@ export default {
   padding-bottom: 50px;
 }
 .cell-group {
-  margin-top: 10px;
+  margin: 10px 0;
 }
 </style>
