@@ -225,7 +225,9 @@ ul {
     padding-left: 7.5px;
   }
 }
+
 .list-item {
+  display: block;
   border-radius: 4px;
   background: #fff;
 
