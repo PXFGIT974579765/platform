@@ -110,7 +110,7 @@
         <div class="block-title">最新拼团</div>
         <router-link to="/" class="block-header-link">更多</router-link>
       </div>
-      <div class="block-content">
+      <div class="block-content clearfix">
         <div class="group-item-wrap">
           <div class="group-item">
             <img src="./images/shop.png" alt />
@@ -358,9 +358,6 @@ nav {
 
 .group {
   margin-top: 36px;
-  .block-content {
-    overflow: hidden;
-  }
   .group-item-wrap {
     width: 50%;
     float: left;
