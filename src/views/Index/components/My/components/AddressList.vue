@@ -18,12 +18,16 @@
             >设为默认地址</van-radio
           >
           <div class="flex-between">
-            <span :style="{ 'margin-right': '35px' }">修改</span>
+            <span
+              :style="{ 'margin-right': '35px' }"
+              @click="routeEdit(item.id)"
+              >修改</span
+            >
             <span>删除</span>
           </div>
         </div>
       </div>
-      <div class="btn-add">新增</div>
+      <div class="btn-add" @click="routeAdd">新增</div>
     </van-radio-group>
   </div>
 </template>
@@ -34,11 +38,13 @@ export default {
     return {
       addressList: [
         {
+          id: '123',
           name: '刘国贵',
           phone: '19987451243',
           address: '贵州省贵阳市花溪区大学城贵州师范大学科创园XXX',
         },
         {
+          id: '125',
           name: '刘国贵',
           phone: '19987451243',
           address: '贵州省贵阳市花溪区大学城贵州师范大学科创园XXX',
@@ -48,6 +54,12 @@ export default {
   },
   methods: {
     onLoad() {},
+    routeAdd() {
+      this.$router.push('/my/address-edit')
+    },
+    routeEdit(id) {
+      this.$router.push(`/my/address-edit/${id}`)
+    },
   },
 }
 </script>

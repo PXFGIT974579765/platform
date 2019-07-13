@@ -168,6 +168,12 @@ export default new Router({
       meta: { title: '新建收货地址' },
     },
     {
+      path: '/my/address-edit/:id',
+      name: 'index/my/address-edit',
+      component: AddressEdit,
+      meta: { title: '修改收货地址' },
+    },
+    {
       path: '/my/coupon',
       name: 'index/my/coupon',
       component: MyCoupon,
