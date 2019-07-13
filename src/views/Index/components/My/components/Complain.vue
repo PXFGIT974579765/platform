@@ -115,17 +115,14 @@ export default {
     }
 
     .btn-submit {
-      margin-top: 19px;
-      width: 100%;
+      margin: 19px 15px;
       height: 47px;
       line-height: 47px;
       border-radius: 4px;
       text-align: center;
       font-size: 15px;
       color: #fff;
-      background-image: linear-gradient(#07c1b2, #07c1b2),
-        linear-gradient(#07c060, #07c060);
-      background-blend-mode: normal, normal;
+      background-color: #07c1b2;
     }
   }
 }
