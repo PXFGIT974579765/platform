@@ -31,7 +31,7 @@ export default {
           icon: '&#xe76b;',
           color: '#55c2ff',
           num: 12,
-          to: '',
+          to: '/order/goods',
         },
         {
           name: '拼团订单',
@@ -52,7 +52,7 @@ export default {
           icon: '&#xe769;',
           color: '#ffd163',
           num: 2,
-          to: '',
+          to: '/order/active',
         },
         {
           name: '租赁订单',

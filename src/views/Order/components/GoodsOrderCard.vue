@@ -43,7 +43,7 @@ export default {
   props: {
     showStatus: {
       type: Boolean,
-      value: true,
+      default: true,
     },
     goods: {
       type: Object,
