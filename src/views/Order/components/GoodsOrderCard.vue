@@ -2,7 +2,9 @@
   <div class="comp-order-goods-card" v-wechat-title="$route.meta.title">
     <div class="header flex">
       <span class="order-no">订单编号: {{ goods.orderNo }}</span>
-      <span class="status">{{ goods.status | statusFilter }}</span>
+      <span v-if="showStatus" class="status">{{
+        goods.status | statusFilter
+      }}</span>
     </div>
     <div class="content flex">
       <img :src="goods.imgUrl" />
@@ -39,6 +41,10 @@ const ORDER_STATUS = {
 
 export default {
   props: {
+    showStatus: {
+      type: Boolean,
+      value: true,
+    },
     goods: {
       type: Object,
       default: function() {

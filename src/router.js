@@ -34,6 +34,7 @@ import GroupFailure from './views/Group/GroupFailure'
 // 订单
 import OrderIndex from './views/Order/Index'
 import GoodsOrder from './views/Order/components/GoodsOrder'
+import GoodsOrderDetail from './views/Order/components/GoodsOrderDetail'
 
 Vue.use(Router)
 
@@ -114,6 +115,12 @@ const orderRouters = [
     name: '/order/goods',
     component: GoodsOrder,
     meta: { title: '商品订单' },
+  },
+  {
+    path: '/order/goods-detail/:id',
+    name: '/order/goods-detail',
+    component: GoodsOrderDetail,
+    meta: { title: '商品订单详情' },
   },
 ]
 
