@@ -30,6 +30,7 @@ import GroupIndex from './views/Group/Index'
 import GroupDetail from './views/Group/Detail'
 import GroupSuccess from './views/Group/GroupSuccess'
 import GroupFailure from './views/Group/GroupFailure'
+import GroupOrder from './views/Group/Order'
 
 // 订单
 import OrderIndex from './views/Order/Index'
@@ -220,6 +221,11 @@ export default new Router({
       path: '/group/order_failure',
       name: 'group/order_failure',
       component: GroupFailure,
+    },
+    {
+      path: '/group/order/:id',
+      name: 'group/order',
+      component: GroupOrder,
     },
 
     // 个人中心
