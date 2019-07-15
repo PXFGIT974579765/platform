@@ -37,6 +37,7 @@ import OrderIndex from './views/Order/Index'
 import GoodsOrder from './views/Order/components/GoodsOrder'
 import ActiveOrder from './views/Order/components/ActiveOrder'
 import GoodsOrderDetail from './views/Order/components/GoodsOrderDetail'
+import ActiveOrderDetail from './views/Order/components/ActiveOrderDetail'
 
 Vue.use(Router)
 
@@ -129,6 +130,12 @@ const orderRouters = [
     name: '/order/active',
     component: ActiveOrder,
     meta: { title: '活动订单' },
+  },
+  {
+    path: '/order/active-detail/:id',
+    name: '/order/active-detail',
+    component: ActiveOrderDetail,
+    meta: { title: '活动订单详情' },
   },
 ]
 

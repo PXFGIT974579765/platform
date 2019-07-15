@@ -1,57 +1,58 @@
 <template>
-  <div class="page-order-goods-detail" v-wechat-title="$route.meta.title">
+  <div class="page-order-active-detail" v-wechat-title="$route.meta.title">
     <div class="container">
-      <GoodsOrderStatusCard :status="goods.status" />
-      <AddressCard :contact="goods.contact" />
       <div class="goods-item">
-        <Card :goods="goods" :showStatus="false" />
+        <Card
+          :active="active"
+          :showStatus="false"
+          :showPrice="false"
+          :showStatusBtn="true"
+        />
       </div>
       <div class="price-group">
         <div class="price-item flex">
-          <span>商品总价</span>
-          <span>￥{{ goods.amount }}</span>
-        </div>
-        <div class="price-item flex">
-          <span>运费(快递)</span>
-          <span>{{ goods.amount }}</span>
+          <span>活动收费</span>
+          <span>￥{{ active.price }}</span>
         </div>
         <div class="price-item flex">
           <span>优惠</span>
-          <span>-{{ goods.couponAmount }}</span>
+          <span>-{{ active.couponAmount }}</span>
         </div>
         <div class="price-item flex total">
           <span>订单总价</span>
-          <span>￥{{ goods.amount - goods.couponAmount }}</span>
+          <span>￥{{ active.price - active.couponAmount }}</span>
         </div>
         <div class="price-item flex actual">
           <span>实付款</span>
           <span style="color: #ff6c00"
-            >￥{{ goods.amount - goods.couponAmount }}</span
+            >￥{{ active.price - active.couponAmount }}</span
           >
         </div>
       </div>
 
       <div class="order-info">
-        <div class="title">订单信息</div>
+        <div class="title">
+          {{ active.refundStatus === 0 ? '订单信息' : '退款信息' }}
+        </div>
         <div class="order-item">
           <span>订单状态 :</span>
-          <span>{{ goods.status | statusFilter }}</span>
+          <span>{{ active.status | statusFilter }}</span>
         </div>
         <div class="order-item">
           <span>个人积分 :</span>
-          <span>获得{{ goods.score }}点积分</span>
+          <span>获得{{ active.score }}点积分</span>
         </div>
         <div class="order-item">
           <span>订单编号 :</span>
-          <span>{{ goods.orderNo }}</span>
+          <span>{{ active.activeNo }}</span>
         </div>
         <div class="order-item">
           <span>创建时间 :</span>
-          <span>{{ goods.creatTime | dateFormat }}</span>
+          <span>{{ active.createTime | dateFormat }}</span>
         </div>
         <div class="order-item">
           <span>付款时间 :</span>
-          <span>{{ goods.payTime | dateFormat }}</span>
+          <span>{{ active.payTime | dateFormat }}</span>
         </div>
       </div>
 
@@ -65,9 +66,7 @@
 
 <script>
 import { dateTime } from '@/lib/format'
-import GoodsOrderStatusCard from './GoodsOrderStatusCard'
-import AddressCard from './AddressCard'
-import Card from './GoodsOrderCard'
+import Card from './ActiveOrderCard'
 
 const ORDER_STATUS = {
   0: '待付款',
@@ -77,31 +76,25 @@ const ORDER_STATUS = {
 }
 export default {
   components: {
-    GoodsOrderStatusCard,
     Card,
-    AddressCard,
   },
   data() {
     return {
-      goods: {
-        orderNo: '557879582',
-        imgUrl: require('../images/good.png'),
-        title: '华为路由器无线全千兆端口家用WIFI穿墙王大功率户型',
-        tagName: '标准套餐',
-        tagDesc: '白色-定制版',
-        num: 1, // 数量
-        price: 189, // 单价
-        couponAmount: 11, // 优惠金额
-        amount: 189, // 总金额 = 单价*数量
-        status: 0,
-        score: 200,
-        creatTime: 1500000000,
+      active: {
+        activeNo: '557879582',
+        imgUrl: require('../images/active1.jpg'),
+        title: '刀剑2贵州赛区英雄争霸赛',
+        tag: 'race',
+        price: 20,
+        score: 20,
+        couponAmount: 0,
+        createTime: 1500000000,
         payTime: 1500000000,
-        contact: {
-          name: '刘国贵',
-          phone: '19985501144',
-          address: '贵州省贵阳市花溪区大学城贵州师范大学B1男生素质302寝室',
-        },
+        time: 1500000000,
+        address: '贵州大学城师范学院 同心路15号 （创星校园实训中心）',
+        signStatus: 0, // 签到状态  0 未签到 1 已签到
+        status: 0,
+        refundStatus: 0, // 0 没有退款  1 退款中  2 已退款
       },
     }
   },
@@ -120,7 +113,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.page-order-goods-detail {
+.page-order-active-detail {
   .container {
     padding-bottom: 10px;
 
