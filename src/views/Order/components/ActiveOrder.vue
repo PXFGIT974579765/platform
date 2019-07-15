@@ -15,9 +15,9 @@
           :key="obj.id"
           class="active-item"
         >
-          <router-link :to="'/order/active-detail/' + obj.activeNo">
-            <Card :active="obj" />
-          </router-link>
+          <!-- <router-link :to="'/order/active-detail/' + obj.activeNo"> -->
+          <Card :active="obj" />
+          <!-- </router-link> -->
         </div>
       </van-tab>
     </van-tabs>

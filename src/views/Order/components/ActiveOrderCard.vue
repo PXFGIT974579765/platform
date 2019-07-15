@@ -1,34 +1,36 @@
 <template>
   <div class="comp-order-active-card" v-wechat-title="$route.meta.title">
-    <div class="header flex">
-      <span class="order-no">活动编号: {{ active.activeNo }}</span>
-      <span v-if="showStatus" class="status">
-        {{ active.status | statusFilter }}
-      </span>
-    </div>
-    <div class="img">
-      <img :src="active.imgUrl" />
-      <span :class="['tag', active.tag === 'race' ? 'tag-race' : 'tag-pg']">
-        {{ active.tag === 'race' ? '比赛' : '公益' }}
-      </span>
-    </div>
+    <router-link :to="'/order/active-detail/' + active.activeNo">
+      <div class="header flex">
+        <span class="order-no">活动编号: {{ active.activeNo }}</span>
+        <span v-if="showStatus" class="status">{{
+          active.status | statusFilter
+        }}</span>
+      </div>
+      <div class="img">
+        <img :src="active.imgUrl" />
+        <span :class="['tag', active.tag === 'race' ? 'tag-race' : 'tag-pg']">{{
+          active.tag === 'race' ? '比赛' : '公益'
+        }}</span>
+      </div>
 
-    <div class="title-area flex">
-      <span class="title">{{ active.title }}</span>
-      <div v-if="showPrice" class="price">￥{{ active.price }}</div>
-    </div>
-    <div class="time-area">
-      <span>日期</span>
-      <span class="time">{{ active.time | dateFormat }}</span>
-    </div>
-    <div class="address-area flex">
-      <span>地址</span>
-      <span class="address">{{ active.address }}</span>
-    </div>
-    <div class="scan-sign-area flex" v-show="active.signStatus === 0">
-      <span class="iconfont icon">&#xe746;</span>
-      <span>现场扫码签到</span>
-    </div>
+      <div class="title-area flex">
+        <span class="title">{{ active.title }}</span>
+        <div v-if="showPrice" class="price">￥{{ active.price }}</div>
+      </div>
+      <div class="time-area">
+        <span>日期</span>
+        <span class="time">{{ active.time | dateFormat }}</span>
+      </div>
+      <div class="address-area flex">
+        <span>地址</span>
+        <span class="address">{{ active.address }}</span>
+      </div>
+      <div class="scan-sign-area flex" v-show="active.signStatus === 0">
+        <span class="iconfont icon">&#xe746;</span>
+        <span>现场扫码签到</span>
+      </div>
+    </router-link>
     <div class="footer">
       <div class="btn-area flex">
         <span
@@ -38,18 +40,20 @@
         >
         <span v-else></span>
         <div>
-          <span class="btn">{{
-            active.signStatus === 0 ? '未签到' : '已签到'
-          }}</span>
-          <span class="btn">未评价</span>
+          <span class="btn">
+            {{ active.signStatus === 0 ? '未签到' : '已签到' }}
+          </span>
+          <span class="btn" @touchstart="onShowDialog">未评价</span>
         </div>
       </div>
     </div>
+    <AppraiseDialog :showDialog="showDialog" @cancel="onCancel" />
   </div>
 </template>
 
 <script>
 import { dateTime } from '@/lib/format'
+import AppraiseDialog from '@/components/AppraiseDialog'
 
 const ORDER_STATUS = {
   0: '进行中',
@@ -59,6 +63,9 @@ const ORDER_STATUS = {
 }
 
 export default {
+  components: {
+    AppraiseDialog,
+  },
   props: {
     showStatus: {
       type: Boolean,
@@ -90,10 +97,18 @@ export default {
     },
   },
   data() {
-    return {}
+    return {
+      showDialog: false,
+    }
   },
   methods: {
     onLoad() {},
+    onShowDialog() {
+      this.showDialog = true
+    },
+    onCancel() {
+      this.showDialog = false
+    },
   },
   filters: {
     statusFilter: function(status) {
