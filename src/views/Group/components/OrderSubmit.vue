@@ -1,10 +1,10 @@
 <template>
   <div class="order-submit">
     <div class="price">
-      支付
-      <span>￥2.00元</span>
+      实付款:
+      <span>￥225.00元免运费</span>
     </div>
-    <button @click="onSubmit">提交订单</button>
+    <button @click="onSubmit">立即支付</button>
   </div>
 </template>
 
@@ -23,24 +23,22 @@ export default {
   display: flex;
   align-items: center;
   text-align: center;
-  margin: 84px -15px 76px;
+  margin: 170px 0 22px;
   background: #ffffff;
-  > * {
-    flex: 1;
-  }
+
   .price {
-    font-size: 12px;
-    color: #585858;
+    flex: 1;
+    padding: 21px 0;
+    color: #565656;
     span {
-      font-size: 15px;
-      color: #ff4545;
+      color: #f94141;
     }
   }
+
   button {
-    height: 48px;
-    line-height: 48px;
+    padding: 21px 30px;
     color: #fff;
-    background: #0cc3b1;
+    background: #f94141;
   }
 }
 </style>
