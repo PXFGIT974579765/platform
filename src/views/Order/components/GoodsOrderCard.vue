@@ -1,24 +1,26 @@
 <template>
   <div class="comp-order-goods-card" v-wechat-title="$route.meta.title">
-    <div class="header flex">
-      <span class="order-no">订单编号: {{ goods.orderNo }}</span>
-      <span v-if="showStatus" class="status">{{
-        goods.status | statusFilter
-      }}</span>
-    </div>
-    <div class="content flex">
-      <img :src="goods.imgUrl" />
-      <div class="content-right flex">
-        <div class="detail flex-col">
-          <span class="title">{{ goods.title }}</span>
-          <span class="tag">{{ goods.tagName }}: {{ goods.tagDesc }}</span>
-        </div>
-        <div class="price">
-          <div>￥{{ goods.price }}</div>
-          <div>X{{ goods.num }}</div>
+    <router-link :to="'/order/goods-detail/' + goods.orderNo">
+      <div class="header flex">
+        <span class="order-no">订单编号: {{ goods.orderNo }}</span>
+        <span v-if="showStatus" class="status">
+          {{ goods.status | statusFilter }}
+        </span>
+      </div>
+      <div class="content flex">
+        <img :src="goods.imgUrl" />
+        <div class="content-right flex">
+          <div class="detail flex-col">
+            <span class="title">{{ goods.title }}</span>
+            <span class="tag">{{ goods.tagName }}: {{ goods.tagDesc }}</span>
+          </div>
+          <div class="price">
+            <div>￥{{ goods.price }}</div>
+            <div>X{{ goods.num }}</div>
+          </div>
         </div>
       </div>
-    </div>
+    </router-link>
     <div class="footer">
       <div class="total">
         共{{ goods.num }}件商品 合计: ￥{{ goods.amount }}

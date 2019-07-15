@@ -15,9 +15,9 @@
           :key="good.id"
           class="goods-item"
         >
-          <router-link :to="'/order/goods-detail/' + good.orderNo">
-            <Card :goods="good" />
-          </router-link>
+          <!-- <router-link :to="'/order/goods-detail/' + good.orderNo"> -->
+          <Card :goods="good" />
+          <!-- </router-link> -->
         </div>
       </van-tab>
     </van-tabs>
