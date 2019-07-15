@@ -30,7 +30,9 @@
         <img src="~@/assets/images/errand_avatar.png" alt />
       </div>
 
-      <button v-if="!complete" class="group-btn">我要参团</button>
+      <router-link to="/group/order/1" v-if="!complete" class="group-btn"
+        >我要参团</router-link
+      >
       <div v-else class="complete">
         <span class="iconfont">&#xe75e;</span>已参团，等待满员
       </div>
@@ -61,7 +63,7 @@ export default {
   data() {
     return {
       active: 'comment',
-      complete: true,
+      complete: false,
     }
   },
 
@@ -130,6 +132,8 @@ export default {
   display: block;
   width: 100%;
   height: 46px;
+  line-height: 46px;
+  text-align: center;
   margin-bottom: 20px;
   border-radius: 5px;
   font-size: 18px;
