@@ -1,21 +1,21 @@
 <template>
   <div class="comp-order-active-card" v-wechat-title="$route.meta.title">
     <div class="header flex">
-      <span class="order-no">订单编号: {{ active.activeNo }}</span>
-      <span v-if="showStatus" class="status">{{
-        active.status | statusFilter
-      }}</span>
+      <span class="order-no">活动编号: {{ active.activeNo }}</span>
+      <span v-if="showStatus" class="status">
+        {{ active.status | statusFilter }}
+      </span>
     </div>
     <div class="img">
       <img :src="active.imgUrl" />
-      <span :class="['tag', active.tag === 'race' ? 'tag-race' : 'tag-pg']">{{
-        active.tag === 'race' ? '比赛' : '公益'
-      }}</span>
+      <span :class="['tag', active.tag === 'race' ? 'tag-race' : 'tag-pg']">
+        {{ active.tag === 'race' ? '比赛' : '公益' }}
+      </span>
     </div>
 
     <div class="title-area flex">
       <span class="title">{{ active.title }}</span>
-      <div class="price">￥{{ active.price }}</div>
+      <div v-if="showPrice" class="price">￥{{ active.price }}</div>
     </div>
     <div class="time-area">
       <span>日期</span>
@@ -30,11 +30,19 @@
       <span>现场扫码签到</span>
     </div>
     <div class="footer">
-      <div class="btn-area">
-        <span class="btn">
-          {{ active.signStatus === 0 ? '未签到' : '已签到' }}
-        </span>
-        <span class="btn">取消活动</span>
+      <div class="btn-area flex">
+        <span
+          v-if="showStatusBtn"
+          :class="['btn', active.status === 2 ? 'btn-gray' : 'btn-yellow']"
+          >取消活动</span
+        >
+        <span v-else></span>
+        <div>
+          <span class="btn">{{
+            active.signStatus === 0 ? '未签到' : '已签到'
+          }}</span>
+          <span class="btn">未评价</span>
+        </div>
       </div>
     </div>
   </div>
@@ -55,6 +63,14 @@ export default {
     showStatus: {
       type: Boolean,
       default: true,
+    },
+    showPrice: {
+      type: Boolean,
+      default: true,
+    },
+    showStatusBtn: {
+      type: Boolean,
+      default: false,
     },
     active: {
       type: Object,
@@ -208,6 +224,7 @@ export default {
 
     .btn-area {
       margin-top: 21px;
+      justify-content: space-between;
 
       .btn {
         display: inline-block;
@@ -219,6 +236,18 @@ export default {
         text-align: center;
         color: #06bcbf;
         border: 1px solid #06bcbf;
+      }
+
+      .btn-yellow {
+        margin-left: 0;
+        color: #ff6c00;
+        border: 1px solid #ff6c00;
+      }
+
+      .btn-gray {
+        margin-left: 0;
+        color: #ababab;
+        border: 1px solid #ababab;
       }
     }
   }

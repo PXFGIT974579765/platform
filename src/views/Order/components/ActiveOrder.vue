@@ -11,12 +11,12 @@
     >
       <van-tab v-for="item in statusList" :key="item.value" :title="item.name">
         <div
-          v-for="good in activeFilter(item.value)"
-          :key="good.id"
+          v-for="obj in activeFilter(item.value)"
+          :key="obj.id"
           class="active-item"
         >
-          <router-link :to="'/active/goods-detail/' + good.orderNo">
-            <Card :active="good" />
+          <router-link :to="'/order/active-detail/' + obj.activeNo">
+            <Card :active="obj" />
           </router-link>
         </div>
       </van-tab>
@@ -80,7 +80,7 @@ export default {
           time: 1500000000,
           address: '贵州大学城师范学院',
           signStatus: 1, // 签到状态  0 未签到 1 已签到
-          status: 0,
+          status: 2,
         },
         {
           activeNo: '557879584',
