@@ -1,6 +1,13 @@
 <template>
   <div class="page-my-coupon" v-wechat-title="$route.meta.title">
-    <van-tabs v-model="active" title-active-color="#06bcbf" color="#06bcbf">
+    <van-tabs
+      v-model="active"
+      title-active-color="#06bcbf"
+      color="#06bcbf"
+      line-height="1px"
+      :border="false"
+      :swipe-threshold="5"
+    >
       <van-tab title="未使用">
         <ul>
           <li v-for="(item, index) in couponFilter(0)" :key="index">
