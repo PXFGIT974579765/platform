@@ -3,9 +3,9 @@
     <router-link :to="'/order/goods-detail/' + goods.orderNo">
       <div class="header flex">
         <span class="order-no">订单编号: {{ goods.orderNo }}</span>
-        <span v-if="showStatus" class="status">
-          {{ goods.status | statusFilter }}
-        </span>
+        <span v-if="showStatus" class="status">{{
+          goods.status | statusFilter
+        }}</span>
       </div>
       <div class="content flex">
         <img :src="goods.imgUrl" />
@@ -27,7 +27,7 @@
       </div>
       <div class="btn-area">
         <span class="btn">等待提货</span>
-        <span class="btn">找跑腿</span>
+        <router-link to="/errand" class="btn">找跑腿</router-link>
       </div>
     </div>
   </div>
