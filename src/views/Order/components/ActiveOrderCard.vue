@@ -2,11 +2,17 @@
   <div class="comp-order-active-card" v-wechat-title="$route.meta.title">
     <div class="header flex">
       <span class="order-no">订单编号: {{ active.activeNo }}</span>
-      <span v-if="showStatus" class="status">
-        {{ active.status | statusFilter }}
-      </span>
+      <span v-if="showStatus" class="status">{{
+        active.status | statusFilter
+      }}</span>
     </div>
-    <img :src="active.imgUrl" />
+    <div class="img">
+      <img :src="active.imgUrl" />
+      <span :class="['tag', active.tag === 'race' ? 'tag-race' : 'tag-pg']">{{
+        active.tag === 'race' ? '比赛' : '公益'
+      }}</span>
+    </div>
+
     <div class="title-area flex">
       <span class="title">{{ active.title }}</span>
       <div class="price">￥{{ active.price }}</div>
@@ -25,9 +31,9 @@
     </div>
     <div class="footer">
       <div class="btn-area">
-        <span class="btn">{{
-          active.signStatus === 0 ? '未签到' : '已签到'
-        }}</span>
+        <span class="btn">
+          {{ active.signStatus === 0 ? '未签到' : '已签到' }}
+        </span>
         <span class="btn">取消活动</span>
       </div>
     </div>
@@ -99,11 +105,38 @@ export default {
     }
   }
 
-  img {
+  .img {
+    position: relative;
     margin-top: 13px;
     width: 100%;
     height: 150px;
     border-radius: 5px;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+
+    .tag {
+      position: absolute;
+      top: 11px;
+      left: 12px;
+      width: 35px;
+      height: 17px;
+      line-height: 17px;
+      text-align: center;
+      font-size: 12px;
+      color: #fff;
+      border-radius: 2px;
+    }
+
+    .tag-race {
+      background-color: #16b459;
+    }
+
+    .tag-pg {
+      background-color: #ff3434;
+    }
   }
 
   .title-area {
