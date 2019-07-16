@@ -31,20 +31,17 @@ export default {
 <style lang="less" scoped>
 .pay-methods {
   margin: 8px 0;
-  padding: 15px;
+  padding: 0 15px;
   background: #fff;
 }
 
 .pay-method {
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
-  padding-bottom: 15px;
+  padding: 15px 0;
   border-bottom: solid 1px #d7d7d7;
 
   &:last-child {
-    margin: 0;
-    padding: 0;
     border: 0;
   }
   .name {
