@@ -38,6 +38,8 @@ import GoodsOrder from './views/Order/components/GoodsOrder'
 import ActiveOrder from './views/Order/components/ActiveOrder'
 import GoodsOrderDetail from './views/Order/components/GoodsOrderDetail'
 import ActiveOrderDetail from './views/Order/components/ActiveOrderDetail'
+import GroupOrderList from './views/Order/components/GroupOrder'
+import GroupOrderDetail from './views/Order/components/GroupOrderDetail'
 
 Vue.use(Router)
 
@@ -136,6 +138,18 @@ const orderRouters = [
     name: '/order/active-detail',
     component: ActiveOrderDetail,
     meta: { title: '活动订单详情' },
+  },
+  {
+    path: '/order/group',
+    name: '/order/group',
+    component: GroupOrderList,
+    meta: { title: '拼团订单' },
+  },
+  {
+    path: '/order/group-detail/:id',
+    name: '/order/group-detail',
+    component: GroupOrderDetail,
+    meta: { title: '拼团订单详情' },
   },
 ]
 
