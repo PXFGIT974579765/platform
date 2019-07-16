@@ -41,6 +41,9 @@ import ActiveOrderDetail from './views/Order/components/ActiveOrderDetail'
 import GroupOrderList from './views/Order/components/GroupOrder'
 import GroupOrderDetail from './views/Order/components/GroupOrderDetail'
 
+// 钱包
+import WalletIndex from './views/Wallet/Index'
+
 Vue.use(Router)
 
 // 个人中心
@@ -153,6 +156,16 @@ const orderRouters = [
   },
 ]
 
+// 钱包
+const walletRouters = [
+  {
+    path: '/my/wallet',
+    name: '/my/wallet',
+    component: WalletIndex,
+    meta: { title: '我的钱包' },
+  },
+]
+
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
@@ -246,6 +259,8 @@ export default new Router({
     ...myRouters,
     // 订单
     ...orderRouters,
+    // 钱包
+    ...walletRouters,
     {
       path: '/about',
       name: 'about',
