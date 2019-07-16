@@ -38,7 +38,7 @@ export default {
           icon: '&#xe76c;',
           color: '#ff766e',
           num: 0,
-          to: '',
+          to: '/order/group',
         },
         {
           name: '打印订单',
