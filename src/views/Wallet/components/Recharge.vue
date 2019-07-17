@@ -21,7 +21,7 @@
         <div class="btn">确认充值</div>
       </div>
     </div>
-    <div class="footer">查看我的充值记录</div>
+    <div class="footer" @click="routeRecord">查看我的充值记录</div>
   </div>
 </template>
 
@@ -38,6 +38,9 @@ export default {
   },
   methods: {
     onLoad() {},
+    routeRecord() {
+      this.$router.push('/my/wallet/recharge/record')
+    },
   },
   filters: {
     numFilter(value) {
