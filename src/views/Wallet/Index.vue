@@ -26,12 +26,12 @@
         >
       </van-cell>
 
-      <van-cell title="充值" class="cell" is-link to>
+      <van-cell title="充值" class="cell" is-link to="/my/wallet/recharge">
         <span slot="icon" style="color:#877bff" class="iconfont icon"
           >&#xe756;</span
         >
       </van-cell>
-      <van-cell title="提现" class="cell" is-link>
+      <van-cell title="提现" class="cell" is-link to="/my/wallet/cash">
         <span slot="icon" style="color:#ff7d7d" class="iconfont icon"
           >&#xe755;</span
         >

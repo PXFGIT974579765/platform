@@ -43,6 +43,8 @@ import GroupOrderDetail from './views/Order/components/GroupOrderDetail'
 
 // 钱包
 import WalletIndex from './views/Wallet/Index'
+import Recharge from './views/Wallet/components/Recharge'
+import Cash from './views/Wallet/components/Cash'
 
 Vue.use(Router)
 
@@ -163,6 +165,18 @@ const walletRouters = [
     name: '/my/wallet',
     component: WalletIndex,
     meta: { title: '我的钱包' },
+  },
+  {
+    path: '/my/wallet/recharge',
+    name: '/my/wallet/recharge',
+    component: Recharge,
+    meta: { title: '充值' },
+  },
+  {
+    path: '/my/wallet/cash',
+    name: '/my/wallet/cash',
+    component: Cash,
+    meta: { title: '提现' },
   },
 ]
 
