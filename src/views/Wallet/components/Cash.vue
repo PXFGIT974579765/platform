@@ -25,7 +25,7 @@
         <div class="btn-submit">提现</div>
       </div>
     </div>
-    <div class="footer">查看我的提现记录</div>
+    <div class="footer" @click="routeRecord">查看我的提现记录</div>
   </div>
 </template>
 
@@ -38,6 +38,9 @@ export default {
   },
   methods: {
     onLoad() {},
+    routeRecord() {
+      this.$router.push('/my/wallet/cash/record')
+    },
   },
   filters: {
     numFilter(value) {

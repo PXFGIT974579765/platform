@@ -46,6 +46,7 @@ import WalletIndex from './views/Wallet/Index'
 import Recharge from './views/Wallet/components/Recharge'
 import RechargeRecord from './views/Wallet/components/RechargeRecord'
 import Cash from './views/Wallet/components/Cash'
+import CashRecord from './views/Wallet/components/CashRecord'
 
 Vue.use(Router)
 
@@ -184,6 +185,12 @@ const walletRouters = [
     name: '/my/wallet/recharge/record',
     component: RechargeRecord,
     meta: { title: '充值记录' },
+  },
+  {
+    path: '/my/wallet/cash/record',
+    name: '/my/wallet/cash/record',
+    component: CashRecord,
+    meta: { title: '提现记录' },
   },
 ]
 
