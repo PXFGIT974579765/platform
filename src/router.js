@@ -47,6 +47,7 @@ import Recharge from './views/Wallet/components/Recharge'
 import RechargeRecord from './views/Wallet/components/RechargeRecord'
 import Cash from './views/Wallet/components/Cash'
 import CashRecord from './views/Wallet/components/CashRecord'
+import CoinLog from './views/Wallet/components/CoinLog'
 
 Vue.use(Router)
 
@@ -191,6 +192,12 @@ const walletRouters = [
     name: '/my/wallet/cash/record',
     component: CashRecord,
     meta: { title: '提现记录' },
+  },
+  {
+    path: '/my/wallet/coin-log',
+    name: '/my/wallet/coin-log',
+    component: CoinLog,
+    meta: { title: '账户明细' },
   },
 ]
 

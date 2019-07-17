@@ -1,5 +1,5 @@
 <template>
-  <div class="comp-my-wallet-recharge" v-wechat-title="$route.meta.title">
+  <div class="page-my-wallet-recharge" v-wechat-title="$route.meta.title">
     <div class="container">
       <van-cell-group class="cell-group">
         <van-cell title="从微信账户余额充值" class="cell" is-link to>
@@ -53,7 +53,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.comp-my-wallet-recharge {
+.page-my-wallet-recharge {
   .container {
     margin: 15px;
 

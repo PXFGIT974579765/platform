@@ -1,43 +1,39 @@
 <template>
-  <div
-    class="page-my-wallet-recharge-record"
-    v-wechat-title="$route.meta.title"
-  >
+  <div class="page-my-wallet-coin-log" v-wechat-title="$route.meta.title">
     <div class="container">
-      <header class="header flex">
-        <div class="condition-desc">{{ curConditionDesc }}</div>
-        <div>
-          <van-dropdown-menu>
-            <van-dropdown-item
-              v-model="curCondition"
-              :options="condition"
-              @change="onChange"
-            />
-          </van-dropdown-menu>
-        </div>
-      </header>
-      <section class="record-list">
-        <ul>
-          <li v-for="(record, index) in records" :key="index" class="flex">
-            <div class="record-item flex-col">
-              <span :class="['info', record.status === '充值失败' && 'fail']">{{
-                record.info
-              }}</span>
-              <span class="time">{{ record.time | dateFormat }}</span>
-            </div>
-            <div class="record-item flex-col">
-              <span
-                :class="['amount', record.status === '充值失败' && 'fail']"
-                >{{ record.amount }}</span
+      <van-tabs
+        v-model="activeTab"
+        class="tabs"
+        title-active-color="#06bcbf"
+        color="#06bcbf"
+        background="#fff"
+      >
+        <van-tab v-for="item in typeList" :key="item.value" :title="item.name">
+          <section class="record-list">
+            <ul>
+              <li
+                v-for="(coinLog, index) in coinLogFilter(item.value)"
+                :key="index"
+                class="flex"
               >
-              <span
-                :class="['status', record.status === '充值失败' && 'fail']"
-                >{{ record.status }}</span
-              >
-            </div>
-          </li>
-        </ul>
-      </section>
+                <div class="record-item flex-col">
+                  <span class="info">
+                    {{ coinLog.info }}
+                  </span>
+                  <span class="time">{{ coinLog.time | dateFormat }}</span>
+                </div>
+                <div class="record-item flex-col">
+                  <span :class="['amount', coinLog.type === 0 ? 'in' : 'out']"
+                    >{{ coinLog.type === 1 ? '-' : ''
+                    }}{{ coinLog.amount }}</span
+                  >
+                  <span class="status">{{ coinLog.status }}</span>
+                </div>
+              </li>
+            </ul>
+          </section>
+        </van-tab>
+      </van-tabs>
     </div>
   </div>
 </template>
@@ -48,41 +44,53 @@ import { dateTime } from '@/lib/format'
 export default {
   data() {
     return {
-      curConditionDesc: '全部',
-      curCondition: -1,
-      condition: [
-        { text: '全部', value: -1 },
-        { text: '2019.6', value: 1 },
-        { text: '2019.5', value: 2 },
-        { text: '2019.4', value: 3 },
-        { text: '2019.3', value: 4 },
+      activeTab: '0',
+      keyword: '',
+      typeList: [
+        {
+          name: '全部',
+          value: -1,
+        },
+        {
+          name: '收入',
+          value: 0,
+        },
+        {
+          name: '支出',
+          value: 1,
+        },
       ],
-      records: [
+      coinLogs: [
         {
+          type: 1,
           info: '充值',
           amount: 105.56,
           time: 1500000000,
           status: '充值成功',
         },
         {
+          type: 1,
           info: '充值',
           amount: 105.56,
           time: 1500000000,
           status: '充值成功',
         },
         {
+          type: 0,
           info: '银行卡余额不足',
           amount: 105.56,
           time: 1500000000,
           status: '充值失败',
         },
         {
+          type: 0,
           info: '充值',
           amount: 105.56,
           time: 1500000000,
           status: '充值成功',
         },
         {
+          type: 0,
           info: '充值',
           amount: 105.56,
           time: 1500000000,
@@ -93,10 +101,10 @@ export default {
   },
   methods: {
     onLoad() {},
-    onChange(value) {
-      const conditionDesc = this.condition.find(item => item.value === value)
-        .text
-      this.curConditionDesc = conditionDesc
+    coinLogFilter(type) {
+      return type === -1
+        ? this.coinLogs
+        : this.coinLogs.filter(item => item.type === type)
     },
   },
   filters: {
@@ -113,7 +121,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.page-my-wallet-recharge-record {
+.page-my-wallet-coin-log {
   .container {
     background-color: #fff;
 
@@ -167,8 +175,11 @@ export default {
               color: #aeaeae;
             }
 
-            .fail {
-              color: #ff5c5c;
+            .in {
+              color: #0db219;
+            }
+            .out {
+              color: #ff8400;
             }
 
             &:first-child {

@@ -20,7 +20,7 @@
       </div>
     </div>
     <van-cell-group class="cell-group">
-      <van-cell title="账户明细" class="cell" is-link to>
+      <van-cell title="账户明细" class="cell" is-link to="/my/wallet/coin-log">
         <span slot="icon" style="color:#07c2af" class="iconfont icon"
           >&#xe754;</span
         >

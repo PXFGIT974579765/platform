@@ -1,5 +1,5 @@
 <template>
-  <div class="comp-my-wallet-cash-record" v-wechat-title="$route.meta.title">
+  <div class="page-my-wallet-cash-record" v-wechat-title="$route.meta.title">
     <div class="container">
       <header class="header flex">
         <div class="condition-desc">{{ curConditionDesc }}</div>
@@ -125,7 +125,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.comp-my-wallet-cash-record {
+.page-my-wallet-cash-record {
   .container {
     background-color: #fff;
 
