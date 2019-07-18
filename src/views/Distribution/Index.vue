@@ -4,7 +4,7 @@
       <img src="./images/avator2.png" class="avator" alt="" />
       <div class="nickname">Hi {{ info.nickname }}</div>
       <div class="title">今天又是美好的一天，加油哦！</div>
-      <div class="btn-online">上线接单</div>
+      <div class="btn-online" @click="routeCondition">上线接单</div>
     </div>
     <div class="btn-my-order">我的配送订单</div>
     <div class="footer">
@@ -26,6 +26,9 @@ export default {
   },
   methods: {
     onLoad() {},
+    routeCondition() {
+      this.$router.push('/my/distribution/condition')
+    },
   },
 }
 </script>
