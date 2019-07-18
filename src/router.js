@@ -241,7 +241,7 @@ const activity = [
     component: ActivityList,
   },
   {
-    path: '/activity/detail',
+    path: '/activity/detail/:id',
     name: 'activity/detail',
     component: ActivityDetail,
   },

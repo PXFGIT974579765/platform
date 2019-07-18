@@ -1,6 +1,6 @@
 <template>
   <div class="activity-list">
-    <div class="activity-item">
+    <router-link to="/activity/detail/1" class="activity-item">
       <img src="~@/assets/images/activity_item.png" alt />
       <div class="content">
         <div class="name">PS照片调色详细讲解色详细讲解色详细讲解</div>
@@ -15,9 +15,9 @@
           <div class="count">50人报名</div>
         </div>
       </div>
-    </div>
+    </router-link>
 
-    <div class="activity-item">
+    <router-link to="/activity/detail/1" class="activity-item">
       <img src="~@/assets/images/activity_item.png" alt />
       <div class="content">
         <div class="name">PS照片调色详细讲解色详细讲解色详细讲解</div>
@@ -32,9 +32,9 @@
           <div class="count">50人报名</div>
         </div>
       </div>
-    </div>
+    </router-link>
 
-    <div class="activity-item">
+    <router-link to="/activity/detail/1" class="activity-item">
       <img src="~@/assets/images/activity_item.png" alt />
       <div class="content">
         <div class="name">PS照片调色详细讲解色详细讲解色详细讲解</div>
@@ -49,7 +49,7 @@
           <div class="count">50人报名</div>
         </div>
       </div>
-    </div>
+    </router-link>
   </div>
 </template>
 
