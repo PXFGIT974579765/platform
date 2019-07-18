@@ -41,14 +41,21 @@
       <span>|</span>
       <span>联系客服</span>
     </div>
+    <NewOrderNotifyCard :showDialog="hasMessage" @cancel="onCancel" />
   </div>
 </template>
 
 <script>
+import NewOrderNotifyCard from './components/NewOrderNotifyCard'
+
 export default {
+  components: {
+    NewOrderNotifyCard,
+  },
   data() {
     return {
       checked: true,
+      hasMessage: true,
       info: {
         status: 1, // 0 未开始接单   1 接单中
         nickname: '小刘哥',
@@ -59,6 +66,9 @@ export default {
     onLoad() {},
     routeCondition() {
       this.$router.push('/my/distribution/condition')
+    },
+    onCancel() {
+      this.hasMessage = false
     },
   },
 }
