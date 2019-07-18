@@ -1,6 +1,12 @@
 <template>
   <div class="page-my-complain" v-wechat-title="$route.meta.title">
-    <van-tabs v-model="activeTab" color="#06bcbf">
+    <van-tabs
+      v-model="activeTab"
+      color="#06bcbf"
+      line-height="1px"
+      :border="false"
+      :swipe-threshold="5"
+    >
       <van-tab title="我要咨询投诉">
         <div class="i-will">
           <van-radio-group v-model="complainType" class="group flex">
@@ -34,9 +40,9 @@
           >
             <div class="title flex">
               <span class="time">{{ item.time | formatDate }}</span>
-              <span :class="item.status | statusClass">{{
-                item.status | statusName
-              }}</span>
+              <span :class="item.status | statusClass">
+                {{ item.status | statusName }}
+              </span>
             </div>
             <div class="tag">[{{ item.tag }}] {{ item.title }}</div>
             <div class="content">{{ item.content }}</div>

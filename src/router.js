@@ -53,6 +53,11 @@ import CoinLog from './views/Wallet/components/CoinLog'
 import Distribution from './views/Distribution/Index'
 import Condition from './views/Distribution/components/Condition'
 
+// 活动
+import ActivityIndex from './views/Activity/Index'
+import ActivityDetail from './views/Activity/Detail'
+import ActivityOrder from './views/Activity/Order'
+
 Vue.use(Router)
 
 // 个人中心
@@ -165,6 +170,83 @@ const orderRouters = [
   },
 ]
 
+// 评团
+const group = [
+  {
+    path: '/group',
+    name: 'group',
+    component: GroupIndex,
+  },
+  {
+    path: '/group/detail/:id',
+    name: 'group/detail/:id',
+    component: GroupDetail,
+  },
+  {
+    path: '/group/order_success',
+    name: 'group/order_success',
+    component: GroupSuccess,
+  },
+  {
+    path: '/group/order_failure',
+    name: 'group/order_failure',
+    component: GroupFailure,
+  },
+  {
+    path: '/group/order/:id',
+    name: 'group/order',
+    component: GroupOrder,
+  },
+]
+
+// 跑腿
+const errand = [
+  {
+    path: '/errand',
+    name: 'errand',
+    redirect: { name: 'errand/lobby' },
+  },
+  {
+    path: '/errand/lobby',
+    name: 'errand/lobby',
+    component: ErrandLobby,
+    meta: { title: '跑腿大厅' },
+  },
+  {
+    path: '/errand/order/:id',
+    name: 'errand/order',
+    component: ErrandOrder,
+  },
+  {
+    path: '/errand/detail',
+    name: 'errand/detail',
+    component: ErrandDetail,
+  },
+  {
+    path: '/errand/orders',
+    name: 'errand/orders',
+    component: ErrandOrders,
+  },
+]
+
+const activity = [
+  {
+    path: '/activity',
+    name: 'activity',
+    component: ActivityIndex,
+  },
+  {
+    path: '/activity/detail',
+    name: 'activity/detail',
+    component: ActivityDetail,
+  },
+  {
+    path: '/activity/order',
+    name: 'activity/order',
+    component: ActivityOrder,
+  },
+]
+
 // 钱包
 const walletRouters = [
   {
@@ -257,58 +339,9 @@ export default new Router({
         },
       ],
     },
-    {
-      path: '/errand',
-      name: 'errand',
-      redirect: { name: 'errand/lobby' },
-    },
-    {
-      path: '/errand/lobby',
-      name: 'errand/lobby',
-      component: ErrandLobby,
-      meta: { title: '跑腿大厅' },
-    },
-    {
-      path: '/errand/order/:id',
-      name: 'errand/order',
-      component: ErrandOrder,
-    },
-    {
-      path: '/errand/detail',
-      name: 'errand/detail',
-      component: ErrandDetail,
-    },
-    {
-      path: '/errand/orders',
-      name: 'errand/orders',
-      component: ErrandOrders,
-    },
-    {
-      path: '/group',
-      name: 'group',
-      component: GroupIndex,
-    },
-    {
-      path: '/group/detail/:id',
-      name: 'group/detail/:id',
-      component: GroupDetail,
-    },
-    {
-      path: '/group/order_success',
-      name: 'group/order_success',
-      component: GroupSuccess,
-    },
-    {
-      path: '/group/order_failure',
-      name: 'group/order_failure',
-      component: GroupFailure,
-    },
-    {
-      path: '/group/order/:id',
-      name: 'group/order',
-      component: GroupOrder,
-    },
-
+    ...errand,
+    ...group,
+    ...activity,
     // 个人中心
     ...myRouters,
     // 订单
@@ -317,13 +350,5 @@ export default new Router({
     ...walletRouters,
     // 配送中心
     ...distribution,
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About'),
-    },
   ],
 })
