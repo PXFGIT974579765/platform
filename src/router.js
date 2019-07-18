@@ -54,6 +54,7 @@ import Distribution from './views/Distribution/Index'
 
 // 活动
 import ActivityIndex from './views/Activity/Index'
+import ActivityList from './views/Activity/List'
 import ActivityDetail from './views/Activity/Detail'
 import ActivityOrder from './views/Activity/Order'
 
@@ -233,6 +234,11 @@ const activity = [
     path: '/activity',
     name: 'activity',
     component: ActivityIndex,
+  },
+  {
+    path: '/activity/list/:id',
+    name: 'activity/list',
+    component: ActivityList,
   },
   {
     path: '/activity/detail',
