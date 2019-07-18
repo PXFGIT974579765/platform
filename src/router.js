@@ -51,6 +51,7 @@ import CoinLog from './views/Wallet/components/CoinLog'
 
 // 配送中心
 import Distribution from './views/Distribution/Index'
+import Condition from './views/Distribution/components/Condition'
 
 Vue.use(Router)
 
@@ -211,6 +212,12 @@ const distribution = [
     name: '/my/distribution',
     component: Distribution,
     meta: { title: '配送中心' },
+  },
+  {
+    path: '/my/distribution/condition',
+    name: '/my/distribution/condition',
+    component: Condition,
+    meta: { title: '配送中心' }, // 选择接单范围
   },
 ]
 export default new Router({
