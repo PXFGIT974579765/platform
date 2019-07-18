@@ -13,13 +13,18 @@
     />
 
     <van-cell-group class="cell-group">
-      <van-cell title="我的钱包" value="￥589.56" is-link />
+      <van-cell title="我的钱包" value="￥589.56" is-link to="/my/wallet" />
       <van-cell title="优惠券" is-link to="/my/coupon" />
       <van-cell title="成长记录" is-link />
     </van-cell-group>
 
     <van-cell-group class="cell-group">
-      <van-cell title="配送中心" value="有新的配送订单" is-link />
+      <van-cell
+        title="配送中心"
+        value="有新的配送订单"
+        is-link
+        to="/my/distribution"
+      />
       <van-cell title="积分商城" is-link />
     </van-cell-group>
 

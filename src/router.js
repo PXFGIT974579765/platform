@@ -38,6 +38,19 @@ import GoodsOrder from './views/Order/components/GoodsOrder'
 import ActiveOrder from './views/Order/components/ActiveOrder'
 import GoodsOrderDetail from './views/Order/components/GoodsOrderDetail'
 import ActiveOrderDetail from './views/Order/components/ActiveOrderDetail'
+import GroupOrderList from './views/Order/components/GroupOrder'
+import GroupOrderDetail from './views/Order/components/GroupOrderDetail'
+
+// 钱包
+import WalletIndex from './views/Wallet/Index'
+import Recharge from './views/Wallet/components/Recharge'
+import RechargeRecord from './views/Wallet/components/RechargeRecord'
+import Cash from './views/Wallet/components/Cash'
+import CashRecord from './views/Wallet/components/CashRecord'
+import CoinLog from './views/Wallet/components/CoinLog'
+
+// 配送中心
+import Distribution from './views/Distribution/Index'
 
 // 活动
 import ActivityIndex from './views/Activity/Index'
@@ -142,6 +155,18 @@ const orderRouters = [
     component: ActiveOrderDetail,
     meta: { title: '活动订单详情' },
   },
+  {
+    path: '/order/group',
+    name: '/order/group',
+    component: GroupOrderList,
+    meta: { title: '拼团订单' },
+  },
+  {
+    path: '/order/group-detail/:id',
+    name: '/order/group-detail',
+    component: GroupOrderDetail,
+    meta: { title: '拼团订单详情' },
+  },
 ]
 
 // 评团
@@ -221,6 +246,55 @@ const activity = [
   },
 ]
 
+// 钱包
+const walletRouters = [
+  {
+    path: '/my/wallet',
+    name: '/my/wallet',
+    component: WalletIndex,
+    meta: { title: '我的钱包' },
+  },
+  {
+    path: '/my/wallet/recharge',
+    name: '/my/wallet/recharge',
+    component: Recharge,
+    meta: { title: '充值' },
+  },
+  {
+    path: '/my/wallet/cash',
+    name: '/my/wallet/cash',
+    component: Cash,
+    meta: { title: '提现' },
+  },
+  {
+    path: '/my/wallet/recharge/record',
+    name: '/my/wallet/recharge/record',
+    component: RechargeRecord,
+    meta: { title: '充值记录' },
+  },
+  {
+    path: '/my/wallet/cash/record',
+    name: '/my/wallet/cash/record',
+    component: CashRecord,
+    meta: { title: '提现记录' },
+  },
+  {
+    path: '/my/wallet/coin-log',
+    name: '/my/wallet/coin-log',
+    component: CoinLog,
+    meta: { title: '账户明细' },
+  },
+]
+
+// 配送中心
+const distribution = [
+  {
+    path: '/my/distribution',
+    name: '/my/distribution',
+    component: Distribution,
+    meta: { title: '配送中心' },
+  },
+]
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
@@ -265,5 +339,9 @@ export default new Router({
     ...myRouters,
     // 订单
     ...orderRouters,
+    // 钱包
+    ...walletRouters,
+    // 配送中心
+    ...distribution,
   ],
 })

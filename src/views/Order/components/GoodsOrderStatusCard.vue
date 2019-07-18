@@ -1,5 +1,11 @@
 <template>
-  <div class="comp-order-goods-status-card" v-wechat-title="$route.meta.title">
+  <div
+    :class="[
+      'comp-order-goods-status-card',
+      status === 5 ? 'yellow-bg' : 'green-bg',
+    ]"
+    v-wechat-title="$route.meta.title"
+  >
     <div class="status">
       <span>{{ status | statusFilter }}</span>
       <span>{{ status | descFilter }}</span>
@@ -38,6 +44,11 @@ const ORDER_STATUS = {
     desc: '祝您购物愉快',
     icon: '&#xe742;',
   },
+  5: {
+    status: '拼团失败',
+    desc: '钱款已原路返回',
+    icon: '&#xe744;',
+  },
 }
 
 export default {
@@ -68,13 +79,19 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.green-bg {
+  background-color: #06bcbf;
+}
+
+.yellow-bg {
+  background-color: #f39800;
+}
 .comp-order-goods-status-card {
   display: flex;
   justify-content: space-between;
   padding: 25px 15px;
   width: 100%;
   height: 90px;
-  background-image: url('../images/bg-status.jpg');
 
   .status {
     display: flex;
