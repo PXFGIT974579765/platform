@@ -19,7 +19,12 @@
     </van-cell-group>
 
     <van-cell-group class="cell-group">
-      <van-cell title="配送中心" value="有新的配送订单" is-link />
+      <van-cell
+        title="配送中心"
+        value="有新的配送订单"
+        is-link
+        to="/my/distribution"
+      />
       <van-cell title="积分商城" is-link />
     </van-cell-group>
 

@@ -49,6 +49,9 @@ import Cash from './views/Wallet/components/Cash'
 import CashRecord from './views/Wallet/components/CashRecord'
 import CoinLog from './views/Wallet/components/CoinLog'
 
+// 配送中心
+import Distribution from './views/Distribution/Index'
+
 Vue.use(Router)
 
 // 个人中心
@@ -201,6 +204,15 @@ const walletRouters = [
   },
 ]
 
+// 配送中心
+const distribution = [
+  {
+    path: '/my/distribution',
+    name: '/my/distribution',
+    component: Distribution,
+    meta: { title: '配送中心' },
+  },
+]
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
@@ -296,6 +308,8 @@ export default new Router({
     ...orderRouters,
     // 钱包
     ...walletRouters,
+    // 配送中心
+    ...distribution,
     {
       path: '/about',
       name: 'about',
