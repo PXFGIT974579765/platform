@@ -55,6 +55,7 @@ import Condition from './views/Distribution/components/Condition'
 
 // 活动
 import ActivityIndex from './views/Activity/Index'
+import ActivityList from './views/Activity/List'
 import ActivityDetail from './views/Activity/Detail'
 import ActivityOrder from './views/Activity/Order'
 
@@ -236,7 +237,12 @@ const activity = [
     component: ActivityIndex,
   },
   {
-    path: '/activity/detail',
+    path: '/activity/list/:id',
+    name: 'activity/list',
+    component: ActivityList,
+  },
+  {
+    path: '/activity/detail/:id',
     name: 'activity/detail',
     component: ActivityDetail,
   },
