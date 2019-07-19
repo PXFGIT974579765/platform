@@ -53,6 +53,7 @@ import CoinLog from './views/Wallet/components/CoinLog'
 import Distribution from './views/Distribution/Index'
 import Condition from './views/Distribution/components/Condition'
 import DistributionDetail from './views/Distribution/components/DistributionDetail'
+import DistributionOrder from './views/Distribution/components/DistributionOrder'
 
 // 活动
 import ActivityIndex from './views/Activity/Index'
@@ -314,7 +315,14 @@ const distribution = [
     component: DistributionDetail,
     meta: { title: '订单派送' }, // 选择接单范围
   },
+  {
+    path: '/my/distribution/order',
+    name: '/my/distribution/order',
+    component: DistributionOrder,
+    meta: { title: '我的配送订单' }, // 选择接单范围
+  },
 ]
+
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,

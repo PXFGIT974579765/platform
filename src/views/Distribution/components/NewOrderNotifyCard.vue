@@ -12,7 +12,7 @@
         <span class="iconfont big-icon">&#xe74e;</span>
         <span>你有新的派送订单</span>
       </div>
-      <div class="btn-submit">立即查看</div>
+      <div class="btn-submit" @click="routeDetail">立即查看</div>
     </van-dialog>
   </div>
 </template>
@@ -34,6 +34,9 @@ export default {
   methods: {
     onCancel() {
       this.$emit('cancel')
+    },
+    routeDetail() {
+      this.$router.push('/my/distribution-detail')
     },
   },
 }
