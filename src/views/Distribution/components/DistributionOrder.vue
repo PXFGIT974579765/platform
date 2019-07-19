@@ -1,5 +1,5 @@
 <template>
-  <div class="page-order-goods" v-wechat-title="$route.meta.title">
+  <div class="page-order-distribution" v-wechat-title="$route.meta.title">
     <div class="search-block">
       <search placeholder="请输入关键字搜索" v-model="keyword" :light="true" />
     </div>
@@ -111,7 +111,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.page-order-goods {
+.page-order-distribution {
   .search-block {
     width: 100%;
     height: 55px;

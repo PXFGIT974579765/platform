@@ -1,5 +1,5 @@
 <template>
-  <div class="comp-order-goods-card" v-wechat-title="$route.meta.title">
+  <div class="comp-order-distribution-card" v-wechat-title="$route.meta.title">
     <router-link :to="'/order/goods-detail/' + order.orderNo">
       <div class="header flex">
         <span class="order-no">跑腿编号: {{ order.orderNo }}</span>
@@ -26,14 +26,21 @@
         共{{ order.num }}件商品 合计: ￥{{ order.amount }}
       </div>
       <div class="btn-area">
-        <span class="btn">待评价</span>
+        <span class="btn" @click="onShowDialog">待评价</span>
         <router-link to="/errand" class="btn">查看详情</router-link>
       </div>
     </div>
+    <AppraiseDialog
+      :showDialog="showDialog"
+      :info="order.appraise"
+      @cancel="onCancel"
+    />
   </div>
 </template>
 
 <script>
+import AppraiseDialog from './AppraiseDialog'
+
 const ORDER_STATUS = {
   0: '待付款',
   1: '待配送',
@@ -42,6 +49,9 @@ const ORDER_STATUS = {
 }
 
 export default {
+  components: {
+    AppraiseDialog,
+  },
   props: {
     showStatus: {
       type: Boolean,
@@ -60,18 +70,29 @@ export default {
           price: 189, // 单价
           amount: 189, // 总金额 = 单价*数量
           status: 0,
+          appraise: {
+            name: '王多鱼',
+            imgUrl: require('../images/avator1.png'),
+            time: 1500000000,
+            tags: ['配送及时', '服务态度好'],
+          },
         }
       },
     },
   },
   data() {
     return {
-      active: '0',
-      keyword: '',
+      showDialog: true,
     }
   },
   methods: {
     onLoad() {},
+    onShowDialog() {
+      this.showDialog = true
+    },
+    onCancel() {
+      this.showDialog = false
+    },
   },
   filters: {
     statusFilter: function(status) {
@@ -82,7 +103,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.comp-order-goods-card {
+.comp-order-distribution-card {
   .header {
     justify-content: space-between;
     font-size: 13px;
