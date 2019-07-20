@@ -61,6 +61,11 @@ import ActivityList from './views/Activity/List'
 import ActivityDetail from './views/Activity/Detail'
 import ActivityOrder from './views/Activity/Order'
 
+// 积分商城
+import PointIndex from './views/Point/Index'
+import PointDetail from './views/Point/Detail'
+import PointOrder from './views/Point/Order'
+
 Vue.use(Router)
 
 // 个人中心
@@ -232,6 +237,7 @@ const errand = [
   },
 ]
 
+// 活动
 const activity = [
   {
     path: '/activity',
@@ -323,6 +329,25 @@ const distribution = [
   },
 ]
 
+// 积分商城
+const point = [
+  {
+    path: '/point',
+    name: 'point',
+    component: PointIndex,
+  },
+  {
+    path: '/point/detail/:id',
+    name: 'point/detail',
+    component: PointDetail,
+  },
+  {
+    path: '/point/order/:id',
+    name: 'point/order',
+    component: PointOrder,
+  },
+]
+
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
@@ -371,5 +396,6 @@ export default new Router({
     ...walletRouters,
     // 配送中心
     ...distribution,
+    ...point,
   ],
 })

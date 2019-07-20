@@ -24,15 +24,15 @@
       </div>
 
       <nav>
-        <router-link to="/">
+        <router-link to="/my/score">
           <span class="iconfont nav-score">&#xe72c;</span>
           <div>赚积分</div>
         </router-link>
-        <router-link to="/">
+        <router-link to="/point">
           <span class="iconfont nav-small">&#xe72c;</span>
           <div>积分商城</div>
         </router-link>
-        <router-link to="/">
+        <router-link to="/my/order-first">
           <span class="iconfont nav-order">&#xe72d;</span>
           <div>我的订单</div>
         </router-link>
