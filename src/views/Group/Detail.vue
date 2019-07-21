@@ -50,7 +50,7 @@
 import Good from './components/Good'
 import Manual from './components/Manual'
 import Invitation from './components/Invitation'
-import DescComment from './components/DescComment'
+import DescComment from '@/components/DescComment'
 
 export default {
   components: {

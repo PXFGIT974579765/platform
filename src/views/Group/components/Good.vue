@@ -1,21 +1,6 @@
 <template>
   <div class="good">
-    <van-swipe @change="onChange">
-      <van-swipe-item>
-        <img src="~@/assets/images/group_good.png" alt />
-      </van-swipe-item>
-      <van-swipe-item>
-        <img src="~@/assets/images/group_good.png" alt />
-      </van-swipe-item>
-      <van-swipe-item>
-        <img src="~@/assets/images/group_good.png" alt />
-      </van-swipe-item>
-      <van-swipe-item>
-        <img src="~@/assets/images/group_good.png" alt />
-      </van-swipe-item>
-
-      <div class="custom-indicator" slot="indicator">{{ current + 1 }}/4</div>
-    </van-swipe>
+    <img-swipe />
 
     <div class="good-info">
       <div class="good-price">
@@ -31,7 +16,13 @@
 </template>
 
 <script>
+import ImgSwipe from '@/components/ImgSwipe'
+
 export default {
+  components: {
+    ImgSwipe,
+  },
+
   data() {
     return {
       current: 0,
@@ -47,19 +38,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.custom-indicator {
-  position: absolute;
-  right: 16px;
-  bottom: 11px;
-  width: 40px;
-  height: 18px;
-  line-height: 18px;
-  text-align: center;
-  border-radius: 9px;
-  color: #fff;
-  background-color: rgba(49, 49, 49, 0.71);
-}
-
 .good {
   margin-bottom: 8px;
 }

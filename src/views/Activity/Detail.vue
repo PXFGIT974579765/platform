@@ -20,7 +20,7 @@
             <div class="share-count">
               <span class="iconfont">&#xe748;</span>104
             </div>
-            <div class="share"><span class="iconfont">&#xe748;</span>分享</div>
+            <share-button />
           </div>
           <div class="others">
             <div class="price">¥20</div>
@@ -86,11 +86,13 @@
 <script>
 import Search from '@/components/Search'
 import Comment from '@/components/Comment'
+import ShareButton from '@/components/ShareButton'
 
 export default {
   components: {
     Search,
     Comment,
+    ShareButton,
   },
 
   methods: {
@@ -158,11 +160,6 @@ export default {
     margin-bottom: 16px;
     font-size: 12px;
     color: #9a9a9a;
-  }
-
-  .iconfont {
-    margin-right: 3px;
-    font-size: 12px;
   }
 
   .share-count {
