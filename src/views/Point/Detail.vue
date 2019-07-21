@@ -23,6 +23,8 @@
     </div>
 
     <desc-comment :active="active" @onChange="onChange" />
+
+    <order-submit @click="onClick" />
   </div>
 </template>
 
@@ -30,12 +32,14 @@
 import ImgSwipe from '@/components/ImgSwipe'
 import DescComment from '@/components/DescComment'
 import ShareButton from '@/components/ShareButton'
+import OrderSubmit from '@/components/OrderSubmit'
 
 export default {
   components: {
     DescComment,
     ImgSwipe,
     ShareButton,
+    OrderSubmit,
   },
 
   data() {
@@ -48,6 +52,10 @@ export default {
   methods: {
     onChange(type) {
       this.active = type
+    },
+
+    onClick() {
+      this.$router.push('/point/order/1')
     },
   },
 }

@@ -1,7 +1,7 @@
 <template>
   <div>
     <order-good />
-    <distribution />
+    <order-distribution />
     <order-price />
     <order-pay />
     <order-submit />
@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import OrderGood from './components/OrderGood'
-import Distribution from './components/Distribution'
+import OrderGood from '@/components/OrderGood'
+import OrderDistribution from '@/components/OrderDistribution'
 import OrderPrice from '@/components/OrderPrice'
 import OrderPay from '@/components/OrderPay'
 import OrderSubmit from '@/components/OrderSubmit'
@@ -18,7 +18,7 @@ import OrderSubmit from '@/components/OrderSubmit'
 export default {
   components: {
     OrderGood,
-    Distribution,
+    OrderDistribution,
     OrderPrice,
     OrderPay,
     OrderSubmit,
