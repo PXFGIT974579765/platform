@@ -51,7 +51,6 @@ export default {}
 
   .name {
     font-size: 15px;
-    color: #2d2d2d;
   }
 
   .date {

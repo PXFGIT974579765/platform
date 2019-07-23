@@ -76,6 +76,5 @@ export default {
   padding: 15px;
   line-height: 1.5;
   font-size: 12px;
-  color: #2d2d2d;
 }
 </style>

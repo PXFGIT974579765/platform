@@ -44,7 +44,6 @@ export default {}
   padding-bottom: 15px;
   border-bottom: solid 1px #d7d7d7;
   font-size: 15px;
-  color: #2d2d2d;
 
   .title {
     flex: 1;

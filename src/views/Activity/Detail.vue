@@ -139,7 +139,6 @@ export default {
     align-items: center;
     margin-bottom: 16px;
     font-size: 16px;
-    color: #2d2d2d;
   }
 
   .tag {
@@ -216,7 +215,6 @@ export default {
 
 .people-header {
   padding: 0;
-  color: #2d2d2d;
 
   .registration {
     margin-left: 15px;
@@ -244,7 +242,6 @@ export default {
   p {
     font-size: 12px;
     line-height: 1.5;
-    color: #2d2d2d;
   }
 }
 
@@ -253,7 +250,6 @@ export default {
   margin-bottom: 12px;
   font-size: 16px;
   font-weight: 700;
-  color: #2d2d2d;
 }
 
 .comment-block {

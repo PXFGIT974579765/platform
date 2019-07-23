@@ -38,7 +38,6 @@ export default {}
 
 .item-name {
   padding: 15px 0;
-  color: #2d2d2d;
 }
 
 .tag {
