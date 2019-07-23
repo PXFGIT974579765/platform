@@ -50,13 +50,15 @@
           >最新活动</router-link
         >
       </div>
-      <div class="block-content swipe-wrap">
-        <van-swipe :autoplay="3000" indicator-color="white">
-          <van-swipe-item class="swipe-item">1</van-swipe-item>
-          <van-swipe-item class="swipe-item">2</van-swipe-item>
-          <van-swipe-item class="swipe-item">3</van-swipe-item>
-          <van-swipe-item class="swipe-item">4</van-swipe-item>
-        </van-swipe>
+      <div class="block-content">
+        <swiper :options="swiperOption">
+          <swiper-slide>Slide 1</swiper-slide>
+          <swiper-slide>Slide 2</swiper-slide>
+          <swiper-slide>Slide 3</swiper-slide>
+          <swiper-slide>Slide 4</swiper-slide>
+          <swiper-slide>Slide 5</swiper-slide>
+          <div class="swiper-pagination" slot="pagination"></div>
+        </swiper>
       </div>
     </div>
 
@@ -168,6 +170,18 @@ export default {
   data() {
     return {
       value: '',
+      swiperOption: {
+        initialSlide: 2,
+        slidesPerView: 'auto',
+        centeredSlides: true,
+        spaceBetween: 11,
+        loop: true,
+        loopFillGroupWithBlank: true,
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true,
+        },
+      },
     }
   },
 
@@ -180,6 +194,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.swiper-slide {
+  height: 175px;
+  width: 80%;
+  background: url(~@/assets/images/swipe.png) 0 0;
+  background-size: 100% 100%;
+}
+
 .home {
   padding-bottom: 50px;
   background: #fff;
