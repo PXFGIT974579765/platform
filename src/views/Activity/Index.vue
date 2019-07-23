@@ -64,7 +64,6 @@ export default {
 .title {
   padding: 15px 0;
   font-size: 17px;
-  color: #2d2d2d;
 }
 
 .rec {
@@ -95,7 +94,6 @@ export default {
     align-items: center;
     margin-bottom: 16px;
     font-size: 16px;
-    color: #2d2d2d;
   }
 
   .tag {

@@ -12,7 +12,7 @@
 export default {
   methods: {
     onSubmit() {
-      //
+      this.$emit('click')
     },
   },
 }

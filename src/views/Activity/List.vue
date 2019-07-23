@@ -60,7 +60,6 @@ export default {
   .title {
     flex: 1;
     font-size: 17px;
-    color: #2d2d2d;
   }
 }
 

@@ -91,7 +91,6 @@ export default {
   height: 42px;
   line-height: 42px;
   padding: 0 15px;
-  color: #2d2d2d;
   background: #fff;
 }
 

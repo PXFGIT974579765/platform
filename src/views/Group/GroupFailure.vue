@@ -34,7 +34,7 @@
 <script>
 import Good from './components/Good'
 import Manual from './components/Manual'
-import DescComment from './components/DescComment'
+import DescComment from '@/components/DescComment'
 
 export default {
   components: {

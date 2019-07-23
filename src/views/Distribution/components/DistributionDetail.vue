@@ -142,7 +142,6 @@ export default {
     align-items: center;
     font-size: 21px;
     font-weight: bold;
-    color: #2d2d2d;
 
     span {
       margin-top: 15px;

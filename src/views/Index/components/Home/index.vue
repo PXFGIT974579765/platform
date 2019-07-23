@@ -24,15 +24,15 @@
       </div>
 
       <nav>
-        <router-link to="/">
+        <router-link to="/my/sign">
           <span class="iconfont nav-score">&#xe72c;</span>
           <div>赚积分</div>
         </router-link>
-        <router-link to="/">
+        <router-link to="/point">
           <span class="iconfont nav-small">&#xe72c;</span>
           <div>积分商城</div>
         </router-link>
-        <router-link to="/">
+        <router-link to="/my/order-first">
           <span class="iconfont nav-order">&#xe72d;</span>
           <div>我的订单</div>
         </router-link>
@@ -46,7 +46,9 @@
     <div class="block">
       <div class="block-header">
         <div class="block-title">活动推荐</div>
-        <router-link to="/" class="block-header-link">最新活动</router-link>
+        <router-link to="/activity" class="block-header-link"
+          >最新活动</router-link
+        >
       </div>
       <div class="block-content swipe-wrap">
         <van-swipe :autoplay="3000" indicator-color="white">
@@ -108,38 +110,38 @@
     <div class="block group">
       <div class="block-header">
         <div class="block-title">最新拼团</div>
-        <router-link to="/" class="block-header-link">更多</router-link>
+        <router-link to="/group" class="block-header-link">更多</router-link>
       </div>
-      <div class="block-content clearfix">
-        <div class="group-item-wrap">
+      <van-grid :gutter="15" :column-num="2" class="block-content">
+        <van-grid-item to="/group/detail/1">
           <div class="group-item">
             <img src="./images/shop.png" alt />
             <div class="group-name">植护纯木抽纸</div>
             <div class="group-price">¥ 50.45</div>
           </div>
-        </div>
-        <div class="group-item-wrap">
+        </van-grid-item>
+        <van-grid-item to="/group/detail/1">
           <div class="group-item">
             <img src="./images/shop.png" alt />
             <div class="group-name">植护纯木抽纸</div>
             <div class="group-price">¥ 50.45</div>
           </div>
-        </div>
-        <div class="group-item-wrap">
+        </van-grid-item>
+        <van-grid-item to="/group/detail/1">
           <div class="group-item">
             <img src="./images/shop.png" alt />
             <div class="group-name">植护纯木抽纸</div>
             <div class="group-price">¥ 50.45</div>
           </div>
-        </div>
-        <div class="group-item-wrap">
+        </van-grid-item>
+        <van-grid-item to="/group/detail/1">
           <div class="group-item">
             <img src="./images/shop.png" alt />
             <div class="group-name">植护纯木抽纸</div>
             <div class="group-price">¥ 50.45</div>
           </div>
-        </div>
-      </div>
+        </van-grid-item>
+      </van-grid>
     </div>
 
     <div class="rec-block-wrap">
@@ -358,16 +360,9 @@ nav {
 
 .group {
   margin-top: 36px;
-  .group-item-wrap {
-    width: 50%;
-    float: left;
-    margin-bottom: 15px;
-    &:nth-child(2n + 1) {
-      padding-right: 7.5px;
-    }
-    &:nth-child(2n) {
-      padding-left: 7.5px;
-    }
+  padding: 0;
+  .block-header {
+    padding: 0 15px;
   }
   .group-item {
     padding: 25px 15px 15px;
