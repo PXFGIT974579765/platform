@@ -18,7 +18,7 @@
           <span>未签到</span>
         </div>
         <div :class="{ isSign: !isSign }" @click="scoreRoute">
-          <span>个人积分</span>
+          <span>我的积分</span>
           <span>1724</span>
         </div>
         <div :class="{ isSign: !isSign }" @click="levelRoute">

@@ -4,7 +4,9 @@
     <div class="desc">
       <div>
         <span class="name">Hi 小刘哥</span>
-        <span class="level">黄金会员</span>
+        <span class="level"
+          ><span class="iconfont vip-icon">&#xe770;</span>黄金会员</span
+        >
       </div>
       <div>
         <span class="iconfont">&#xe771;</span>
@@ -41,6 +43,10 @@ export default {}
 .desc > div:last-child {
   margin-top: 8px;
   font-size: 12px;
+}
+
+.desc .vip-icon {
+  color: #f3f2f0 !important;
 }
 
 .name {
