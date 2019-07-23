@@ -1,5 +1,5 @@
 <template>
-  <div class="info-card">
+  <div class="info-card" :style="{ paddingBottom: paddingBottom + 'px' }">
     <div class="header" v-if="hasSearch">
       <search />
       <button class="qrcode">
@@ -8,22 +8,26 @@
     </div>
 
     <div v-if="isLogined">
-      <person-desc />
+      <person-desc :info="info" />
 
       <hr />
 
       <div class="score">
-        <div :class="{ isSign: !isSign }" v-if="!isSign" @click="signRoute">
+        <div
+          :class="[isSign ? 'noSign' : 'isSign']"
+          v-if="!isSign"
+          @click="signRoute"
+        >
           <span>一键签到</span>
           <span>未签到</span>
         </div>
-        <div :class="{ isSign: !isSign }" @click="scoreRoute">
-          <span>个人积分</span>
-          <span>1724</span>
+        <div :class="[isSign ? 'noSign' : 'isSign']" @click="scoreRoute">
+          <span>我的积分</span>
+          <span>{{ info.score }}</span>
         </div>
-        <div :class="{ isSign: !isSign }" @click="levelRoute">
+        <div :class="[isSign ? 'noSign' : 'isSign']" @click="levelRoute">
           <span>我的排名</span>
-          <span>450</span>
+          <span>{{ info.top }}</span>
         </div>
       </div>
     </div>
@@ -50,12 +54,25 @@ export default {
       type: Boolean,
       default: true,
     },
+    paddingBottom: {
+      type: Number,
+      default: 20,
+    },
   },
   data() {
     return {
       value: '',
       isLogined: true, // 是否登录
       isSign: false, // 是否签单
+      info: {
+        isAuthed: true,
+        name: 'Hi 小刘哥',
+        level: '黄金会员',
+        top: 450,
+        score: 1724,
+        age: 22,
+        university: '贵州师范大学',
+      },
     }
   },
 
@@ -79,7 +96,7 @@ export default {
 <style lang="less" scoped>
 .info-card {
   position: relative;
-  padding: 15px 15px 40px;
+  padding: 15px 15px 20px;
   background-image: linear-gradient(90deg, #06bcbf 0%, #07c2af 100%);
 }
 
@@ -136,6 +153,20 @@ export default {
     &:first-child {
       margin-top: 10px;
       font-size: 16px;
+    }
+  }
+}
+
+.noSign {
+  span {
+    &:last-child {
+      margin-left: 4px;
+      font-size: 19px;
+    }
+
+    &:first-child {
+      margin-top: 10px;
+      font-size: 14px;
     }
   }
 }
