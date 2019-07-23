@@ -104,13 +104,4 @@ export default {}
     color: #ff6c00;
   }
 }
-
-.list /deep/ .van-grid-item__content {
-  align-items: flex-start;
-  padding: 0;
-  background: transparent;
-  &::after {
-    display: none;
-  }
-}
 </style>
