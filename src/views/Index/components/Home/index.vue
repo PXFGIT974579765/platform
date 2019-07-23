@@ -24,7 +24,7 @@
       </div>
 
       <nav>
-        <router-link to="/my/score">
+        <router-link to="/my/sign">
           <span class="iconfont nav-score">&#xe72c;</span>
           <div>赚积分</div>
         </router-link>
@@ -46,7 +46,9 @@
     <div class="block">
       <div class="block-header">
         <div class="block-title">活动推荐</div>
-        <router-link to="/" class="block-header-link">最新活动</router-link>
+        <router-link to="/activity" class="block-header-link"
+          >最新活动</router-link
+        >
       </div>
       <div class="block-content swipe-wrap">
         <van-swipe :autoplay="3000" indicator-color="white">
@@ -108,7 +110,7 @@
     <div class="block group">
       <div class="block-header">
         <div class="block-title">最新拼团</div>
-        <router-link to="/" class="block-header-link">更多</router-link>
+        <router-link to="/group" class="block-header-link">更多</router-link>
       </div>
       <div class="block-content clearfix">
         <div class="group-item-wrap">

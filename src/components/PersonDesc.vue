@@ -1,29 +1,47 @@
 <template>
   <div class="person-desc">
-    <img src="~@/assets/images/avatar.png" alt class="avatar" />
-    <div class="desc">
-      <div>
-        <span class="name">Hi 小刘哥</span>
-        <span class="level">黄金会员</span>
+    <div v-if="logged" class="logged">
+      <img src="~@/assets/images/avatar.png" alt class="avatar" />
+      <div class="desc">
+        <div>
+          <span class="name">Hi 小刘哥</span>
+          <span class="level">黄金会员</span>
+        </div>
+        <div>
+          <span class="iconfont">&#xe771;</span>
+          <span class="age">22</span>
+          <span class="university">贵州师范大学</span>
+        </div>
       </div>
-      <div>
-        <span class="iconfont">&#xe771;</span>
-        <span class="age">22</span>
-        <span class="university">贵州师范大学</span>
-      </div>
+    </div>
+    <div class="notlogin" v-else>
+      <button class="login">未登录</button>
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  props: {
+    logged: {
+      type: Boolean,
+      default: true,
+    },
+    data: {
+      type: Object,
+    },
+  },
+}
 </script>
 
 <style lang="less" scoped>
 .person-desc {
+  color: #fff;
+}
+
+.logged {
   display: flex;
   align-items: center;
-  color: #fff;
 }
 
 .avatar {
@@ -67,5 +85,18 @@ export default {}
 
 .age {
   margin-right: 10px;
+}
+
+.notlogin {
+  text-align: center;
+  padding-bottom: 20px;
+
+  .login {
+    font-size: 20px;
+    width: 116px;
+    height: 34px;
+    border-radius: 17px;
+    border: solid 1px #ffffff;
+  }
 }
 </style>
