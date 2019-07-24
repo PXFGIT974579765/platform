@@ -1,23 +1,20 @@
 <template>
   <div class="page-my-order-first" v-wechat-title="$route.meta.title">
-    <div class="menu-wapper">
-      <router-link
-        v-for="item in orderType"
-        :to="item.to"
-        :key="item.name"
-        class="type-item flex-col"
-      >
-        <div class="flex-col item-icon">
-          <span
-            :style="{ color: item.color }"
-            class="iconfont icon"
-            v-html="item.icon"
-          ></span>
-          <span class="name">{{ item.name }}</span>
-        </div>
-        <div class="tag" v-if="item.num > 0">{{ item.num }}</div>
-      </router-link>
-    </div>
+    <van-grid :gutter="10" :column-num="3">
+      <van-grid-item v-for="item in orderType" :key="item.name">
+        <router-link :to="item.to" class="type-item flex-col">
+          <div class="flex-col item-icon">
+            <span
+              :style="{ color: item.color }"
+              class="iconfont icon"
+              v-html="item.icon"
+            ></span>
+            <span class="name">{{ item.name }}</span>
+          </div>
+          <div class="tag" v-if="item.num > 0">{{ item.num }}</div>
+        </router-link>
+      </van-grid-item>
+    </van-grid>
   </div>
 </template>
 
@@ -79,51 +76,43 @@ export default {
 
 <style lang="less" scoped>
 .page-my-order-first {
-  padding: 35px 1.9%;
-  display: flow-root;
+  padding: 35px 0;
 
-  .menu-wapper {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    padding: 7px;
+  .type-item {
+    position: relative;
+    width: 100%;
+    height: 105px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    background-color: #fff;
 
-    .type-item {
-      position: relative;
-      grid-column: span 4;
-      height: 105px;
+    .item-icon {
       align-items: center;
       justify-content: center;
-      margin: 5px;
-      border-radius: 6px;
-      background-color: #fff;
+    }
 
-      .item-icon {
-        align-items: center;
-        justify-content: center;
-      }
+    .icon {
+      width: 29px;
+      height: 29px;
+      font-size: 29px !important;
+    }
 
-      .icon {
-        width: 29px;
-        height: 29px;
-        font-size: 29px !important;
-      }
+    .name {
+      margin-top: 11px;
+      font-size: 15px;
+      color: #585858;
+    }
 
-      .name {
-        margin-top: 11px;
-        font-size: 15px;
-        color: #585858;
-      }
-
-      .tag {
-        position: absolute;
-        right: 0;
-        top: 0;
-        padding: 3px 6px;
-        border-radius: 10px;
-        font-size: 13px;
-        background: #ff3d3d;
-        color: #fff;
-      }
+    .tag {
+      position: absolute;
+      right: 0;
+      top: 0;
+      padding: 3px 6px;
+      border-radius: 10px;
+      font-size: 13px;
+      background: #ff3d3d;
+      color: #fff;
     }
   }
 }
