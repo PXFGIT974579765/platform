@@ -8,7 +8,7 @@
       <span class="btn_exchange">去兑换礼品</span>
     </div>
     <div class="page-list">
-      <div class="title">
+      <div class="title flex">
         <span>积分明细</span>
         <span>积分规则</span>
       </div>
@@ -77,7 +77,7 @@ export default {
         },
       ],
       loading: false,
-      finished: false,
+      finished: true,
     }
   },
   methods: {
@@ -104,7 +104,7 @@ export default {
 
 <style lang="less" scoped>
 .page-my-score {
-  background-color: #fff;
+  padding-bottom: 200px;
 
   .page-header {
     position: relative;
@@ -151,32 +151,23 @@ export default {
 
   .page-list {
     position: relative;
-    margin-top: -24px;
-    margin-left: 15px;
-    padding: 17px 18px;
-    margin-right: 15px;
+    margin: -24px 15px 0 15px;
+    padding: 17px 18px 46px;
     border-radius: 3px;
-    box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.1);
     background-color: #fff;
 
     .title {
-      display: flex;
       justify-content: space-between;
 
       span {
+        font-weight: bold;
         &:first-child {
-          line-height: 20px;
-          height: 15px;
           font-size: 15px;
-          font-weight: bold;
           color: #323232;
         }
 
         &:last-child {
-          line-height: 20px;
-          height: 13px;
           font-size: 13px;
-          font-weight: bold;
           color: #06beb9;
         }
       }
@@ -189,6 +180,10 @@ export default {
       padding: 13px 0px;
       border-bottom: 1px solid #eee;
 
+      &:first-child {
+        margin-top: 20px;
+      }
+
       div {
         &:last-child {
           text-align: right;
@@ -196,16 +191,12 @@ export default {
       }
 
       .name {
-        height: 20px;
-        line-height: 20px;
         font-size: 13px;
         font-weight: bold;
         color: #3d3d3d;
       }
 
       .score {
-        height: 20px;
-        line-height: 20px;
         font-size: 15px;
         font-weight: bold;
       }
@@ -219,15 +210,13 @@ export default {
       }
 
       .time {
-        height: 20px;
-        line-height: 20px;
+        margin-top: 7px;
         font-size: 10px;
         color: #b4b4b4;
       }
 
       .status {
-        height: 20px;
-        line-height: 20px;
+        margin-top: 7px;
         font-size: 10px;
         color: #b4b4b4;
       }
