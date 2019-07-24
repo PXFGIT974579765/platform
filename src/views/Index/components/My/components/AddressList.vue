@@ -1,6 +1,6 @@
 <template>
   <div class="page-my-address-list" v-wechat-title="$route.meta.title">
-    <van-radio-group v-model="radio">
+    <van-radio-group v-model="defaultAddress">
       <div
         v-for="item in addressList"
         :key="item.name"
@@ -14,7 +14,7 @@
         <hr />
 
         <div class="flex-between">
-          <van-radio name="index" checked-color="#07c160"
+          <van-radio :name="item.id" checked-color="#07c160"
             >设为默认地址</van-radio
           >
           <div class="flex-between">
@@ -36,6 +36,7 @@
 export default {
   data() {
     return {
+      defaultAddress: '123',
       addressList: [
         {
           id: '123',
