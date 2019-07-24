@@ -4,11 +4,11 @@
       <div class="form-item">
         <span class="key">收货人姓名</span>
         <span class="value">
-          <input type="text" placeholder="请输入姓名" />
+          <input type="text" v-model="address.name" placeholder="请输入姓名" />
         </span>
       </div>
       <div class="form-item">
-        <van-radio-group v-model="sex" class="group flex">
+        <van-radio-group v-model="address.sex" class="group flex">
           <van-radio name="1" checked-color="#07c160" class="radio"
             >男</van-radio
           >
@@ -20,7 +20,7 @@
       <div class="form-item">
         <span class="key">手机号码</span>
         <span class="value">
-          <input type="text" placeholder="请输入电话" />
+          <input type="text" v-model="address.phone" placeholder="请输入电话" />
         </span>
       </div>
       <div class="form-item" @click="showArea">
@@ -32,13 +32,17 @@
       <div class="form-item">
         <span class="key">详细地址</span>
         <span class="value">
-          <input type="text" placeholder="请输入详细地址" />
+          <input
+            type="text"
+            v-model="address.address"
+            placeholder="请输入详细地址"
+          />
         </span>
       </div>
     </div>
 
     <div class="btn-submit">保存</div>
-    <van-action-sheet class="area" v-model="areaShow" :actions="actions">
+    <van-action-sheet class="area" v-model="areaShow">
       <van-area :area-list="areaList" @confirm="confirm" @cancel="cancel" />
     </van-action-sheet>
   </div>
@@ -48,20 +52,19 @@
 import areaList from '@/mock/area.js'
 
 export default {
-  props: {
-    address: {
-      id: '1234',
-      name: '刘国贵',
-      phone: '19987451243',
-      address: '贵州省贵阳市花溪区大学城贵州师范大学科创园XXX',
-    },
-  },
   data() {
     return {
       sex: '1',
       areaList,
       areaShow: false,
       area: '',
+      address: {},
+    }
+  },
+  created() {
+    const { address } = this.$route.params
+    if (address) {
+      this.address = address
     }
   },
   methods: {
@@ -87,15 +90,18 @@ export default {
 
   .container {
     margin-top: 10px;
+    padding: 10px 15px 0 15px;
     background-color: #fff;
 
     .form-item {
       height: 53px;
       display: flex;
-      padding: 0 15px;
       font-size: 15px;
       align-items: center;
-      border-bottom: 1px solid #eee;
+
+      &:not(:last-child) {
+        border-bottom: 1px solid #eee;
+      }
 
       .area {
         position: absolute;
@@ -126,9 +132,11 @@ export default {
 
       .value {
         margin-left: 18px;
+        flex: 1;
         color: #585858;
 
         input {
+          width: 100%;
           border: 0;
         }
       }

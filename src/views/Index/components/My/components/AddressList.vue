@@ -3,7 +3,7 @@
     <van-radio-group v-model="defaultAddress">
       <div
         v-for="item in addressList"
-        :key="item.name"
+        :key="item.id"
         class="address-item flex-col"
       >
         <div class="flex-between">
@@ -41,12 +41,14 @@ export default {
         {
           id: '123',
           name: '刘国贵',
+          sex: '1',
           phone: '19987451243',
           address: '贵州省贵阳市花溪区大学城贵州师范大学科创园XXX',
         },
         {
           id: '125',
           name: '刘国贵',
+          sex: '1',
           phone: '19987451243',
           address: '贵州省贵阳市花溪区大学城贵州师范大学科创园XXX',
         },
@@ -56,10 +58,21 @@ export default {
   methods: {
     onLoad() {},
     routeAdd() {
-      this.$router.push('/my/address-edit')
+      this.$router.push({
+        path: '/my/address-edit',
+        name: 'index/my/address-add',
+        params: {},
+      })
     },
     routeEdit(id) {
-      this.$router.push(`/my/address-edit/${id}`)
+      const address = this.addressList.find(item => item.id === id)
+      this.$router.push({
+        path: `/my/address-edit/${id}`,
+        name: 'index/my/address-edit',
+        params: {
+          address,
+        },
+      })
     },
   },
 }
@@ -96,6 +109,7 @@ export default {
     height: 47px;
     line-height: 47px;
     margin-top: 20px;
+    border-radius: 5px;
     background-color: #fff;
     text-align: center;
     color: #585858;

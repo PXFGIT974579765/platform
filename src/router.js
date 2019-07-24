@@ -102,7 +102,7 @@ const myRouters = [
   },
   {
     path: '/my/address-edit',
-    name: 'index/my/address-edit',
+    name: 'index/my/address-add',
     component: AddressEdit,
     meta: { title: '新建收货地址' },
   },
