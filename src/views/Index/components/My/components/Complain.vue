@@ -69,7 +69,7 @@ const SATUS_CLASS = {
 export default {
   data() {
     return {
-      activeTab: '1',
+      activeTab: '0',
       complainType: '0',
       content: '',
       myComplain: [
@@ -96,6 +96,14 @@ export default {
     onLoad() {},
     routeDetail(item) {
       this.$router.push(`/my/complain-detail/${item}`)
+    },
+    onContentChange(v) {
+      console.log(v)
+    },
+  },
+  watch: {
+    content: function(value) {
+      this.content = value && value.length > 10 ? value.slice(0, 10) : value
     },
   },
   filters: {
