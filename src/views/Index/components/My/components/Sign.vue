@@ -4,9 +4,11 @@
       <div class="score-box flex-col">
         <span>可用积分</span>
         <span>{{ sign.score }}</span>
-        <span>
-          {{ sign.latestTime | formatDate }} 签到 积分+{{ sign.latestScore }}
-        </span>
+        <span
+          >{{ sign.latestTime | formatDate }} 签到 积分+{{
+            sign.latestScore
+          }}</span
+        >
       </div>
       <span class="btn_score_detail">积分明细</span>
     </div>
@@ -15,7 +17,7 @@
         <span class="iconfont icon-calender">&#xe760;</span>
         <div class="sign-desc flex-col">
           <span>每日签到</span>
-          <span>已连续签到4天</span>
+          <span>已连续签到{{ sign.days }}天</span>
         </div>
       </div>
       <div class="btn_sign">签到</div>
@@ -26,131 +28,33 @@
         <span>签到规则</span>
       </div>
       <div class="days-card flex">
-        <div class="icon-day flex-col">
-          <div :class="['icon', sign.day === 1 ? 'icon_cur' : 'icon_before']">
-            +5
-          </div>
-          <div class="day">1天</div>
-        </div>
-        <div class="icon-day flex-col">
-          <div
-            :class="[
-              'icon',
-              sign.day > 2
-                ? 'icon_before'
-                : sign.day === 2
-                ? 'icon_cur'
-                : 'icon_after',
-            ]"
-          >
-            +10
-          </div>
-          <div class="day">2天</div>
-        </div>
-        <div class="icon-day flex-col">
-          <div
-            :class="[
-              'icon',
-              sign.day > 3
-                ? 'icon_before'
-                : sign.day === 3
-                ? 'icon_cur'
-                : 'icon_after',
-            ]"
-          >
-            +15
-          </div>
-          <div class="day">3天</div>
-        </div>
-        <div class="icon-day flex-col">
-          <div
-            :class="[
-              'icon',
-              sign.day > 4
-                ? 'icon_before'
-                : sign.day === 4
-                ? 'icon_cur'
-                : 'icon_after',
-            ]"
-          >
-            +20
-          </div>
-          <div class="day">4天</div>
-        </div>
-        <div class="icon-day flex-col">
-          <div
-            :class="[
-              'icon',
-              sign.day > 5
-                ? 'icon_before'
-                : sign.day === 5
-                ? 'icon_cur'
-                : 'icon_after',
-            ]"
-          >
-            +25
-          </div>
-          <div class="day">5天</div>
-        </div>
-        <div class="icon-day flex-col">
-          <div
-            :class="[
-              'icon',
-              sign.day > 6
-                ? 'icon_before'
-                : sign.day === 6
-                ? 'icon_cur'
-                : 'icon_after',
-            ]"
-          >
-            +30
-          </div>
-          <div class="day">6天</div>
+        <div v-for="n in 6" :key="n" class="icon-day flex-col">
+          <div :class="['icon', formatIconClass(n)]">+{{ formatScore(n) }}</div>
+          <div :class="['day', formatDayClass(n)]">{{ formatDay(n) }}天</div>
         </div>
       </div>
       <div class="sign-desc">连续签到6天及以上，每日签到积分+30</div>
     </div>
     <div class="sign-links card-item">
       <div class="title">去完成任务赚更多积分</div>
-      <div class="link-item flex">
+      <div class="link-item flex" v-for="link in links" :key="link.icon">
         <div class="flex">
-          <span class="iconfont icon-link">&#xe760;</span>
+          <span
+            class="iconfont icon-link"
+            :style="{ color: link.color }"
+            v-html="link.icon"
+          ></span>
           <div class="link-desc flex-col">
             <span>
-              分享链接
-              <span class="link_score">+500 积分</span>
+              {{ link.theme }}
+              <span class="link_score">+{{ link.score }} 积分</span>
             </span>
-            <span>把你喜欢的活动分享到朋友圈</span>
+            <span>{{ link.desc }}</span>
           </div>
         </div>
-        <div class="btn_go">GO</div>
+        <div class="btn_go" @click="routePage(link.url)">GO</div>
       </div>
-      <div class="link-item flex">
-        <div class="flex">
-          <span class="iconfont icon-link">&#xe760;</span>
-          <div class="link-desc flex-col">
-            <span>
-              发起平团
-              <span class="link_score">+1000 积分</span>
-            </span>
-            <span>成功发起一次拼团活动</span>
-          </div>
-        </div>
-        <div class="btn_go">GO</div>
-      </div>
-      <div class="link-item flex">
-        <div class="flex">
-          <span class="iconfont icon-link">&#xe760;</span>
-          <div class="link-desc flex-col">
-            <span>
-              公益活动
-              <span class="link_score">+1500 积分</span>
-            </span>
-            <span>成功参加一次公益活动</span>
-          </div>
-        </div>
-        <div class="btn_go">GO</div>
-      </div>
+      <div class="btn-more">查看更多</div>
     </div>
   </div>
 </template>
@@ -165,14 +69,71 @@ export default {
         score: 1598,
         latestScore: 20,
         latestTime: 1500034995950,
-        days: 4, // 连续签到第四天
+        days: 5, // 连续签到第四天
       },
       loading: false,
       finished: false,
+      links: [
+        {
+          icon: '&#xe762;',
+          color: '#7ecef4',
+          theme: '分享链接',
+          score: 500,
+          desc: '把你喜欢的活动分享到朋友圈',
+          url: '#',
+        },
+        {
+          icon: '&#xe763;',
+          color: '#ff6b6b',
+          theme: '发起拼团',
+          score: 1000,
+          desc: '成功发起一次拼团活动',
+          url: '#',
+        },
+        {
+          icon: '&#xe764;',
+          color: '#ffbf5a',
+          theme: '公益活动',
+          score: 1500,
+          desc: '成功参加一次公益活动',
+          url: '#',
+        },
+      ],
     }
   },
   methods: {
     onLoad() {},
+    formatDay(n) {
+      const days = this.sign.days
+      return days < 6 ? n : days - 6 + n
+    },
+    formatScore(n) {
+      const days = this.sign.days
+      const th = days < 6 ? n : days - 6 + n
+      const score = th * 5
+      return score > 30 ? 30 : score
+    },
+    formatIconClass(n) {
+      const days = this.sign.days
+      const th = days < 6 ? n : days - 6 + n
+      let iconClass = ''
+      if (th === days) {
+        iconClass = 'icon_cur'
+      } else if (th < days) {
+        iconClass = 'icon_before'
+      } else {
+        iconClass = 'icon_after'
+      }
+      return iconClass
+    },
+    formatDayClass(n) {
+      const days = this.sign.days
+      const th = days < 6 ? n : days - 6 + n
+      return th === days && 'day_cur'
+    },
+    routePage(url) {
+      this.$router.push(url)
+    },
   },
   filters: {
     formatDate: dateTime,
@@ -182,8 +143,6 @@ export default {
 
 <style lang="less" scoped>
 .page-my-sign {
-  background-color: #fff;
-
   .page-header {
     position: relative;
     display: flex;
@@ -197,7 +156,7 @@ export default {
     .btn_score_detail {
       position: absolute;
       right: 15px;
-      top: 31px;
+      top: 20px;
       font-size: 13px;
     }
 
@@ -239,7 +198,6 @@ export default {
     padding: 17px 18px;
     margin-right: 15px;
     border-radius: 3px;
-    box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.1);
     background-color: #fff;
   }
 
@@ -251,9 +209,7 @@ export default {
 
     .icon-calender {
       width: 45px;
-      height: 45px;
       border-radius: 50%;
-      line-height: 45px;
       background-color: #e3fffd;
       color: #07c1b2;
       font-size: 20px;
@@ -295,10 +251,9 @@ export default {
 
   .sign-links {
     margin-top: 15px;
+    margin-bottom: 100px;
 
     .title {
-      height: 15px;
-      line-height: 15px;
       font-size: 15px;
       font-weight: bold;
       color: #323232;
@@ -316,10 +271,8 @@ export default {
         width: 45px;
         height: 45px;
         border-radius: 50%;
-        line-height: 45px;
-        background-color: #e3fffd;
         color: #07c1b2;
-        font-size: 20px;
+        font-size: 45px;
         text-align: center;
       }
 
@@ -359,6 +312,12 @@ export default {
         font-size: 15px;
         font-weight: bold;
       }
+    }
+
+    .btn-more {
+      margin-top: 16px;
+      text-align: center;
+      color: #9b9b9b;
     }
   }
 
@@ -424,13 +383,11 @@ export default {
 
         .day {
           margin-top: 10px;
+          color: #606060;
         }
 
         .day_cur {
           color: #07c1b2;
-        }
-        .day_other {
-          color: #606060;
         }
       }
     }
