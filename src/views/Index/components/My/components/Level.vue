@@ -3,20 +3,24 @@
     <div class="page-header">
       <div class="level-box flex-col">
         <div class="level-icon">
-          <div class="level-num">Lv2</div>
+          <div class="level-num">{{ info.level }}</div>
         </div>
-        <span class="level-text">尊贵的 Lv2 青铜会员</span>
+        <span class="level-text"
+          >尊贵的 {{ info.levle }} {{ info.levelDesc }}</span
+        >
         <div class="progress-num">
-          <span>1589</span> /
-          <span>2000</span>
+          <span>{{ info.curScore }}</span> /
+          <span>{{ info.fullScore }}</span>
         </div>
         <van-progress
           class="progress-bar"
-          :percentage="50"
+          :percentage="info.percent"
           :show-pivot="false"
           color="#ffe400"
         />
-        <div class="level-up">距离升级还差3000积分</div>
+        <div class="level-up">
+          距离升级还差{{ info.fullScore - info.curScore }}积分
+        </div>
       </div>
       <span class="btn_level_desc">等级说明</span>
     </div>
@@ -26,31 +30,37 @@
         <span>会员专属权益</span>
         <span>使用特权</span>
       </div>
-      <div class="right-block flex">
-        <span class="iconfont right-icon">&#xe768;</span>
+      <div
+        v-for="(right, index) in rights"
+        :key="index"
+        class="right-block flex"
+      >
+        <span
+          class="iconfont right-icon"
+          :style="{ color: right.color }"
+          v-html="right.icon"
+        ></span>
         <div class="right-desc flex-col">
-          <span class="desc-title">电脑租赁可享全年8折优惠</span>
+          <span class="desc-title">{{ right.title }}</span>
           <div class="flex desc-tag">
-            <van-tag class="tag" round plain>搬运上门</van-tag>
-            <van-tag class="tag" round plain>退租搬运</van-tag>
-            <van-tag class="tag" round plain>提前退租</van-tag>
+            <van-tag
+              v-for="tag in right.tags"
+              :key="tag"
+              class="tag"
+              round
+              plain
+              >{{ tag }}</van-tag
+            >
           </div>
         </div>
       </div>
     </div>
 
     <div class="q-list card-item">
-      <div class="q-item">
-        <div class="q-title">什么是会员等级</div>
+      <div class="q-item" v-for="question in questions" :key="question.title">
+        <div class="q-title">{{ question.title }}</div>
         <div class="q-content">
-          多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，
-        </div>
-      </div>
-
-      <div class="q-item">
-        <div class="q-title">会员如何分级，不同等级有哪些权限</div>
-        <div class="q-content">
-          多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，
+          {{ question.content }}
         </div>
       </div>
     </div>
@@ -63,14 +73,46 @@ import { dateTime } from '@/lib/format'
 export default {
   data() {
     return {
-      sign: {
-        score: 1598,
-        latestScore: 20,
-        latestTime: 1500034995950,
-        days: 4, // 连续签到第四天
+      info: {
+        level: 'Lv2',
+        levelDesc: '青铜会员',
+        curScore: 1589,
+        fullScore: 3000,
+        percent: 50,
       },
-      loading: false,
-      finished: false,
+      rights: [
+        {
+          icon: '&#xe768;',
+          color: '#7ecef4',
+          title: '电脑租赁可享全年8折优惠',
+          tags: ['搬运上门', '退租搬运', '提前退租'],
+        },
+        {
+          icon: '&#xe768;',
+          color: '#7ecef4',
+          title: '电脑租赁可享全年8折优惠',
+          tags: [
+            '搬运上门',
+            '退租搬运',
+            '提前退租',
+            '搬运上门',
+            '退租搬运',
+            '提前退租',
+          ],
+        },
+      ],
+      questions: [
+        {
+          title: '什么是会员等级',
+          content:
+            '多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，',
+        },
+        {
+          title: '会员如何分级，不同等级有哪些权限',
+          content:
+            '多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，',
+        },
+      ],
     }
   },
   methods: {
@@ -86,7 +128,7 @@ export default {
 
 <style lang="less" scoped>
 .page-my-level {
-  background-color: #fff;
+  padding-bottom: 200px;
 
   .page-header {
     position: relative;
@@ -164,7 +206,6 @@ export default {
     padding: 17px 18px 0 18px;
     margin-right: 15px;
     border-radius: 3px;
-    box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.1);
     background-color: #fff;
   }
 
@@ -204,13 +245,13 @@ export default {
       width: 100%;
       align-items: center;
 
+      &:not(:last-child) {
+        border-bottom: 1px solid #eee;
+      }
+
       .right-icon {
-        width: 57px;
-        height: 57px;
         border-radius: 50%;
-        line-height: 57px;
-        background-color: #7ecef4;
-        color: #fff;
+        color: #7ecef4;
         font-size: 55px;
         text-align: center;
       }
@@ -220,22 +261,18 @@ export default {
         justify-content: center;
 
         .desc-title {
-          height: 20px;
-          line-height: 20px;
           font-size: 16px;
           font-weight: bold;
           color: #323232;
         }
 
         .desc-tag {
-          margin-top: 10px;
+          margin-top: 5px;
+          flex-wrap: wrap;
 
           .tag {
-            margin-left: 5px;
-
-            &:first-child {
-              margin-left: 0;
-            }
+            margin-right: 5px;
+            margin-top: 5px;
           }
         }
       }
@@ -248,7 +285,10 @@ export default {
 
     .q-item {
       padding: 22px 0;
-      border-bottom: 1px solid #eee;
+
+      &:not(:last-child) {
+        border-bottom: 1px solid #eee;
+      }
 
       &:first-child {
         padding-top: 0;

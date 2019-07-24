@@ -143,6 +143,8 @@ export default {
 
 <style lang="less" scoped>
 .page-my-sign {
+  padding-bottom: 200px;
+
   .page-header {
     position: relative;
     display: flex;
@@ -251,7 +253,6 @@ export default {
 
   .sign-links {
     margin-top: 15px;
-    margin-bottom: 100px;
 
     .title {
       font-size: 15px;
