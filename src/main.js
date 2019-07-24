@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vant from 'vant'
 import 'vant/lib/index.css'
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+import 'swiper/dist/css/swiper.css'
 
 import '@/assets/styles/base.less'
 
@@ -11,6 +13,7 @@ import VueWechatTitle from 'vue-wechat-title'
 
 Vue.use(Vant)
 Vue.use(VueWechatTitle)
+Vue.use(VueAwesomeSwiper)
 
 Vue.config.productionTip = false
 

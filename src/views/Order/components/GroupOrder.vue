@@ -8,6 +8,7 @@
       title-active-color="#06bcbf"
       color="#06bcbf"
       background="#f4f4f4"
+      :swipe-threshold="5"
     >
       <van-tab v-for="item in statusList" :key="item.value" :title="item.name">
         <div
