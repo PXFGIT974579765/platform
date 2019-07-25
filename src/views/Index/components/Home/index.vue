@@ -2,26 +2,26 @@
   <div class="home">
     <info-card :paddingBottom="60" />
 
-    <div class="container">
-      <nav>
-        <router-link to="/my/sign">
-          <span class="iconfont nav-score">&#xe72c;</span>
-          <div>赚积分</div>
-        </router-link>
-        <router-link to="/point">
-          <span class="iconfont nav-small">&#xe72c;</span>
-          <div>积分商城</div>
-        </router-link>
-        <router-link to="/my/order-first">
-          <span class="iconfont nav-order">&#xe72d;</span>
-          <div>我的订单</div>
-        </router-link>
-      </nav>
+    <nav>
+      <router-link to="/my/sign">
+        <span class="iconfont nav-score">&#xe72c;</span>
+        <div>赚积分</div>
+      </router-link>
+      <router-link to="/point">
+        <span class="iconfont nav-small">&#xe72c;</span>
+        <div>积分商城</div>
+      </router-link>
+      <router-link to="/my/order-first">
+        <span class="iconfont nav-order">&#xe72d;</span>
+        <div>我的订单</div>
+      </router-link>
+    </nav>
 
-      <div class="notice">
-        <span class="iconfont">&#xe728;</span>HI 别忘了参加今天的活动哦！
-      </div>
+    <div class="notice">
+      <span class="iconfont">&#xe728;</span>HI 别忘了参加今天的活动哦！
+    </div>
 
+    <div class="activity">
       <div class="block-header">
         <div class="block-title">活动推荐</div>
         <router-link to="/activity" class="block-header-link"
@@ -35,101 +35,99 @@
           <swiper-slide>Slide 3</swiper-slide>
           <swiper-slide>Slide 4</swiper-slide>
           <swiper-slide>Slide 5</swiper-slide>
-          <div class="swiper-pagination" slot="pagination"></div>
         </swiper>
+        <div class="swiper-pagination" slot="pagination"></div>
       </div>
+    </div>
 
-      <div class="rec-app">
-        <div class="block-header">
-          <div class="block-title">推荐应用</div>
+    <div class="block rec-app">
+      <div class="block-header">
+        <div class="block-title">推荐应用</div>
+      </div>
+      <div class="block-content">
+        <div class="rec-app-item">
+          <div class="app-name">共享打印</div>
+          <div class="app-desc">一键发送 送货上门</div>
         </div>
-        <div class="block-content">
-          <div class="rec-app-item">
-            <div class="app-name">共享打印</div>
-            <div class="app-desc">一键发送 送货上门</div>
+        <div class="rec-app-item">
+          <div class="app-name">在线拼团</div>
+          <div class="app-desc">还有比这里价更低</div>
+        </div>
+        <div class="rec-app-item">
+          <div class="app-name">租赁服务</div>
+          <div class="app-desc">随租随还 再租不难</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block news">
+      <div class="block-header">
+        <div class="block-title">动态</div>
+        <router-link to="/news" class="block-header-link">更多动态</router-link>
+      </div>
+      <div class="block-content">
+        <new-item
+          :title="'庆祝改革开放40周年贵州启动首届师生摄影大赛'"
+          :date="'01.25'"
+          :read="452"
+          :image="require('@/assets/images/new.png')"
+        />
+        <new-item
+          :title="'庆祝改革开放40周年贵州启动首届师生摄影大赛'"
+          :date="'01.25'"
+          :read="452"
+          :image="require('@/assets/images/new.png')"
+        />
+        <new-item
+          :title="'庆祝改革开放40周年贵州启动首届师生摄影大赛'"
+          :date="'01.25'"
+          :read="452"
+          :image="require('@/assets/images/new.png')"
+        />
+      </div>
+    </div>
+
+    <div class="block group">
+      <div class="block-header">
+        <div class="block-title">最新拼团</div>
+        <router-link to="/group" class="block-header-link">更多</router-link>
+      </div>
+      <van-grid :gutter="15" :column-num="2" class="block-content">
+        <van-grid-item to="/group/detail/1">
+          <div class="group-item">
+            <img src="./images/shop.png" alt />
+            <div class="group-name">植护纯木抽纸</div>
+            <div class="group-price">¥ 50.45</div>
           </div>
-          <div class="rec-app-item">
-            <div class="app-name">在线拼团</div>
-            <div class="app-desc">还有比这里价更低</div>
+        </van-grid-item>
+        <van-grid-item to="/group/detail/1">
+          <div class="group-item">
+            <img src="./images/shop.png" alt />
+            <div class="group-name">植护纯木抽纸</div>
+            <div class="group-price">¥ 50.45</div>
           </div>
-          <div class="rec-app-item">
-            <div class="app-name">租赁服务</div>
-            <div class="app-desc">随租随还 再租不难</div>
+        </van-grid-item>
+        <van-grid-item to="/group/detail/1">
+          <div class="group-item">
+            <img src="./images/shop.png" alt />
+            <div class="group-name">植护纯木抽纸</div>
+            <div class="group-price">¥ 50.45</div>
           </div>
-        </div>
-      </div>
+        </van-grid-item>
+        <van-grid-item to="/group/detail/1">
+          <div class="group-item">
+            <img src="./images/shop.png" alt />
+            <div class="group-name">植护纯木抽纸</div>
+            <div class="group-price">¥ 50.45</div>
+          </div>
+        </van-grid-item>
+      </van-grid>
+    </div>
 
-      <div class="news">
-        <div class="block-header">
-          <div class="block-title">动态</div>
-          <router-link to="/news" class="block-header-link"
-            >更多动态</router-link
-          >
-        </div>
-        <div class="block-content">
-          <new-item
-            :title="'庆祝改革开放40周年贵州启动首届师生摄影大赛'"
-            :date="'01.25'"
-            :read="452"
-            :image="require('@/assets/images/new.png')"
-          />
-          <new-item
-            :title="'庆祝改革开放40周年贵州启动首届师生摄影大赛'"
-            :date="'01.25'"
-            :read="452"
-            :image="require('@/assets/images/new.png')"
-          />
-          <new-item
-            :title="'庆祝改革开放40周年贵州启动首届师生摄影大赛'"
-            :date="'01.25'"
-            :read="452"
-            :image="require('@/assets/images/new.png')"
-          />
-        </div>
-      </div>
-
-      <div class="group">
-        <div class="block-header">
-          <div class="block-title">最新拼团</div>
-          <router-link to="/group" class="block-header-link">更多</router-link>
-        </div>
-        <van-grid :gutter="15" :column-num="2" class="block-content">
-          <van-grid-item to="/group/detail/1">
-            <div class="group-item">
-              <img src="./images/shop.png" alt />
-              <div class="group-name">植护纯木抽纸</div>
-              <div class="group-price">¥ 50.45</div>
-            </div>
-          </van-grid-item>
-          <van-grid-item to="/group/detail/1">
-            <div class="group-item">
-              <img src="./images/shop.png" alt />
-              <div class="group-name">植护纯木抽纸</div>
-              <div class="group-price">¥ 50.45</div>
-            </div>
-          </van-grid-item>
-          <van-grid-item to="/group/detail/1">
-            <div class="group-item">
-              <img src="./images/shop.png" alt />
-              <div class="group-name">植护纯木抽纸</div>
-              <div class="group-price">¥ 50.45</div>
-            </div>
-          </van-grid-item>
-          <van-grid-item to="/group/detail/1">
-            <div class="group-item">
-              <img src="./images/shop.png" alt />
-              <div class="group-name">植护纯木抽纸</div>
-              <div class="group-price">¥ 50.45</div>
-            </div>
-          </van-grid-item>
-        </van-grid>
-      </div>
-
-      <div class="rec-block-wrap">
-        <div class="rec-block">
-          <div class="rec-block-title">AD 英语六级 视频听力训练</div>
-          <img src="./images/ad.png" alt />
-        </div>
+    <div class="rec-block-wrap">
+      <div class="rec-block">
+        <div class="rec-block-title">AD 英语六级 视频听力训练</div>
+        <img src="./images/ad.png" alt />
       </div>
     </div>
   </div>
@@ -184,11 +182,6 @@ export default {
   background: #fff;
 }
 
-.container {
-  margin-top: -65px;
-  padding: 0 15px;
-}
-
 .score {
   display: flex;
   font-size: 14px;
@@ -206,10 +199,12 @@ export default {
 }
 
 nav {
-  transform: translateY(40%);
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   text-align: center;
+  margin: -40px 15px 0;
   border-radius: 4px;
   background-color: #fff;
   box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.2);
@@ -242,7 +237,7 @@ nav {
 }
 
 .notice {
-  margin: 50px 0 42px;
+  margin: 18px 15px 42px;
   padding: 15px;
   font-size: 16px;
   color: #ff9600;
@@ -274,6 +269,16 @@ nav {
   color: #a4a4a3;
 }
 
+.activity {
+  .block-header {
+    padding: 0 15px;
+  }
+
+  .block-content {
+    position: relative;
+  }
+}
+
 .van-swipe {
   height: 150px;
 }
@@ -285,7 +290,7 @@ nav {
 }
 
 .rec-app {
-  margin-top: 45px;
+  margin-top: 56px;
   .block-content {
     display: flex;
   }
