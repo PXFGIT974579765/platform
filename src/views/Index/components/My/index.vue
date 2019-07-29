@@ -54,7 +54,7 @@
           <span class="dot"></span>
         </span>
       </van-cell>
-      <van-cell class="cell" title="积分商城" is-link>
+      <van-cell class="cell" title="积分商城" is-link to="/point">
         <span slot="icon" style="color:#ffc000" class="iconfont icon"
           >&#xe776;</span
         >
