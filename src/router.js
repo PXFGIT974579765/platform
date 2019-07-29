@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import Index from './views/Index'
+import Accept from './views/Accept'
 import Home from './views/Index/components/Home'
 import App from './views/Index/components/App'
 import News from './views/Index/components/News'
@@ -384,6 +385,11 @@ export default new Router({
           component: New,
         },
       ],
+    },
+    {
+      path: '/accept',
+      name: 'accept',
+      component: Accept,
     },
     ...errand,
     ...group,
