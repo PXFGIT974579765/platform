@@ -136,6 +136,7 @@
 <script>
 import NewItem from '@/components/NewItem'
 import InfoCard from '@/components/InfoCard'
+import http from '@/lib/http'
 
 export default {
   components: {
@@ -159,6 +160,16 @@ export default {
         },
       },
     }
+  },
+  created() {
+    http
+      .post('/wxmp-anon/client/wxUrl', {
+        sign: '9ae4934e5068f95e05975669eb182ce7',
+        url: 'http://anthour.natapp1.cc/accept',
+      })
+      .then(({ data }) => {
+        location.href = data.datas.url
+      })
   },
 
   methods: {
