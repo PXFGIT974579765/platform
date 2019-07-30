@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '@/store'
 
 import Index from './views/Index'
+import Entry from './views/Entry'
 import Accept from './views/Accept'
 import Home from './views/Index/components/Home'
 import App from './views/Index/components/App'
@@ -68,6 +70,42 @@ import PointDetail from './views/Point/Detail'
 import PointOrder from './views/Point/Order'
 
 Vue.use(Router)
+
+const home = [
+  {
+    path: '/index',
+    name: 'index',
+    redirect: { name: 'index/home' },
+    component: Index,
+    children: [
+      {
+        path: 'home',
+        name: 'index/home',
+        component: Home,
+      },
+      {
+        path: 'app',
+        name: 'index/app',
+        component: App,
+      },
+      {
+        path: 'my',
+        name: 'index/my',
+        component: My,
+      },
+      {
+        path: 'news',
+        name: 'index/news',
+        component: News,
+      },
+      {
+        path: 'news/:id',
+        name: 'index/new',
+        component: New,
+      },
+    ],
+  },
+]
 
 // 个人中心
 const myRouters = [
@@ -349,48 +387,21 @@ const point = [
   },
 ]
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
     {
       path: '/',
-      name: 'index',
-      redirect: { name: 'index/home' },
-      component: Index,
-      children: [
-        {
-          path: 'home',
-          name: 'index/home',
-          component: Home,
-        },
-        {
-          path: 'app',
-          name: 'index/app',
-          component: App,
-        },
-        {
-          path: 'my',
-          name: 'index/my',
-          component: My,
-        },
-        {
-          path: 'news',
-          name: 'index/news',
-          component: News,
-        },
-        {
-          path: 'news/:id',
-          name: 'index/new',
-          component: New,
-        },
-      ],
+      name: 'entry',
+      component: Entry,
     },
     {
       path: '/accept',
       name: 'accept',
       component: Accept,
     },
+    ...home,
     ...errand,
     ...group,
     ...activity,
@@ -405,3 +416,20 @@ export default new Router({
     ...point,
   ],
 })
+
+router.beforeEach((to, from, next) => {
+  const { name } = to
+  if (name === 'entry' || name === 'accept') {
+    next()
+    return
+  }
+
+  if (store.getters.user.id) {
+    next()
+    return
+  }
+
+  next('/')
+})
+
+export default router
