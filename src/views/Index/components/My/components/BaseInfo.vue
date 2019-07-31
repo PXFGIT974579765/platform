@@ -55,7 +55,7 @@
           title="请选择学校"
           @closed="closeSchool"
         >
-          <p v-for="item in school" :key="item">{{ item }}</p>
+          <p v-for="item in school" :key="item.text">{{ item.text }}</p>
         </van-action-sheet>
       </van-cell>
       <van-cell title="专业" class="cell" value="计算机科学与技术" is-link />
