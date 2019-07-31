@@ -12,7 +12,7 @@ export default {
     const { code } = this.$route.query
 
     this.$http
-      .post('/wxmp-anon/client/credentials', {
+      .post('/api-wxmp/wxmp-anon/client/credentials', {
         code: code,
       })
       .then(({ data }) => {

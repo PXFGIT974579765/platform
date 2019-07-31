@@ -15,7 +15,7 @@ export default {
     }
 
     this.$http
-      .post('/wxmp-anon/client/wxUrl', {
+      .post('/api-wxmp/wxmp-anon/client/wxUrl', {
         url: process.env.VUE_APP_REDIRECT,
       })
       .then(({ data }) => {

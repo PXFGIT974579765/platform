@@ -161,6 +161,12 @@ export default {
     }
   },
 
+  created() {
+    this.$http.get('/api-media/news-anon/news/dynamicNews').then(({ data }) => {
+      console.log(data)
+    })
+  },
+
   methods: {
     onSearch() {
       //
