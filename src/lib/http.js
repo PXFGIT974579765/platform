@@ -1,8 +1,21 @@
 import axios from 'axios'
 
 const http = axios.create({
-  //baseURL: 'http://j24i562194.wicp.vip',
-  baseURL: 'http://47.99.78.52:1119/api-wxmp/',
+  baseURL: process.env.VUE_APP_API_BASE,
 })
+
+http.interceptors.request.use(
+  config => {
+    config.data = {
+      ...config.data,
+      sourceType: 4,
+      sign: process.env.VUE_APP_API_SIGN,
+    }
+    return config
+  },
+  function(error) {
+    return Promise.reject(error)
+  }
+)
 
 export default http

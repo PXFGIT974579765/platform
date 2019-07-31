@@ -1,31 +1,29 @@
 <template>
-  <p>code: {{ code }} state: {{ state }}</p>
+  <div></div>
 </template>
 
 <script>
-import http from '@/lib/http'
+import { mapActions } from 'vuex'
 
 export default {
-  data() {
-    return {
-      code: '',
-      state: '',
-    }
-  },
+  methods: mapActions(['setUser', 'setAccess']),
 
   created() {
-    const { code, state } = this.$route.query
-    this.code = code
-    this.state = state
-    console.log(code, state)
-    http
+    const { code } = this.$route.query
+
+    this.$http
       .post('/wxmp-anon/client/credentials', {
-        sign: '9ae4934e5068f95e05975669eb182ce7',
         code: code,
-        sourceType: 4,
       })
       .then(({ data }) => {
-        console.log(data)
+        if (data.resp_code !== 0) {
+          this.$router.push('/')
+          return
+        }
+        const { accessToken, userInfo } = data.datas
+        this.setUser(userInfo)
+        this.setAccess(accessToken)
+        this.$router.push('/index/home')
       })
   },
 }

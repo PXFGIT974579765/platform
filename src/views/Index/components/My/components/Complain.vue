@@ -97,9 +97,7 @@ export default {
     routeDetail(item) {
       this.$router.push(`/my/complain-detail/${item}`)
     },
-    onContentChange(v) {
-      console.log(v)
-    },
+    onContentChange() {},
   },
   watch: {
     content: function(value) {
