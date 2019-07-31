@@ -6,13 +6,15 @@
           <img src="~@/assets/images/avatar.png" alt class="avatar" />
         </div>
       </van-cell>
+
       <van-cell
         title="昵称"
         class="cell"
         value="小刘哥"
         value-class="right-20"
       />
-      <van-cell title="姓名" class="cell" value="刘国贵" is-link>
+
+      <van-cell title="姓名" class="cell" is-link>
         <van-field
           v-model="baseInfo.name"
           class="input"
@@ -21,8 +23,10 @@
           placeholder="请输入姓名"
         />
       </van-cell>
+
       <van-cell title="性别" class="cell" value="男" is-link />
-      <van-cell title="手机号码" class="cell" value="199****1144" is-link>
+
+      <van-cell title="手机号码" class="cell" is-link>
         <van-field
           v-model="baseInfo.phone"
           class="input"
@@ -31,7 +35,8 @@
           placeholder="请输入手机号"
         />
       </van-cell>
-      <van-cell title="电子邮箱" class="cell" value="540***202@qq.com" is-link>
+
+      <van-cell title="电子邮箱" class="cell" is-link>
         <van-field
           v-model="baseInfo.email"
           class="input"
@@ -46,25 +51,68 @@
       <van-cell
         title="学校"
         class="cell"
-        value="贵州师范大学"
+        :value="baseInfo.school"
         is-link
-        @click.prevent="selectSchool"
-      >
-        <van-action-sheet
-          v-show="showSchool"
-          title="请选择学校"
-          @closed="closeSchool"
-        >
-          <p v-for="item in school" :key="item.text">{{ item.text }}</p>
-        </van-action-sheet>
+        @click="selectSchool"
+      />
+
+      <van-cell
+        title="专业"
+        class="cell"
+        :value="baseInfo.majors"
+        is-link
+        @click="selectMajors"
+      />
+
+      <van-cell title="班级" class="cell" value="18级2班" is-link>
+        <van-field
+          v-model="baseInfo.clas"
+          class="input"
+          clearable
+          input-align="right"
+          placeholder="请输入班级"
+        />
       </van-cell>
-      <van-cell title="专业" class="cell" value="计算机科学与技术" is-link />
-      <van-cell title="班级" class="cell" value="18级2班" is-link />
     </van-cell-group>
 
     <div class="footer">
       <div class="btn-submit">提交</div>
     </div>
+
+    <!-- 弹框部分 -->
+    <van-action-sheet
+      v-model="showSchool"
+      title="请选择学校"
+      @closed="closeSchool"
+    >
+      <div class="selection">
+        <p
+          :class="['item', baseInfo.school === item.shoolName && 'light']"
+          v-for="item in school"
+          :key="item.shoolName"
+          @click="onSchoolItemSelect(item.shoolName)"
+        >
+          {{ item.shoolName }}
+        </p>
+      </div>
+    </van-action-sheet>
+
+    <van-action-sheet
+      v-model="showMajors"
+      title="请选择学院"
+      @closed="closeMajors"
+    >
+      <div class="selection">
+        <p
+          :class="['item', baseInfo.majors === item.departmentName && 'light']"
+          v-for="item in majorsList"
+          :key="item.departmentName"
+          @click="onMajorsItemSelect(item.departmentName)"
+        >
+          {{ item.departmentName }}
+        </p>
+      </div>
+    </van-action-sheet>
   </div>
 </template>
 
@@ -73,18 +121,34 @@ export default {
   data() {
     return {
       showSchool: false,
+      showMajors: false,
       baseInfo: {
         name: '刘小刘',
         phone: '13985321425',
         email: '9745944@qq.com',
-        school: '贵州师范大学',
-        majors: '计算机科学与技术',
+        school: '贵州大学',
+        majors: '大数据学院',
         clas: '计算机2班',
       },
       school: [
-        { text: '贵州师范大学', value: 0 },
-        { text: '贵州财经大学', value: 1 },
-        { text: '贵州农业学院', value: 2 },
+        {
+          shoolId: '1150671849489022976',
+          shoolName: '贵州大学',
+        },
+        {
+          shoolId: '1150696830930464768',
+          shoolName: '贵州医科大学',
+        },
+        {
+          shoolId: '1151872414680543232',
+          shoolName: '贵州民族大学',
+        },
+      ],
+      majorsList: [
+        {
+          departmentName: '大数据学院',
+          departId: '1156377442775064576',
+        },
       ],
     }
   },
@@ -94,6 +158,20 @@ export default {
     },
     closeSchool() {
       this.showSchool = false
+    },
+    selectMajors() {
+      this.showMajors = true
+    },
+    closeMajors() {
+      this.showMajors = false
+    },
+    onSchoolItemSelect(value) {
+      this.baseInfo.school = value
+      this.showSchool = false
+    },
+    onMajorsItemSelect(value) {
+      this.baseInfo.majors = value
+      this.showMajors = false
     },
   },
 }
@@ -120,6 +198,22 @@ export default {
       height: 55px;
       line-height: 55px;
       align-items: center;
+    }
+  }
+
+  .selection {
+    max-height: 400px;
+    overflow-y: scroll;
+
+    .item {
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      border-bottom: 1px dashed #eee;
+    }
+
+    .light {
+      color: #07c2af;
     }
   }
 
