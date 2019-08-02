@@ -1,47 +1,17 @@
 <template>
   <div class="news">
-    <router-link to="/news/1" class="new-link">
+    <router-link
+      v-for="d in dynamicNews"
+      :key="d.contentId"
+      :to="`/index/news/${d.contentId}`"
+      class="new-link"
+    >
       <new-item
-        :title="'庆祝改革开放40周年贵州启动首届师生摄影大赛'"
-        :date="'01.25'"
+        :key="d.contentId"
+        :title="d.title"
+        :date="d.releaseDate"
         :read="452"
-        :image="require('@/assets/images/new.png')"
-      />
-    </router-link>
-
-    <router-link to="/news/1" class="new-link">
-      <new-item
-        :title="'庆祝改革开放40周年贵州启动首届师生摄影大赛'"
-        :date="'01.25'"
-        :read="452"
-        :image="require('@/assets/images/new.png')"
-      />
-    </router-link>
-
-    <router-link to="/news/1" class="new-link">
-      <new-item
-        :title="'庆祝改革开放40周年贵州启动首届师生摄影大赛'"
-        :date="'01.25'"
-        :read="452"
-        :image="require('@/assets/images/new.png')"
-      />
-    </router-link>
-
-    <router-link to="/news/1" class="new-link">
-      <new-item
-        :title="'庆祝改革开放40周年贵州启动首届师生摄影大赛'"
-        :date="'01.25'"
-        :read="452"
-        :image="require('@/assets/images/new.png')"
-      />
-    </router-link>
-
-    <router-link to="/news/1" class="new-link">
-      <new-item
-        :title="'庆祝改革开放40周年贵州启动首届师生摄影大赛'"
-        :date="'01.25'"
-        :read="452"
-        :image="require('@/assets/images/new.png')"
+        :image="d.headerImage.split('@')[0]"
       />
     </router-link>
   </div>
@@ -53,6 +23,24 @@ import NewItem from '@/components/NewItem'
 export default {
   components: {
     NewItem,
+  },
+
+  data() {
+    return {
+      dynamicNews: [],
+    }
+  },
+
+  created() {
+    this.$http
+      .get('/api-media/news-anon/news/dynamicNewsPage', {
+        params: { pageIndex: 1, pageSize: 20 },
+      })
+      .then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.dynamicNews = data.datas.data
+        }
+      })
   },
 }
 </script>

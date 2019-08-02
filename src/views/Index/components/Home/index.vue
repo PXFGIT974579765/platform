@@ -63,27 +63,24 @@
     <div class="block news">
       <div class="block-header">
         <div class="block-title">动态</div>
-        <router-link to="/news" class="block-header-link">更多动态</router-link>
+        <router-link to="/index/news" class="block-header-link"
+          >更多动态</router-link
+        >
       </div>
       <div class="block-content">
-        <new-item
-          :title="'庆祝改革开放40周年贵州启动首届师生摄影大赛'"
-          :date="'01.25'"
-          :read="452"
-          :image="require('@/assets/images/new.png')"
-        />
-        <new-item
-          :title="'庆祝改革开放40周年贵州启动首届师生摄影大赛'"
-          :date="'01.25'"
-          :read="452"
-          :image="require('@/assets/images/new.png')"
-        />
-        <new-item
-          :title="'庆祝改革开放40周年贵州启动首届师生摄影大赛'"
-          :date="'01.25'"
-          :read="452"
-          :image="require('@/assets/images/new.png')"
-        />
+        <router-link
+          v-for="d in dynamicNews"
+          :key="d.contentId"
+          :to="`/index/news/${d.contentId}`"
+          class="new-link"
+        >
+          <new-item
+            :title="d.title"
+            :date="d.releaseDate"
+            :read="452"
+            :image="d.headerImage.split('@')[0]"
+          />
+        </router-link>
       </div>
     </div>
 
@@ -158,12 +155,15 @@ export default {
           clickable: true,
         },
       },
+      dynamicNews: [],
     }
   },
 
   created() {
     this.$http.get('/api-media/news-anon/news/dynamicNews').then(({ data }) => {
-      console.log(data)
+      if (data.resp_code === 0) {
+        this.dynamicNews = data.datas
+      }
     })
   },
 

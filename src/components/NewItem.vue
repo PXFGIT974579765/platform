@@ -35,11 +35,16 @@ export default {
 }
 .new-desc {
   flex: 1;
+  overflow: hidden;
 }
 .new-title {
   margin-bottom: 12px;
   line-height: 1.4;
   font-size: 16px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   color: #212121;
 }
 .new-info {
