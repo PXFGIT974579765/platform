@@ -170,6 +170,13 @@ export default {
       ],
     }
   },
+  created() {
+    this.$http.get('/foreignUser/wxUserInfo/userInfo').then(({ data }) => {
+      if (data.resp_code === 0) {
+        this.baseInfo = data.datas
+      }
+    })
+  },
   methods: {
     selectSchool() {
       this.showSchool = true

@@ -14,6 +14,8 @@ http.interceptors.request.use(
       // openSecret: process.env.VUE_APP_OPENSECRET,
       sign: process.env.VUE_APP_API_SIGN,
       access_token: store.getters.access.access_token,
+      // openId: store.getters.user.openId,
+      // userId: store.getters.user.id,
     }
 
     switch (config.method) {
