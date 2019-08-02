@@ -26,6 +26,12 @@ export default new Vuex.Store({
       state.access = payload
       local.set('access', payload)
     },
+    clearUser(state) {
+      state.user = {}
+      state.access = {}
+      local.remove('user')
+      local.remove('access')
+    },
   },
   actions: {
     setUser(context, data) {
@@ -33,6 +39,9 @@ export default new Vuex.Store({
     },
     setAccess(context, data) {
       context.commit('setAccess', data)
+    },
+    clearUser(context) {
+      context.commit('clearUser')
     },
   },
 })
