@@ -17,14 +17,21 @@ http.interceptors.request.use(
       access_token: store.getters.access.access_token,
     }
 
-    config.data = {
-      ...config.data,
-      ...options,
+    switch (config.method) {
+      case 'get':
+        config.params = {
+          ...config.params,
+          ...options,
+        }
+        break
+      case 'post':
+        config.data = {
+          ...config.data,
+          ...options,
+        }
+        break
     }
-    config.params = {
-      ...config.params,
-      ...options,
-    }
+
     return config
   },
   function(error) {
