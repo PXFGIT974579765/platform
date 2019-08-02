@@ -45,6 +45,29 @@ export default {
     NewInfo,
     NewItem,
   },
+
+  data() {
+    return {
+      articleDetail: {},
+      detailAd: {},
+      recommens: {},
+    }
+  },
+
+  created() {
+    this.$http
+      .get('/api-media/news-anon/news/findDynamicNewsDetail', {
+        params: { contentId: this.$route.params.id },
+      })
+      .then(({ data }) => {
+        if (data.resp_code === 0) {
+          const { articleDetail, detailAd, recommens } = data.datas
+          this.articleDetail = articleDetail
+          this.detailAd = detailAd
+          this.recommens = recommens
+        }
+      })
+  },
 }
 </script>
 

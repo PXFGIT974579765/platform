@@ -1,7 +1,7 @@
 <template>
   <div class="new-info">
     <span class="new-date">{{ date }}</span>
-    <span class="new-read">阅读：{{ read }} 次</span>
+    <!-- <span class="new-read">阅读：{{ read }} 次</span> -->
   </div>
 </template>
 
