@@ -24,7 +24,16 @@
         />
       </van-cell>
 
-      <van-cell title="性别" class="cell" value="男" is-link />
+      <van-cell title="性别" class="cell">
+        <van-radio-group v-model="baseInfo.gender" class="group flex">
+          <van-radio :name="1" checked-color="#07c160" class="radio"
+            >男</van-radio
+          >
+          <van-radio :name="0" checked-color="#07c160" class="radio"
+            >女</van-radio
+          >
+        </van-radio-group>
+      </van-cell>
 
       <van-cell title="手机号码" class="cell" is-link>
         <van-field
@@ -72,6 +81,13 @@
           input-align="right"
           placeholder="请输入班级"
         />
+      </van-cell>
+
+      <van-cell title="身份认证" class="cell" is-link>
+        <span v-if="baseInfo.isAuthed">请上传学生证</span>
+        <span v-else class="is-authed" @click="routeStudentCard">
+          <span class="iconfont">&#xe75e;</span>已认证</span
+        >
       </van-cell>
     </van-cell-group>
 
@@ -124,11 +140,13 @@ export default {
       showMajors: false,
       baseInfo: {
         name: '刘小刘',
+        gender: 1,
         phone: '13985321425',
         email: '9745944@qq.com',
         school: '贵州大学',
         majors: '大数据学院',
         clas: '计算机2班',
+        isAuthed: 0,
       },
       school: [
         {
@@ -173,6 +191,9 @@ export default {
       this.baseInfo.majors = value
       this.showMajors = false
     },
+    routeStudentCard() {
+      this.$router.push('/my/student-card')
+    },
   },
 }
 </script>
@@ -198,6 +219,29 @@ export default {
       height: 55px;
       line-height: 55px;
       align-items: center;
+    }
+  }
+
+  .group {
+    margin-right: 20px;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+
+    .radio {
+      &:first-child {
+        margin-right: 30px;
+      }
+    }
+  }
+
+  .is-authed {
+    color: #06a505;
+
+    span {
+      &:first-child {
+        margin-right: 10px;
+      }
     }
   }
 

@@ -13,6 +13,7 @@ import New from './views/Index/components/New'
 // 个人中心
 import My from './views/Index/components/My'
 import BaseInfo from './views/Index/components/My/components/BaseInfo'
+import StudentCard from './views/Index/components/My/components/StudentCard'
 import Score from './views/Index/components/My/components/Score'
 import Sign from './views/Index/components/My/components/Sign'
 import Level from './views/Index/components/My/components/Level'
@@ -120,6 +121,12 @@ const myRouters = [
     name: 'index/my/score',
     component: Score,
     meta: { title: '个人积分' },
+  },
+  {
+    path: '/my/student-card',
+    name: 'index/my/student-card',
+    component: StudentCard,
+    meta: { title: '上传证件' },
   },
   {
     path: '/my/sign',
