@@ -4,7 +4,6 @@ import router from '@/router'
 
 const http = axios.create({
   baseURL: process.env.VUE_APP_API_BASE,
-  headers: { Authorization: process.env.VUE_APP_AUTHORIZATION },
 })
 
 http.interceptors.request.use(
@@ -25,6 +24,12 @@ http.interceptors.request.use(
         }
         break
       case 'post':
+        if (store.getters.access.access_token) {
+          config.headers = {
+            ...config.headers,
+            headers: { Authorization: store.getters.access.access_token },
+          }
+        }
         config.data = {
           ...config.data,
           ...options,
