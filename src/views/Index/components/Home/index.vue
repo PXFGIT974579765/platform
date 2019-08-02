@@ -90,32 +90,15 @@
         <router-link to="/group" class="block-header-link">更多</router-link>
       </div>
       <van-grid :gutter="15" :column-num="2" class="block-content">
-        <van-grid-item to="/group/detail/1">
+        <van-grid-item
+          v-for="g in groups"
+          :key="g.id"
+          :to="`/group/detail/${g.id}`"
+        >
           <div class="group-item">
-            <img src="./images/shop.png" alt />
-            <div class="group-name">植护纯木抽纸</div>
-            <div class="group-price">¥ 50.45</div>
-          </div>
-        </van-grid-item>
-        <van-grid-item to="/group/detail/1">
-          <div class="group-item">
-            <img src="./images/shop.png" alt />
-            <div class="group-name">植护纯木抽纸</div>
-            <div class="group-price">¥ 50.45</div>
-          </div>
-        </van-grid-item>
-        <van-grid-item to="/group/detail/1">
-          <div class="group-item">
-            <img src="./images/shop.png" alt />
-            <div class="group-name">植护纯木抽纸</div>
-            <div class="group-price">¥ 50.45</div>
-          </div>
-        </van-grid-item>
-        <van-grid-item to="/group/detail/1">
-          <div class="group-item">
-            <img src="./images/shop.png" alt />
-            <div class="group-name">植护纯木抽纸</div>
-            <div class="group-price">¥ 50.45</div>
+            <img :src="g.picUrl" alt />
+            <div class="group-name van-ellipsis">{{ g.name }}</div>
+            <div class="group-price">¥ {{ g.price }}</div>
           </div>
         </van-grid-item>
       </van-grid>
@@ -156,6 +139,7 @@ export default {
         },
       },
       dynamicNews: [],
+      groups: [],
     }
   },
 
@@ -165,6 +149,14 @@ export default {
         this.dynamicNews = data.datas
       }
     })
+
+    this.$http
+      .get('/api-wxmp/cxxz/assemble/findNewestList')
+      .then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.groups = data.datas
+        }
+      })
   },
 
   methods: {
@@ -331,6 +323,11 @@ nav {
   margin-top: 50px;
 }
 
+.van-grid-item,
+/deep/ .van-grid-item__content {
+  overflow: hidden;
+}
+
 .group {
   margin-top: 36px;
   padding: 0;
@@ -338,7 +335,7 @@ nav {
     padding: 0 15px;
   }
   .group-item {
-    padding: 25px 15px 15px;
+    padding: 15px 15px 15px;
     border-radius: 4px;
     background: #effffe;
   }
