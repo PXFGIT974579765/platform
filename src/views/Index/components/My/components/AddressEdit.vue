@@ -43,19 +43,28 @@
 
     <div class="btn-submit">保存</div>
     <van-action-sheet class="area" v-model="areaShow">
-      <van-area :area-list="areaList" @confirm="confirm" @cancel="cancel" />
+      <!-- <van-area :area-list="areaList" @confirm="confirm" @cancel="cancel" /> -->
+      <van-picker
+        :columns="colnums"
+        @change="onChange"
+        :show-toolbar="true"
+        @confirm="onConfirm"
+      />
     </van-action-sheet>
   </div>
 </template>
 
 <script>
-import areaList from '@/mock/area.js'
+// import areaList from '@/mock/area.js'
 
 export default {
   data() {
     return {
       sex: '1',
-      areaList,
+      provinceList: [],
+      cityList: [],
+      countyList: [],
+      colnums: [],
       areaShow: false,
       area: '',
       address: {},
@@ -66,9 +75,78 @@ export default {
     if (address) {
       this.address = address
     }
+    this.fetchAreas()
   },
   methods: {
-    onLoad() {},
+    fetchAreas() {
+      this.$http.get('/api-wxmp/cxxz/address/findAreaAll').then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.areaList = { ...this.createAreaList(data.datas) }
+        }
+      })
+    },
+    onConfirm(value) {
+      this.areaShow = false
+      this.area = value.join('/')
+    },
+    onChange(picker, values) {
+      const province = values[0]
+      const city = values[1]
+
+      const proviceId = this.provinceList.find(
+        item => item.areaName == province
+      ).id
+      const cityId = this.cityList.find(item => item.areaName == city).id
+
+      const cityDefaultList = this.cityList.filter(
+        item => item.pId == proviceId
+      )
+      const countryDefaultList = this.countyList.filter(
+        item => item.pId == cityId
+      )
+
+      picker.setColumnValues(1, cityDefaultList.map(item => item.areaName))
+      picker.setColumnValues(2, countryDefaultList.map(item => item.areaName))
+    },
+
+    createAreaList(areaList) {
+      const provinceList = areaList.filter(item => item.areaType == 1)
+      const cityList = areaList.filter(item => item.areaType == 2)
+      const countyList = areaList.filter(item => item.areaType == 3)
+
+      this.provinceList = provinceList
+      this.cityList = cityList
+      this.countyList = countyList
+
+      const provinceDefaultIndex = 0
+      const cityDefaultIndex = 0
+      const countryDefaultIndex = 0
+
+      const provinceDefaultList = provinceList
+      const cityDefaultList = cityList.filter(
+        item => item.pId == provinceDefaultList[provinceDefaultIndex].id
+      )
+      const countryDefaultList = countyList.filter(
+        item => item.pId == cityDefaultList[cityDefaultIndex].id
+      )
+
+      const colnums = [
+        {
+          values: provinceDefaultList.map(item => item.areaName),
+          defaultIndex: provinceDefaultIndex,
+        },
+        {
+          values: cityDefaultList.map(item => item.areaName),
+          defaultIndex: cityDefaultIndex,
+        },
+        {
+          values: countryDefaultList.map(item => item.areaName),
+          defaultIndex: countryDefaultIndex,
+        },
+      ]
+
+      this.colnums = colnums
+    },
     showArea() {
       this.areaShow = true
     },

@@ -7,10 +7,10 @@
         class="address-item flex-col"
       >
         <div class="flex-between">
-          <span>{{ item.name }}</span>
-          <span>{{ item.phone }}</span>
+          <span>{{ item.trueName }}</span>
+          <span>{{ item.mobile }}</span>
         </div>
-        <span class="address">{{ item.address }}</span>
+        <span class="address">{{ item.address }} {{ item.detailAddress }}</span>
         <hr />
 
         <div class="flex-between">
@@ -36,27 +36,27 @@
 export default {
   data() {
     return {
-      defaultAddress: '123',
-      addressList: [
-        {
-          id: '123',
-          name: '刘国贵',
-          sex: '1',
-          phone: '19987451243',
-          address: '贵州省贵阳市花溪区大学城贵州师范大学科创园XXX',
-        },
-        {
-          id: '125',
-          name: '刘国贵',
-          sex: '1',
-          phone: '19987451243',
-          address: '贵州省贵阳市花溪区大学城贵州师范大学科创园XXX',
-        },
-      ],
+      defaultAddress: '',
+      addressList: [],
     }
   },
+  created() {
+    this.fetchInfo()
+  },
   methods: {
-    onLoad() {},
+    fetchInfo() {
+      this.$http
+        .get('/api-wxmp/cxxz/address/findAddressByUserId')
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.addressList = data.datas
+            const defualtAddr = this.addressList.find(
+              item => item.defualtStatus == 1
+            )
+            this.defaultAddress = defualtAddr.id
+          }
+        })
+    },
     routeAdd() {
       this.$router.push({
         path: '/my/address-edit',
