@@ -8,24 +8,14 @@
       :border="false"
       :swipe-threshold="5"
     >
-      <van-tab title="未使用">
+      <van-tab
+        v-for="type in couponTypes"
+        :key="type.status"
+        :title="type.statusName"
+      >
         <ul>
-          <li v-for="(item, index) in couponFilter(0)" :key="index">
-            <coupon :coupon="item" />
-          </li>
-        </ul>
-      </van-tab>
-      <van-tab title="已使用">
-        <ul>
-          <li v-for="(item, index) in couponFilter(1)" :key="index">
-            <coupon :coupon="item" />
-          </li>
-        </ul>
-      </van-tab>
-      <van-tab title="已过期">
-        <ul>
-          <li v-for="(item, index) in couponFilter(2)" :key="index">
-            <coupon :coupon="item" />
+          <li v-for="item in couponFilter(type.status)" :key="item.id">
+            <coupon-card :coupon="item" />
           </li>
         </ul>
       </van-tab>
@@ -34,62 +24,35 @@
 </template>
 
 <script>
-import Coupon from '@/components/Coupon'
+import CouponCard from '@/components/Coupon'
 
 export default {
   components: {
-    Coupon,
+    CouponCard,
   },
 
   data() {
     return {
       active: 0,
-      coupons: [
-        {
-          amount: 10,
-          fullAmount: 50,
-          name: '超值神券',
-          desc: '打印抵扣券',
-          fromTime: 1500000000,
-          toTime: 1500000000,
-          status: 0, // 0 未使用   1 已使用  2 已过期
-        },
-        {
-          amount: 10,
-          fullAmount: 50,
-          name: '超值神券',
-          desc: '打印抵扣券',
-          fromTime: 1500000000,
-          toTime: 1500000000,
-          status: 0, // 0 未使用   1 已使用  2 已过期
-        },
-        {
-          amount: 10,
-          fullAmount: 50,
-          name: '超值神券',
-          desc: '打印抵扣券',
-          fromTime: 1500000000,
-          toTime: 1500000000,
-          status: 1, // 0 未使用   1 已使用  2 已过期
-        },
-        {
-          amount: 10,
-          fullAmount: 50,
-          name: '超值神券',
-          desc: '打印抵扣券',
-          fromTime: 1500000000,
-          toTime: 1500000000,
-          status: 2, // 0 未使用   1 已使用  2 已过期
-        },
-      ],
+      couponTypes: [],
+      couponList: [],
     }
   },
+  created() {
+    this.fetchInfo()
+  },
   methods: {
-    onLoad() {},
-    couponFilter: function(status) {
-      return this.coupons.filter(function(item) {
-        return item.status === status
+    fetchInfo() {
+      this.$http.get('/api-wxmp/cxxz/coupon/findCoupons').then(({ data }) => {
+        if (data.resp_code === 0) {
+          const { couponTypes, couponList } = data.datas
+          this.couponTypes = couponTypes
+          this.couponList = couponList
+        }
       })
+    },
+    couponFilter: function(status) {
+      return this.couponList.filter(item => item.status == status)
     },
   },
   computed: {},
@@ -103,6 +66,7 @@ export default {
   ul {
     margin-top: 4px;
     padding: 0 15px;
+    margin-bottom: 50px;
 
     li {
       margin-top: 20px;

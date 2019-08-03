@@ -1,42 +1,42 @@
 <template>
   <div class="comp-coupon flex">
     <div class="coupon-left flex-col">
-      <span :class="[coupon.status === 0 ? 'color0' : 'color1']">
-        <span :class="[coupon.status === 2 ? 'color1' : 'color0']">￥</span>
-        <span :class="['amount', coupon.status === 2 ? 'color1' : 'color0']">{{
-          coupon.amount
+      <span :class="[coupon.status === 1 ? 'color0' : 'color1']">
+        <span :class="[coupon.status === 3 ? 'color1' : 'color0']">￥</span>
+        <span :class="['amount', coupon.status === 3 ? 'color1' : 'color0']">{{
+          coupon.minGoodsAmount
         }}</span>
       </span>
       <span
         :class="[
           'name',
-          coupon.status === 2 ? 'color1' : 'color0',
-          coupon.status === 2 ? 'name-bg1' : 'name-bg0',
+          coupon.status === 3 ? 'color1' : 'color0',
+          coupon.status === 3 ? 'name-bg1' : 'name-bg0',
         ]"
-        >{{ coupon.name }}</span
+        >超值神券</span
       >
     </div>
     <div class="coupon-right flex flex-1">
-      <div class="desc-block flex-col flex-1">
-        <span class="desc">{{ coupon.desc }}</span>
+      <div class="desc-block flex-1">
+        <div class="desc">{{ coupon.name }}</div>
         <span
           :class="[
             'detail-desc',
-            coupon.status === 2 ? 'color1' : 'color0',
-            coupon.status === 2 ? 'border1' : 'border0',
+            coupon.status === 3 ? 'color1' : 'color0',
+            coupon.status === 3 ? 'border1' : 'border0',
           ]"
-          >满 {{ coupon.fullAmount }} 减 {{ coupon.amount }}</span
+          >满 {{ coupon.minGoodsAmount }} 减 {{ coupon.typeMoney }}</span
         >
-        <span class="time"
-          >{{ coupon.fromTime | formatDate }} -
-          {{ coupon.toTime | formatDate }}</span
-        >
+        <div class="time">
+          {{ coupon.useStartDate | dateFilter }} -
+          {{ coupon.useEndDate | dateFilter }}
+        </div>
       </div>
-      <div :class="['btn-status', coupon.status === 0 ? 'btn-bg0' : 'btn-bg1']">
+      <div :class="['btn-status', coupon.status === 1 ? 'btn-bg0' : 'btn-bg1']">
         {{
-          coupon.status === 0
+          coupon.status === 1
             ? '未使用'
-            : coupon.status === 1
+            : coupon.status === 2
             ? '已使用'
             : '已过期'
         }}
@@ -46,14 +46,13 @@
 </template>
 
 <script>
-import { date } from '@/lib/format'
-
 export default {
   props: {
     coupon: Object,
   },
+
   filters: {
-    formatDate: date,
+    dateFilter: value => value.slice(0, 10),
   },
 }
 </script>
@@ -175,12 +174,12 @@ export default {
     }
 
     .detail-desc {
-      width: 85px;
       margin-top: 10px;
+      display: inline-block;
       font-size: 10px;
       border-radius: 10px;
       text-align: center;
-      padding: 3px 6px;
+      padding: 3px;
     }
 
     .time {
