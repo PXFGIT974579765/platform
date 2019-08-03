@@ -29,7 +29,7 @@ http.interceptors.request.use(
         if (store.getters.access.access_token) {
           config.headers = {
             ...config.headers,
-            headers: { Authorization: store.getters.access.access_token },
+            Authorization: 'bearer' + store.getters.access.access_token,
           }
         }
         config.data = {

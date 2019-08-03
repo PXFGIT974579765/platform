@@ -43,6 +43,9 @@
           type="tel"
           input-align="right"
           placeholder="请输入手机号"
+          error-message-align="right"
+          :error-message="err.phone"
+          @input="onPhoneHandler"
         />
       </van-cell>
 
@@ -54,6 +57,9 @@
           type="email"
           input-align="right"
           placeholder="请输入电子邮箱"
+          error-message-align="right"
+          :error-message="err.email"
+          @input="onEmailHandler"
         />
       </van-cell>
     </van-cell-group>
@@ -86,7 +92,7 @@
       </van-cell>
 
       <van-cell title="身份认证" class="cell" is-link>
-        <span v-if="user.isReviewed">请上传学生证</span>
+        <span v-if="!user.isReviewed">请上传学生证</span>
         <span v-else class="is-authed" @click="routeStudentCard">
           <span class="iconfont">&#xe75e;</span>已认证
         </span>
@@ -105,12 +111,12 @@
     >
       <div class="selection">
         <p
-          :class="['item', user.school === item.shoolName && 'light']"
+          :class="['item', user.school === item.schoolName && 'light']"
           v-for="item in school"
           :key="item.shoolName"
-          @click="onSchoolItemSelect(item.shoolName)"
+          @click="onSchoolItemSelect(item.schoolName)"
         >
-          {{ item.shoolName }}
+          {{ item.schoolName }}
         </p>
       </div>
     </van-action-sheet>
@@ -135,20 +141,91 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
+const ERR = {
+  EMAIL: '邮箱格式错误',
+  PHONE: '手机格式错误',
+}
 export default {
   computed: mapGetters(['user']),
+
   data() {
     return {
       showSchool: false,
       showMajors: false,
       school: [],
       majorsList: [],
+      err: {
+        phone: '',
+        email: '',
+      },
     }
   },
   created() {},
   methods: {
+    ...mapActions(['setUser']),
+
+    // 学校选择
+    selectSchool() {
+      this.fetchSchool()
+      this.showSchool = true
+    },
+    closeSchool() {
+      this.showSchool = false
+    },
+    onSchoolItemSelect(value) {
+      this.user.school = value
+      this.showSchool = false
+    },
+
+    // 学院选择
+    selectMajors() {
+      const school = this.school.find(
+        item => item.schoolName === this.user.school
+      )
+      const schoolId = school && school.schoolId
+      this.fetchMajorsList(schoolId)
+      this.showMajors = true
+    },
+    closeMajors() {
+      this.showMajors = false
+    },
+    onMajorsItemSelect(value) {
+      this.user.majors = value
+      this.showMajors = false
+    },
+
+    // 学生证路由
+    routeStudentCard() {
+      this.$router.push('/my/student-card')
+    },
+
+    // 邮箱校验
+    onEmailHandler(value) {
+      if (value !== '') {
+        var reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+        if (!reg.test(value)) {
+          this.err.email = ERR.EMAIL
+        } else {
+          this.err.email = ''
+        }
+      }
+    },
+
+    // 电话校验
+    onPhoneHandler(value) {
+      if (value !== '') {
+        var reg = /^1[3456789]\d{9}$/
+        if (!reg.test(value)) {
+          this.err.phone = ERR.PHONE
+        } else {
+          this.err.phone = ''
+        }
+      }
+    },
+
+    // 请求学校数据
     fetchSchool() {
       this.$http.get('/api-wxmp/cxxz/school/findSchools').then(({ data }) => {
         if (data.resp_code === 0) {
@@ -156,6 +233,8 @@ export default {
         }
       })
     },
+
+    // 请求学院数据
     fetchMajorsList(schoolId) {
       this.$http
         .get('/api-wxmp/cxxz/school/findDepartments', {
@@ -165,39 +244,23 @@ export default {
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
-            this.school = data.datas
+            this.majorsList = data.datas
           }
         })
     },
-    selectSchool() {
-      this.fetchSchool()
-      this.showSchool = true
+
+    // 提交修改
+    onSubmit() {
+      this.$http
+        .post('/api-wxmp/cxxz/registerUser/registerUserInfo', {
+          ...this.user,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.setUser(this.user)
+          }
+        })
     },
-    closeSchool() {
-      this.showSchool = false
-    },
-    selectMajors() {
-      const schoolId = this.school.find(
-        item => item.schoolName === this.user.school
-      ).schoolId
-      this.fetchMajorsList(schoolId)
-      this.showMajors = true
-    },
-    closeMajors() {
-      this.showMajors = false
-    },
-    onSchoolItemSelect(value) {
-      this.user.school = value
-      this.showSchool = false
-    },
-    onMajorsItemSelect(value) {
-      this.user.majors = value
-      this.showMajors = false
-    },
-    routeStudentCard() {
-      this.$router.push('/my/student-card')
-    },
-    onSubmit() {},
   },
 }
 </script>
