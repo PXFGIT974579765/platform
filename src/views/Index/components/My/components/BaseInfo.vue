@@ -3,20 +3,20 @@
     <van-cell-group class="cell-group">
       <van-cell title="头像" class="cell" value-class="right-20">
         <div class="avatar-box">
-          <img src="~@/assets/images/avatar.png" alt class="avatar" />
+          <img :src="user.headImgUrl" alt class="avatar" />
         </div>
       </van-cell>
 
       <van-cell
         title="昵称"
         class="cell"
-        value="小刘哥"
+        :value="user.nicknameStr"
         value-class="right-20"
       />
 
       <van-cell title="姓名" class="cell" is-link>
         <van-field
-          v-model="baseInfo.name"
+          v-model="user.name"
           class="input"
           clearable
           input-align="right"
@@ -25,7 +25,7 @@
       </van-cell>
 
       <van-cell title="性别" class="cell">
-        <van-radio-group v-model="baseInfo.gender" class="group flex">
+        <van-radio-group v-model="user.gender" class="group flex">
           <van-radio :name="1" checked-color="#07c160" class="radio"
             >男</van-radio
           >
@@ -37,9 +37,10 @@
 
       <van-cell title="手机号码" class="cell" is-link>
         <van-field
-          v-model="baseInfo.phone"
+          v-model="user.phone"
           class="input"
           clearable
+          type="tel"
           input-align="right"
           placeholder="请输入手机号"
         />
@@ -47,11 +48,12 @@
 
       <van-cell title="电子邮箱" class="cell" is-link>
         <van-field
-          v-model="baseInfo.email"
+          v-model="user.email"
           class="input"
           clearable
+          type="email"
           input-align="right"
-          placeholder="请输入手机号"
+          placeholder="请输入电子邮箱"
         />
       </van-cell>
     </van-cell-group>
@@ -60,7 +62,7 @@
       <van-cell
         title="学校"
         class="cell"
-        :value="baseInfo.school"
+        :value="user.school"
         is-link
         @click="selectSchool"
       />
@@ -68,14 +70,14 @@
       <van-cell
         title="专业"
         class="cell"
-        :value="baseInfo.majors"
+        :value="user.majors"
         is-link
         @click="selectMajors"
       />
 
       <van-cell title="班级" class="cell" value="18级2班" is-link>
         <van-field
-          v-model="baseInfo.clas"
+          v-model="user.clas"
           class="input"
           clearable
           input-align="right"
@@ -84,15 +86,15 @@
       </van-cell>
 
       <van-cell title="身份认证" class="cell" is-link>
-        <span v-if="baseInfo.isAuthed">请上传学生证</span>
+        <span v-if="user.isReviewed">请上传学生证</span>
         <span v-else class="is-authed" @click="routeStudentCard">
-          <span class="iconfont">&#xe75e;</span>已认证</span
-        >
+          <span class="iconfont">&#xe75e;</span>已认证
+        </span>
       </van-cell>
     </van-cell-group>
 
     <div class="footer">
-      <div class="btn-submit">提交</div>
+      <div class="btn-submit" @click="onSubmit">提交</div>
     </div>
 
     <!-- 弹框部分 -->
@@ -103,7 +105,7 @@
     >
       <div class="selection">
         <p
-          :class="['item', baseInfo.school === item.shoolName && 'light']"
+          :class="['item', user.school === item.shoolName && 'light']"
           v-for="item in school"
           :key="item.shoolName"
           @click="onSchoolItemSelect(item.shoolName)"
@@ -120,7 +122,7 @@
     >
       <div class="selection">
         <p
-          :class="['item', baseInfo.majors === item.departmentName && 'light']"
+          :class="['item', user.majors === item.departmentName && 'light']"
           v-for="item in majorsList"
           :key="item.departmentName"
           @click="onMajorsItemSelect(item.departmentName)"
@@ -133,74 +135,69 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
+  computed: mapGetters(['user']),
   data() {
     return {
       showSchool: false,
       showMajors: false,
-      baseInfo: {
-        name: '刘小刘',
-        gender: 1,
-        phone: '13985321425',
-        email: '9745944@qq.com',
-        school: '贵州大学',
-        majors: '大数据学院',
-        clas: '计算机2班',
-        isAuthed: 0,
-      },
-      school: [
-        {
-          shoolId: '1150671849489022976',
-          shoolName: '贵州大学',
-        },
-        {
-          shoolId: '1150696830930464768',
-          shoolName: '贵州医科大学',
-        },
-        {
-          shoolId: '1151872414680543232',
-          shoolName: '贵州民族大学',
-        },
-      ],
-      majorsList: [
-        {
-          departmentName: '大数据学院',
-          departId: '1156377442775064576',
-        },
-      ],
+      school: [],
+      majorsList: [],
     }
   },
-  created() {
-    this.$http.get('/foreignUser/wxUserInfo/userInfo').then(({ data }) => {
-      if (data.resp_code === 0) {
-        this.baseInfo = data.datas
-      }
-    })
-  },
+  created() {},
   methods: {
+    fetchSchool() {
+      this.$http.get('/api-wxmp/cxxz/school/findSchools').then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.school = data.datas
+        }
+      })
+    },
+    fetchMajorsList(schoolId) {
+      this.$http
+        .get('/api-wxmp/cxxz/school/findDepartments', {
+          params: {
+            universityId: schoolId,
+          },
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.school = data.datas
+          }
+        })
+    },
     selectSchool() {
+      this.fetchSchool()
       this.showSchool = true
     },
     closeSchool() {
       this.showSchool = false
     },
     selectMajors() {
+      const schoolId = this.school.find(
+        item => item.schoolName === this.user.school
+      ).schoolId
+      this.fetchMajorsList(schoolId)
       this.showMajors = true
     },
     closeMajors() {
       this.showMajors = false
     },
     onSchoolItemSelect(value) {
-      this.baseInfo.school = value
+      this.user.school = value
       this.showSchool = false
     },
     onMajorsItemSelect(value) {
-      this.baseInfo.majors = value
+      this.user.majors = value
       this.showMajors = false
     },
     routeStudentCard() {
       this.$router.push('/my/student-card')
     },
+    onSubmit() {},
   },
 }
 </script>

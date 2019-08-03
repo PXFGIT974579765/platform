@@ -1,43 +1,35 @@
 <template>
   <div class="person-desc flex">
     <div class="avatar">
-      <img src="~@/assets/images/avatar.png" alt />
-      <span :class="['iconfont', 'avatar-icon', info.isAuthed && 'authed']"
+      <img :src="user.headImgUrl" alt />
+      <span :class="['iconfont', 'avatar-icon', user.isReviewed && 'authed']"
         >&#xe76d;</span
       >
     </div>
     <div class="desc">
       <div>
-        <span class="name">{{ info.name }}</span>
+        <span class="name">Hi {{ user.name }}</span>
         <span class="level">
-          <span class="iconfont vip-icon">&#xe770;</span>{{ info.level }}
+          <span class="iconfont vip-icon">&#xe770;</span
+          >{{ user.levelName || '黄金会员' }}
         </span>
       </div>
       <div>
         <span class="iconfont">&#xe771;</span>
-        <span class="age">{{ info.age }}</span>
-        <span class="university">{{ info.university }}</span>
+        <!-- <span class="age">{{ info.age }}</span> -->
+        <span class="university"
+          >{{ user.school }} / {{ user.cardType || '学生' }}</span
+        >
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
-  props: {
-    info: {
-      type: Object,
-      default: function() {
-        return {
-          isAuthed: true,
-          name: 'Hi 小刘哥',
-          level: '黄金会员',
-          age: 22,
-          university: '贵州师范大学',
-        }
-      },
-    },
-  },
+  computed: mapGetters(['user']),
   data: function() {
     return {
       type: Object,
@@ -58,6 +50,10 @@ export default {
   margin-right: 15px;
   position: relative;
   border-radius: 100%;
+
+  img {
+    border-radius: 100%;
+  }
 
   .avatar-icon {
     position: absolute;

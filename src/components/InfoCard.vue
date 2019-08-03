@@ -7,27 +7,27 @@
       </button>
     </div>
 
-    <div v-if="isLogined">
-      <person-desc :info="info" />
+    <div v-if="true">
+      <person-desc />
 
       <hr />
 
       <div class="score">
         <div
-          :class="[isSign ? 'noSign' : 'isSign']"
-          v-if="!isSign"
+          :class="[user.isSign ? 'noSign' : 'isSign']"
+          v-if="!user.isSign"
           @click="signRoute"
         >
           <span>一键签到</span>
           <span>未签到</span>
         </div>
-        <div :class="[isSign ? 'noSign' : 'isSign']" @click="scoreRoute">
+        <div :class="[user.isSign ? 'noSign' : 'isSign']" @click="scoreRoute">
           <span>我的积分</span>
-          <span>{{ info.score }}</span>
+          <span>{{ user.integral }}</span>
         </div>
-        <div :class="[isSign ? 'noSign' : 'isSign']" @click="levelRoute">
+        <div :class="[user.isSign ? 'noSign' : 'isSign']" @click="levelRoute">
           <span>我的排名</span>
-          <span>{{ info.top }}</span>
+          <span>{{ user.rankNo }}</span>
         </div>
       </div>
     </div>
@@ -41,8 +41,10 @@
 <script>
 import Search from '@/components/Search'
 import PersonDesc from '@/components/PersonDesc'
+import { mapGetters } from 'vuex'
 
 export default {
+  computed: mapGetters(['user']),
   components: {
     Search,
     PersonDesc,
@@ -62,17 +64,6 @@ export default {
   data() {
     return {
       value: '',
-      isLogined: true, // 是否登录
-      isSign: false, // 是否签单
-      info: {
-        isAuthed: true,
-        name: 'Hi 小刘哥',
-        level: '黄金会员',
-        top: 450,
-        score: 1724,
-        age: 22,
-        university: '贵州师范大学',
-      },
     }
   },
 

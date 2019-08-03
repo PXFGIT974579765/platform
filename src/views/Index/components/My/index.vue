@@ -1,6 +1,6 @@
 <template>
   <div class="page-my">
-    <info-card />
+    <info-card :hasSearch="false" />
 
     <van-notice-bar :text="notice" left-icon="volume-o" mode="closeable" />
 
@@ -8,7 +8,7 @@
       <span slot="icon" style="color:#07bfb7" class="iconfont icon"
         >&#xe779;</span
       >
-      <span class="value flex" v-if="hasOrders">
+      <span class="value flex" v-if="userInfo.orderNotify">
         你有未处理的订单
         <span class="dot"></span>
       </span>
@@ -18,7 +18,7 @@
       <van-cell
         class="cell"
         title="我的钱包"
-        :value="'￥' + coin"
+        :value="'￥' + userInfo.wallet"
         is-link
         to="/my/wallet"
       >
@@ -45,11 +45,12 @@
         value="有新的配送订单"
         is-link
         to="/my/distribution"
+        v-if="userInfo.isDeliveryman"
       >
         <span slot="icon" style="color:#7849ff" class="iconfont icon"
           >&#xe77a;</span
         >
-        <span class="value flex" v-if="hasDistribution">
+        <span class="value flex" v-if="userInfo.distributionNotify">
           有新的配送订单
           <span class="dot"></span>
         </span>
@@ -90,22 +91,40 @@
 
 <script>
 import InfoCard from '@/components/InfoCard'
+import { mapActions } from 'vuex'
 
 export default {
+  components: {
+    InfoCard,
+  },
   data() {
     return {
-      notice: '应国家监管要求，请尽快上传身份证进行实名认证',
-      hasOrders: true,
-      coin: 589.56,
-      hasDistribution: true,
+      notice: '',
+      userInfo: {},
+      cardInfo: {},
       ad: {
         imgUrl: require('./images/ad.png'),
         title: '邀请新人各得 【Rp 500.000】 奖励',
       },
     }
   },
-  components: {
-    InfoCard,
+  created() {
+    this.fetchInfo()
+  },
+  methods: {
+    ...mapActions(['setUser']),
+    fetchInfo() {
+      this.$http
+        .get('/api-wxmp/foreignUser/wxUserInfo/userInfo')
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            const { userInfo, notice } = data.datas
+            this.userInfo = userInfo
+            this.notice = notice
+            this.setUser(userInfo)
+          }
+        })
+    },
   },
 }
 </script>
