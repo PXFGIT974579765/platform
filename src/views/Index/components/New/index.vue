@@ -1,36 +1,30 @@
 <template>
   <div class="new-page">
     <div class="article">
-      <h1>2019 年数据和人工智能全景图</h1>
-      <new-info :date="'01.24'" :read="300" />
-      <p>
-        随着世界上网民越来越多，所有事物的“数据化”
-        都在继续加速。在基础设施、云计算、人工智能、开源以及我们经济和生活的整体数字化的交叉发展的推动下，这一大趋势如风起云涌、波澜壮阔的画卷。
-      </p>
-      <p>
-        几年前，关于“大数据”的讨论大多是技术性的，集中在新一代工具的出现上，这些工具可以收集、处理和分析海量数据。其中许多技术现在已经很好地被人们理解，并得到了大规模的部署。此外，特别是在过去的几年里，我们开始通过数据科学、机器学习和人工智能在许多应用中增加智能层，这些应用现在正越来越多地在各种消费类和
-        B2B 产品的生产中运行。
-      </p>
-      <img src="~@/assets/images/new_detail.png" alt />
+      <h1>{{ article.title }}</h1>
+      <new-info :date="article.releaseDate" :read="300" />
+      <div class="content" v-html="article.content"></div>
     </div>
 
-    <div class="block news">
+    <div class="block news" v-if="recommens.length > 0">
       <div class="block-header">
         <div class="block-title">相关推荐</div>
       </div>
       <div class="block-content">
-        <new-item
-          :title="'庆祝改革开放40周年贵州启动首届师生摄影大赛'"
-          :date="'01.25'"
-          :read="452"
-          :image="require('@/assets/images/new.png')"
-        />
-        <new-item
-          :title="'庆祝改革开放40周年贵州启动首届师生摄影大赛'"
-          :date="'01.25'"
-          :read="452"
-          :image="require('@/assets/images/new.png')"
-        />
+        <router-link
+          v-for="d in recommens"
+          :key="d.contentId"
+          :to="`/index/news/${d.contentId}`"
+          class="new-link"
+        >
+          <new-item
+            :key="d.contentId"
+            :title="d.title"
+            :date="d.releaseDate"
+            :read="452"
+            :image="d.headerImage.split('@')[0]"
+          />
+        </router-link>
       </div>
     </div>
   </div>
@@ -48,32 +42,42 @@ export default {
 
   data() {
     return {
-      articleDetail: {},
-      detailAd: {},
-      recommens: {},
+      article: {},
+      ad: {},
+      recommens: [],
     }
   },
 
   created() {
-    this.$http
-      .get('/api-media/news-anon/news/findDynamicNewsDetail', {
-        params: { contentId: this.$route.params.id },
-      })
-      .then(({ data }) => {
-        if (data.resp_code === 0) {
-          const { articleDetail, detailAd, recommens } = data.datas
-          this.articleDetail = articleDetail
-          this.detailAd = detailAd
-          this.recommens = recommens
-        }
-      })
+    this.fetchData()
+  },
+
+  watch: {
+    $route: 'fetchData',
+  },
+
+  methods: {
+    fetchData() {
+      this.$http
+        .get('/api-media/news-anon/news/findDynamicNewsDetail', {
+          params: { contentId: this.$route.params.id },
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            const { articleDetail, detailAd, recommens } = data.datas
+            this.article = articleDetail
+            this.ad = detailAd
+            this.recommens = recommens || []
+          }
+        })
+    },
   },
 }
 </script>
 
 <style lang="less" scoped>
 .new-page {
-  padding: 20px 0 80px;
+  padding: 18px 0 80px;
   background: #fff;
 }
 
@@ -83,10 +87,11 @@ export default {
 
 h1 {
   margin-bottom: 12px;
+  line-height: 1.5;
 }
 
-p {
-  margin: 12px 0;
+.content {
+  margin-top: 10px;
   line-height: 1.5;
 }
 
