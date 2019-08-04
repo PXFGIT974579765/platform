@@ -85,7 +85,7 @@ export default {
         {
           icon: '&#xe763;',
           color: '#ff6b6b',
-          theme: '发起拼团',
+          theme: '参与拼团',
           score: 1000,
           desc: '成功发起一次拼团活动',
           url: '#',
