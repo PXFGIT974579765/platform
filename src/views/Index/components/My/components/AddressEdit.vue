@@ -104,8 +104,9 @@ export default {
       const countryDefaultList = this.countyList.filter(
         item => item.pId == cityId
       )
-
+      // 更新市级列表
       picker.setColumnValues(1, cityDefaultList.map(item => item.areaName))
+      // 更新区域级
       picker.setColumnValues(2, countryDefaultList.map(item => item.areaName))
     },
 
