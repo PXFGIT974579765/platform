@@ -1,20 +1,23 @@
 <template>
   <div class="page-my-address-list" v-wechat-title="$route.meta.title">
-    <van-radio-group v-model="defaultAddress">
+    <van-radio-group v-model="defaultAddressId">
       <div
         v-for="item in addressList"
         :key="item.id"
         class="address-item flex-col"
       >
         <div class="flex-between">
-          <span>{{ item.name }}</span>
-          <span>{{ item.phone }}</span>
+          <span>{{ item.trueName }}</span>
+          <span>{{ item.mobile }}</span>
         </div>
-        <span class="address">{{ item.address }}</span>
+        <span class="address">{{ item.address }} {{ item.detailAddress }}</span>
         <hr />
 
         <div class="flex-between">
-          <van-radio :name="item.id" checked-color="#07c160"
+          <van-radio
+            :name="item.id"
+            checked-color="#07c160"
+            @click="onRadioChanged(item.id)"
             >设为默认地址</van-radio
           >
           <div class="flex-between">
@@ -23,7 +26,7 @@
               @click="routeEdit(item.id)"
               >修改</span
             >
-            <span>删除</span>
+            <span @click="deleteAddress(item.id)">删除</span>
           </div>
         </div>
       </div>
@@ -36,27 +39,27 @@
 export default {
   data() {
     return {
-      defaultAddress: '123',
-      addressList: [
-        {
-          id: '123',
-          name: '刘国贵',
-          sex: '1',
-          phone: '19987451243',
-          address: '贵州省贵阳市花溪区大学城贵州师范大学科创园XXX',
-        },
-        {
-          id: '125',
-          name: '刘国贵',
-          sex: '1',
-          phone: '19987451243',
-          address: '贵州省贵阳市花溪区大学城贵州师范大学科创园XXX',
-        },
-      ],
+      defaultAddressId: '',
+      addressList: [],
     }
   },
+  created() {
+    this.fetchInfo()
+  },
   methods: {
-    onLoad() {},
+    fetchInfo() {
+      this.$http
+        .get('/api-wxmp/cxxz/address/findAddressByUserId')
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.addressList = data.datas
+            const defualtAddr = this.addressList.find(
+              item => item.defultStatus == 1
+            )
+            this.defaultAddressId = defualtAddr.id
+          }
+        })
+    },
     routeAdd() {
       this.$router.push({
         path: '/my/address-edit',
@@ -65,7 +68,7 @@ export default {
       })
     },
     routeEdit(id) {
-      const address = this.addressList.find(item => item.id === id)
+      const address = this.addressList.find(item => item.id == id)
       this.$router.push({
         path: `/my/address-edit/${id}`,
         name: 'index/my/address-edit',
@@ -73,6 +76,37 @@ export default {
           address,
         },
       })
+    },
+    onRadioChanged(name) {
+      const address = this.addressList.find(item => item.id == name)
+      this.updateAddress(address)
+    },
+
+    // 设置为默认地址
+    updateAddress(address) {
+      this.$http
+        .post('/api-wxmp/cxxz/address/saveAddress', {
+          ...address,
+          defultStatus: 1,
+        })
+        .then(({ data }) => {
+          if (data.resp_code != 0) {
+            alert(data.resp_msg)
+          }
+        })
+    },
+
+    // 删除地址
+    deleteAddress(id) {
+      this.$http
+        .post('/api-wxmp/cxxz/address/deleteByAddressId', {
+          id: id,
+        })
+        .then(({ data }) => {
+          if (data.resp_code != 0) {
+            alert(data.resp_msg)
+          }
+        })
     },
   },
 }

@@ -4,15 +4,27 @@
       <div class="form-item">
         <span class="key">收货人姓名</span>
         <span class="value">
-          <input type="text" v-model="address.name" placeholder="请输入姓名" />
+          <input
+            type="text"
+            v-model="address.trueName"
+            placeholder="请输入姓名"
+          />
         </span>
       </div>
       <div class="form-item">
-        <van-radio-group v-model="address.sex" class="group flex">
-          <van-radio name="1" checked-color="#07c160" class="radio"
+        <van-radio-group v-model="address.gender" class="group flex">
+          <van-radio
+            :name="1"
+            checked-color="#07c160"
+            class="radio"
+            @click="onRadioChanged(1)"
             >男</van-radio
           >
-          <van-radio name="2" checked-color="#07c160" class="radio"
+          <van-radio
+            :name="0"
+            checked-color="#07c160"
+            class="radio"
+            @click="onRadioChanged(0)"
             >女</van-radio
           >
         </van-radio-group>
@@ -20,13 +32,22 @@
       <div class="form-item">
         <span class="key">手机号码</span>
         <span class="value">
-          <input type="text" v-model="address.phone" placeholder="请输入电话" />
+          <input
+            type="text"
+            v-model="address.mobile"
+            placeholder="请输入电话"
+          />
         </span>
       </div>
       <div class="form-item" @click="showArea">
         <span class="key">所在区域</span>
         <span class="value">
-          <input type="text" placeholder="请输入所在区域" v-model="area" />
+          <input
+            type="text"
+            placeholder="请输入所在区域"
+            readonly
+            v-model="address.address"
+          />
         </span>
       </div>
       <div class="form-item">
@@ -34,30 +55,37 @@
         <span class="value">
           <input
             type="text"
-            v-model="address.address"
+            v-model="address.detailAddress"
             placeholder="请输入详细地址"
           />
         </span>
       </div>
     </div>
 
-    <div class="btn-submit">保存</div>
+    <div class="btn-submit" @click="onSubmit">保存</div>
     <van-action-sheet class="area" v-model="areaShow">
-      <van-area :area-list="areaList" @confirm="confirm" @cancel="cancel" />
+      <van-picker
+        :columns="colnums"
+        @change="onChange"
+        :show-toolbar="true"
+        @confirm="onConfirm"
+        @cancel="cancel"
+      />
     </van-action-sheet>
   </div>
 </template>
 
 <script>
-import areaList from '@/mock/area.js'
+const DEFAULT_GENDER = 1
 
 export default {
   data() {
     return {
-      sex: '1',
-      areaList,
+      provinceList: [],
+      cityList: [],
+      countyList: [],
+      colnums: [],
       areaShow: false,
-      area: '',
       address: {},
     }
   },
@@ -65,18 +93,118 @@ export default {
     const { address } = this.$route.params
     if (address) {
       this.address = address
+    } else {
+      this.address.gender = DEFAULT_GENDER
     }
+    this.fetchAreas()
   },
   methods: {
-    onLoad() {},
+    // 获取区域信息
+    fetchAreas() {
+      this.$http.get('/api-wxmp/cxxz/address/findAreaAll').then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.areaList = { ...this.createAreaList(data.datas) }
+        }
+      })
+    },
+
+    // 提交保存
+    onSubmit() {
+      console.log(this.address)
+      this.$http
+        .post('/api-wxmp/cxxz/address/saveAddress', {
+          ...this.address,
+        })
+        .then(({ data }) => {
+          if (data.resp_code != 0) {
+            alert(data.resp_msg)
+          }
+        })
+    },
+
+    // 确认区域
+    onConfirm(value) {
+      this.areaShow = false
+      this.address.address = value.join('/')
+
+      // 获取区域 areId
+      const country = value[2]
+      const areaId = this.countyList.find(item => item.areaName == country).id
+
+      this.address.areaId = areaId
+    },
+
+    // 性别
+    onRadioChanged(name) {
+      this.address.gender = name
+    },
+
+    //更新区域组件数据
+    onChange(picker, values) {
+      const province = values[0]
+      const city = values[1]
+
+      const proviceId = this.provinceList.find(
+        item => item.areaName == province
+      ).id
+      const cityId = this.cityList.find(item => item.areaName == city).id
+
+      const cityDefaultList = this.cityList.filter(
+        item => item.pId == proviceId
+      )
+      const countryDefaultList = this.countyList.filter(
+        item => item.pId == cityId
+      )
+      // 更新市级列表
+      picker.setColumnValues(1, cityDefaultList.map(item => item.areaName))
+      // 更新区域级
+      picker.setColumnValues(2, countryDefaultList.map(item => item.areaName))
+    },
+
+    // 构造前端所需的区域格式
+    createAreaList(areaList) {
+      const provinceList = areaList.filter(item => item.areaType == 1)
+      const cityList = areaList.filter(item => item.areaType == 2)
+      const countyList = areaList.filter(item => item.areaType == 3)
+
+      this.provinceList = provinceList
+      this.cityList = cityList
+      this.countyList = countyList
+
+      const provinceDefaultIndex = 0
+      const cityDefaultIndex = 0
+      const countryDefaultIndex = 0
+
+      const provinceDefaultList = provinceList
+      const cityDefaultList = cityList.filter(
+        item => item.pId == provinceDefaultList[provinceDefaultIndex].id
+      )
+      const countryDefaultList = countyList.filter(
+        item => item.pId == cityDefaultList[cityDefaultIndex].id
+      )
+
+      const colnums = [
+        {
+          values: provinceDefaultList.map(item => item.areaName),
+          defaultIndex: provinceDefaultIndex,
+        },
+        {
+          values: cityDefaultList.map(item => item.areaName),
+          defaultIndex: cityDefaultIndex,
+        },
+        {
+          values: countryDefaultList.map(item => item.areaName),
+          defaultIndex: countryDefaultIndex,
+        },
+      ]
+
+      this.colnums = colnums
+    },
+
     showArea() {
       this.areaShow = true
     },
-    confirm(arr) {
-      const area = arr.map(item => item.name).join('/')
-      this.area = area
-      this.areaShow = false
-    },
+
     cancel() {
       this.areaShow = false
     },
