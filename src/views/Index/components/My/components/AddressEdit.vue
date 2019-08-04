@@ -86,15 +86,15 @@ export default {
       countyList: [],
       colnums: [],
       areaShow: false,
-      address: {},
+      address: {
+        gender: DEFAULT_GENDER,
+      },
     }
   },
   created() {
     const { address } = this.$route.params
     if (address) {
       this.address = address
-    } else {
-      this.address.gender = DEFAULT_GENDER
     }
     this.fetchAreas()
   },
@@ -110,13 +110,15 @@ export default {
 
     // 提交保存
     onSubmit() {
-      console.log(this.address)
       this.$http
         .post('/api-wxmp/cxxz/address/saveAddress', {
           ...this.address,
         })
         .then(({ data }) => {
-          if (data.resp_code != 0) {
+          if (data.resp_code == 0) {
+            alert('保存成功')
+            this.$router.push('/my/address-list')
+          } else {
             alert(data.resp_msg)
           }
         })

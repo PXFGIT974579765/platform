@@ -3,14 +3,14 @@
     <div class="page-header">
       <div class="level-box flex-col">
         <div class="level-icon">
-          <div class="level-num">{{ info.level }}</div>
+          <div class="level-num">Lv{{ info.level }}</div>
         </div>
         <span class="level-text"
-          >尊贵的 {{ info.levle }} {{ info.levelDesc }}</span
+          >尊贵的 Lv{{ info.level }} {{ info.levelName }}</span
         >
         <div class="progress-num">
-          <span>{{ info.curScore }}</span> /
-          <span>{{ info.fullScore }}</span>
+          <span>{{ info.integral }}</span> /
+          <span>{{ info.nextLevelIntegral }}</span>
         </div>
         <van-progress
           class="progress-bar"
@@ -19,7 +19,7 @@
           color="#ffe400"
         />
         <div class="level-up">
-          距离升级还差{{ info.fullScore - info.curScore }}积分
+          距离升级还差{{ info.nextLevelIntegral - info.integral }}积分
         </div>
       </div>
       <span class="btn_level_desc">等级说明</span>
@@ -31,26 +31,19 @@
         <span>使用特权</span>
       </div>
       <div
-        v-for="(right, index) in rights"
+        v-for="(right, index) in info.memberSpecial"
         :key="index"
         class="right-block flex"
       >
-        <span
-          class="iconfont right-icon"
-          :style="{ color: right.color }"
-          v-html="right.icon"
-        ></span>
+        <img :src="right.icon" class="right-icon" alt />
         <div class="right-desc flex-col">
           <span class="desc-title">{{ right.title }}</span>
           <div class="flex desc-tag">
-            <van-tag
-              v-for="tag in right.tags"
-              :key="tag"
-              class="tag"
-              round
-              plain
-              >{{ tag }}</van-tag
-            >
+            <div v-for="tag in right.tags" :key="tag">
+              <van-tag v-if="tag != ''" class="tag" round plain>{{
+                tag
+              }}</van-tag>
+            </div>
           </div>
         </div>
       </div>
@@ -59,68 +52,53 @@
     <div class="q-list card-item">
       <div class="q-item" v-for="question in questions" :key="question.title">
         <div class="q-title">{{ question.title }}</div>
-        <div class="q-content">
-          {{ question.content }}
-        </div>
+        <div class="q-content">{{ question.brief }}</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { dateTime } from '@/lib/format'
-
 export default {
   data() {
     return {
       info: {
-        level: 'Lv2',
-        levelDesc: '青铜会员',
-        curScore: 1589,
-        fullScore: 3000,
-        percent: 50,
+        level: '1',
+        levelName: '普通会员',
+        integral: 0,
+        nextLevelIntegral: 0,
+        percent: 0,
+        memberSpecial: [],
       },
-      rights: [
-        {
-          icon: '&#xe768;',
-          color: '#7ecef4',
-          title: '电脑租赁可享全年8折优惠',
-          tags: ['搬运上门', '退租搬运', '提前退租'],
-        },
-        {
-          icon: '&#xe768;',
-          color: '#7ecef4',
-          title: '电脑租赁可享全年8折优惠',
-          tags: [
-            '搬运上门',
-            '退租搬运',
-            '提前退租',
-            '搬运上门',
-            '退租搬运',
-            '提前退租',
-          ],
-        },
-      ],
-      questions: [
-        {
-          title: '什么是会员等级',
-          content:
-            '多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，',
-        },
-        {
-          title: '会员如何分级，不同等级有哪些权限',
-          content:
-            '多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，多参加活动，把你喜欢的活动分享到朋友圈，',
-        },
-      ],
+      questions: [],
     }
   },
-  methods: {
-    onLoad() {},
+
+  created() {
+    this.fetchLevel()
+    this.fetchQuestion()
   },
-  filters: {
-    formatDate: function(value) {
-      return dateTime(value)
+  methods: {
+    fetchLevel() {
+      this.$http.get('/api-wxmp/cxxz/member/memberLevel').then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.info = data.datas
+
+          const { integral, nextLevelIntegral } = this.info
+          const percent = (integral * 100) / nextLevelIntegral
+
+          this.info.percent = percent
+        }
+      })
+    },
+    fetchQuestion() {
+      this.$http
+        .get('/api-media/membership/membershipDec/list')
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.questions = data.datas
+          }
+        })
     },
   },
 }
@@ -250,6 +228,8 @@ export default {
       }
 
       .right-icon {
+        width: 57px;
+        height: 57px;
         border-radius: 50%;
         color: #7ecef4;
         font-size: 55px;

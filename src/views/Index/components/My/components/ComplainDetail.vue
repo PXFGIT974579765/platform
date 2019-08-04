@@ -2,37 +2,36 @@
   <div class="page-my-complain-detail" v-wechat-title="$route.meta.title">
     <div class="container">
       <div class="title flex">
-        <span class="time">{{ complainDetail.time | formatDate }}</span>
+        <span class="time">{{ complainDetail.createTime }}</span>
         <span
           :class="complainDetail.status | statusClass"
           v-if="complainDetail.status === 0"
+          >{{ complainDetail.status | statusName }}</span
         >
-          {{ complainDetail.status | statusName }}
-        </span>
       </div>
       <div class="tag">
-        [{{ complainDetail.tag }}] {{ complainDetail.title }}
+        [{{ complainDetail.suggestionType | tagFilter }}]
+        {{ complainDetail.title }}
       </div>
-      <div class="content">{{ complainDetail.content }}</div>
+      <div class="content">{{ complainDetail.suggestionContent }}</div>
+      <img v-for="item in suggestionImgs" :key="item" :src="item" alt />
     </div>
-    <div
-      class="reply"
-      v-if="complainDetail.status === 1 && complainDetail.reply !== ''"
-    >
+    <div class="reply" v-if="complainDetail.status === 1 && replies.length > 0">
       <div class="title flex">
         <span class="tag">官方回复</span>
-        <span :class="complainDetail.status | statusClass">
-          {{ complainDetail.status | statusName }}
-        </span>
+        <span :class="complainDetail.status | statusClass">{{
+          complainDetail.status | statusName
+        }}</span>
       </div>
-      <div class="content">{{ complainDetail.reply }}</div>
+      <div v-for="item in replies" :key="item.id" class="content line">
+        <div>{{ item.content }}</div>
+        <span class="time">{{ item.replyTime }}</span>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { dateTime } from '@/lib/format'
-
 const STATUS_HASH = {
   0: '处理中',
   1: '已回复',
@@ -43,35 +42,51 @@ const SATUS_CLASS = {
   1: 'status-1',
 }
 
+const TAT = {
+  1: '问题咨询',
+  2: '问题投诉',
+}
+
 export default {
   data() {
     return {
-      activeTab: '1',
-      complainType: '0',
-      content: '',
-      complainDetail: {
-        id: '12345',
-        tag: '问题咨询',
-        title: '关于积分兑换商品的问题',
-        content: '请问积分兑换的商品可以退货吗？ 退货后积分是否会返还？',
-        time: 1500000000,
-        status: 0, // 0 处理中  1 已回复
-        reply:
-          '尊敬的用户您好，商品如果有质量问题，是可以退换的，如果是因为某些原因需要退货，是不可以的，大家都是成年人，心里没点B数吗',
-      },
+      replies: [],
+      complainDetail: {},
+      suggestionImgs: [],
     }
   },
+  created() {
+    const { id } = this.$route.params
+    this.fetchDetail(id)
+  },
   methods: {
-    onLoad() {},
+    // 请求详情信息
+    fetchDetail(id) {
+      this.$http
+        .get('/api-media/suggestion/mySuggestionDetail', {
+          params: {
+            suggestionId: id,
+          },
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            const { replies, suggestionDeal } = data.datas
+            this.replies = replies
+            this.complainDetail = suggestionDeal
+
+            if (suggestionDeal.suggestionImgs) {
+              this.suggestionImgs = suggestionDeal.suggestionImgs.split('@')
+            }
+          }
+        })
+    },
   },
   filters: {
-    formatDate: dateTime,
-    statusName: function(status) {
-      return STATUS_HASH[status]
-    },
-    statusClass: function(status) {
-      return SATUS_CLASS[status]
-    },
+    tagFilter: status => TAT[status],
+
+    statusName: status => STATUS_HASH[status],
+
+    statusClass: status => SATUS_CLASS[status],
   },
 }
 </script>
@@ -98,10 +113,6 @@ export default {
       }
     }
 
-    .time {
-      color: #9f9f9f;
-    }
-
     .tag {
       margin-top: 17px;
       font-size: 16px;
@@ -110,11 +121,9 @@ export default {
       color: #353434;
     }
 
-    .content {
-      margin-top: 15px;
-      line-height: 20px;
-      font-size: 14px;
-      color: #868686;
+    img {
+      width: 100%;
+      height: auto;
     }
   }
 
@@ -139,13 +148,21 @@ export default {
         color: #353434;
       }
     }
+  }
 
-    .content {
-      margin-top: 15px;
-      line-height: 20px;
-      font-size: 14px;
-      color: #868686;
-    }
+  .content {
+    margin-top: 15px;
+    line-height: 20px;
+    font-size: 14px;
+    color: #868686;
+  }
+
+  .line {
+    border-bottom: 1px solid #eee;
+  }
+
+  .time {
+    color: #9f9f9f;
   }
 }
 </style>

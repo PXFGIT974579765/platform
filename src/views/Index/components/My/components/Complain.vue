@@ -9,26 +9,44 @@
     >
       <van-tab title="我要咨询投诉">
         <div class="i-will">
-          <van-radio-group v-model="complainType" class="group flex">
-            <van-radio name="0" checked-color="#07c160" class="radio"
+          <van-radio-group v-model="suggestionType" class="group flex">
+            <van-radio
+              :name="1"
+              checked-color="#07c160"
+              class="radio"
+              @click="onRadioChanged(1)"
               >问题咨询</van-radio
             >
-            <van-radio name="1" checked-color="#07c160" class="radio"
+            <van-radio
+              :name="2"
+              checked-color="#07c160"
+              class="radio"
+              @click="onRadioChanged(2)"
               >投诉建议</van-radio
             >
           </van-radio-group>
           <div class="container">
-            <div class="title">内容描述</div>
-            <textarea
+            <div class="title">标题</div>
+            <van-field
+              v-model="title"
+              placeholder="关于xxx的问题"
+              @input="onTitleChanged"
+              :error-message="err.title"
+            />
+            <div class="title">内容</div>
+            <van-field
               v-model="content"
+              type="textarea"
               class="content"
               placeholder="请输入你要咨询的问题 (最多输入200字)"
-            ></textarea>
+              @input="onContentChanged"
+              :error-message="err.content"
+            />
             <div class="camera">
               <span class="iconfont">&#xe761;</span>
             </div>
           </div>
-          <div class="btn-submit">提交</div>
+          <div class="btn-submit" @click="onSubmit">提交</div>
         </div>
       </van-tab>
       <van-tab title="我的咨询投诉">
@@ -40,9 +58,9 @@
           >
             <div class="title flex">
               <span class="time">{{ item.createTime }}</span>
-              <span :class="item.status | statusClass">{{
-                item.status | statusName
-              }}</span>
+              <span :class="item.status | statusClass">
+                {{ item.status | statusName }}
+              </span>
             </div>
             <div class="tag">
               [{{ item.suggestionType | tagFilter }}] {{ item.title }}
@@ -75,33 +93,22 @@ export default {
   data() {
     return {
       activeTab: '0',
-      complainType: '0',
+      title: '',
       content: '',
-      complainList: [
-        {
-          id: '12345',
-          tag: '问题咨询',
-          title: '关于积分兑换商品的问题',
-          content: '请问积分兑换的商品可以退货吗？ 退货后积分是否会返还？',
-          time: 1500000000,
-          status: 0, // 0 处理中  1 已回复
-        },
-        {
-          id: '123456',
-          tag: '问题咨询',
-          title: '关于积分兑换商品的问题',
-          content: '请问积分兑换的商品可以退货吗？ 退货后积分是否会返还？',
-          time: 1500000000,
-          status: 1, // 0 处理中  1 已回复
-        },
-      ],
+      suggestionImgs: '',
+      complainList: [],
+      suggestionType: 1,
+      err: {
+        title: '',
+        content: '',
+      },
     }
   },
   created() {
-    this.fetchComplain()
+    this.fetchComplain({})
   },
   methods: {
-    fetchComplain(pageIndex = 1, pageSize = 10) {
+    fetchComplain({ pageIndex = 1, pageSize = 10 }) {
       this.$http
         .get('/api-media/suggestion/mySuggestionPage', {
           params: {
@@ -118,11 +125,44 @@ export default {
     routeDetail(item) {
       this.$router.push(`/my/complain-detail/${item}`)
     },
-    onContentChange() {},
-  },
-  watch: {
-    content: function(value) {
-      this.content = value && value.length > 10 ? value.slice(0, 10) : value
+
+    onTitleChanged(value) {
+      if (value.length > 15) {
+        this.title = value.slice(0, 15)
+        this.err.title = '标题不超过15个字符'
+        return
+      }
+    },
+    onContentChanged(value) {
+      if (value.length > 200) {
+        this.content = value.slice(0, 200)
+        this.err.content = '内容不超过200个字符'
+        return
+      }
+    },
+
+    onRadioChanged(name) {
+      this.suggestionType = name
+    },
+
+    // 提交保存
+    onSubmit() {
+      this.$http
+        .post('/api-media/suggestion/handleSuggestion', {
+          title: this.title,
+          suggestionContent: this.content,
+          suggestionImgs: this.suggestionImgs,
+          suggestionType: this.suggestionType,
+        })
+        .then(({ data }) => {
+          if (data.resp_code == 0) {
+            alert('保存成功')
+            this.activeTab = '1'
+            this.fetchComplain({})
+          } else {
+            alert(data.resp_msg)
+          }
+        })
     },
   },
   filters: {
@@ -165,8 +205,11 @@ export default {
       .title {
         font-size: 15px;
         color: #585858;
-      }
 
+        &:not(:first-child) {
+          margin-top: 20px;
+        }
+      }
       .content {
         margin-top: 15px;
         width: 100%;

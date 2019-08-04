@@ -90,9 +90,13 @@ export default {
           defultStatus: 1,
         })
         .then(({ data }) => {
-          if (data.resp_code != 0) {
+          if (data.resp_code == 0) {
+            alert('设置成功')
+          } else {
             alert(data.resp_msg)
           }
+
+          alert(data.resp_msg)
         })
     },
 
@@ -103,7 +107,11 @@ export default {
           id: id,
         })
         .then(({ data }) => {
-          if (data.resp_code != 0) {
+          if (data.resp_code == 0) {
+            alert('删除成功')
+            const addresses = this.addressList.filter(item => item.id != id)
+            this.addressList = addresses
+          } else {
             alert(data.resp_msg)
           }
         })
