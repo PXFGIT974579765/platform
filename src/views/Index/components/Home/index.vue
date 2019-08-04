@@ -45,17 +45,14 @@
         <div class="block-title">推荐应用</div>
       </div>
       <div class="block-content">
-        <div class="rec-app-item">
-          <div class="app-name">共享打印</div>
+        <div
+          class="rec-app-item"
+          v-for="app in apps"
+          :key="app.setId"
+          :style="{ 'background-image': `url(${app.appImg})` }"
+        >
+          <div class="app-name">{{ app.appName }}</div>
           <div class="app-desc">一键发送 送货上门</div>
-        </div>
-        <div class="rec-app-item">
-          <div class="app-name">在线拼团</div>
-          <div class="app-desc">还有比这里价更低</div>
-        </div>
-        <div class="rec-app-item">
-          <div class="app-name">租赁服务</div>
-          <div class="app-desc">随租随还 再租不难</div>
         </div>
       </div>
     </div>
@@ -140,6 +137,7 @@ export default {
       },
       dynamicNews: [],
       groups: [],
+      apps: [],
     }
   },
 
@@ -157,6 +155,12 @@ export default {
           this.groups = data.datas
         }
       })
+
+    this.$http.get('/api-wxmp/cxxz/app/findAppList').then(({ data }) => {
+      if (data.resp_code === 0) {
+        this.apps = data.datas
+      }
+    })
   },
 
   methods: {
@@ -296,10 +300,11 @@ nav {
 
 .rec-app-item {
   flex: 1;
+  height: 130px;
   margin-right: 14px;
   padding: 13px;
   border-radius: 6px;
-  background-color: #ffeedb;
+  background-size: 100% 100%;
 
   &:last-child {
     margin: 0;
