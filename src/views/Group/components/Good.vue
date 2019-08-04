@@ -5,12 +5,14 @@
     <div class="good-info">
       <div class="good-price">
         ￥
-        <span>235</span>.00
+        <span>{{ good.price }}</span>
       </div>
-      <div class="good-type">5-10人团</div>
-      <div class="good-count">已拼50件</div>
+      <div class="good-type">
+        {{ good.limitMinSize }}-{{ good.limitMaxSize }}人团
+      </div>
+      <div class="good-count">已拼{{ good.sellVolume }}件</div>
     </div>
-    <div class="good-name">新款时尚简约休闲小西服阔腿短裤韩国两件</div>
+    <div class="good-name">{{ good.name }}</div>
     <div class="good-verdor">厂商：贵州省莫白传媒科技有限公司</div>
   </div>
 </template>
@@ -21,6 +23,12 @@ import ImgSwipe from '@/components/ImgSwipe'
 export default {
   components: {
     ImgSwipe,
+  },
+
+  props: {
+    good: {
+      type: Object,
+    },
   },
 
   data() {

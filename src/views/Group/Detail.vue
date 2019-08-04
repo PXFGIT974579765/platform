@@ -1,6 +1,6 @@
 <template>
   <div>
-    <good />
+    <good :good="good" />
 
     <div class="status">
       <div class="count">
@@ -64,10 +64,31 @@ export default {
     return {
       active: 'comment',
       complete: false,
+      good: {},
     }
   },
 
+  created() {
+    this.fetchData()
+  },
+
+  watch: {
+    $route: 'fetchData',
+  },
+
   methods: {
+    fetchData() {
+      this.$http
+        .get('/api-wxmp/cxxz/assemble/findGoodsDetail', {
+          params: { id: this.$route.params.id },
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.good = data.datas
+          }
+        })
+    },
+
     onChange(type) {
       this.active = type
     },
