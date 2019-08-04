@@ -34,18 +34,20 @@
       <van-tab title="我的咨询投诉">
         <ul>
           <li
-            v-for="item in myComplain"
+            v-for="item in complainList"
             :key="item.id"
-            @click="routeDetail(item.id)"
+            @click="routeDetail(item.suggestionId)"
           >
             <div class="title flex">
-              <span class="time">{{ item.time | formatDate }}</span>
-              <span :class="item.status | statusClass">
-                {{ item.status | statusName }}
-              </span>
+              <span class="time">{{ item.createTime }}</span>
+              <span :class="item.status | statusClass">{{
+                item.status | statusName
+              }}</span>
             </div>
-            <div class="tag">[{{ item.tag }}] {{ item.title }}</div>
-            <div class="content">{{ item.content }}</div>
+            <div class="tag">
+              [{{ item.suggestionType | tagFilter }}] {{ item.title }}
+            </div>
+            <div class="content">{{ item.suggestionContent }}</div>
           </li>
         </ul>
       </van-tab>
@@ -54,8 +56,6 @@
 </template>
 
 <script>
-import { dateTime } from '@/lib/format'
-
 const STATUS_HASH = {
   0: '处理中',
   1: '已回复',
@@ -66,13 +66,18 @@ const SATUS_CLASS = {
   1: 'status-1',
 }
 
+const TAT = {
+  1: '问题咨询',
+  2: '问题投诉',
+}
+
 export default {
   data() {
     return {
       activeTab: '0',
       complainType: '0',
       content: '',
-      myComplain: [
+      complainList: [
         {
           id: '12345',
           tag: '问题咨询',
@@ -92,8 +97,24 @@ export default {
       ],
     }
   },
+  created() {
+    this.fetchComplain()
+  },
   methods: {
-    onLoad() {},
+    fetchComplain(pageIndex = 1, pageSize = 10) {
+      this.$http
+        .get('/api-media/suggestion/mySuggestionPage', {
+          params: {
+            pageIndex,
+            pageSize,
+          },
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.complainList = data.datas.data
+          }
+        })
+    },
     routeDetail(item) {
       this.$router.push(`/my/complain-detail/${item}`)
     },
@@ -105,13 +126,9 @@ export default {
     },
   },
   filters: {
-    formatDate: dateTime,
-    statusName: function(status) {
-      return STATUS_HASH[status]
-    },
-    statusClass: function(status) {
-      return SATUS_CLASS[status]
-    },
+    tagFilter: status => TAT[status],
+    statusName: status => STATUS_HASH[status],
+    statusClass: status => SATUS_CLASS[status],
   },
 }
 </script>
