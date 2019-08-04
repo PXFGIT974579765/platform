@@ -76,8 +76,6 @@
 </template>
 
 <script>
-// import areaList from '@/mock/area.js'
-
 const DEFAULT_GENDER = 1
 
 export default {
