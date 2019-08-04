@@ -46,17 +46,15 @@ http.interceptors.request.use(
   }
 )
 
-axios.interceptors.response.use(
+http.interceptors.response.use(
   response => {
-    if (response.data.resp_code === 401) {
-      store.dispatch('clearUser')
-      router.push('/')
-      throw Error('401: unauthorized')
-    }
     return response
   },
   function(error) {
-    return Promise.reject(error)
+    if (error.response.status === 401) {
+      store.dispatch('clearUser')
+      router.push('/')
+    }
   }
 )
 
