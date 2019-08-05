@@ -28,13 +28,11 @@
           >最新活动</router-link
         >
       </div>
-      <div class="block-content">
+      <div class="block-content" v-if="activity.length > 0">
         <swiper :options="swiperOption">
-          <swiper-slide>Slide 1</swiper-slide>
-          <swiper-slide>Slide 2</swiper-slide>
-          <swiper-slide>Slide 3</swiper-slide>
-          <swiper-slide>Slide 4</swiper-slide>
-          <swiper-slide>Slide 5</swiper-slide>
+          <swiper-slide v-for="a in activity" :key="a.id">
+            <img :src="a.itemPicUrl" alt />
+          </swiper-slide>
         </swiper>
         <div class="swiper-pagination" slot="pagination"></div>
       </div>
@@ -52,7 +50,7 @@
           :style="{ 'background-image': `url(${app.appImg})` }"
         >
           <div class="app-name">{{ app.appName }}</div>
-          <div class="app-desc">一键发送 送货上门</div>
+          <div class="app-desc">{{ app.appDescribe }}</div>
         </div>
       </div>
     </div>
@@ -124,7 +122,7 @@ export default {
     return {
       value: '',
       swiperOption: {
-        initialSlide: 2,
+        initialSlide: 0,
         slidesPerView: 'auto',
         centeredSlides: true,
         spaceBetween: 11,
@@ -138,10 +136,19 @@ export default {
       dynamicNews: [],
       groups: [],
       apps: [],
+      activity: [],
     }
   },
 
   created() {
+    this.$http
+      .get('/api-wxmp/cxxz/topics/findRecommendTopic')
+      .then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.activity = data.datas
+        }
+      })
+
     this.$http.get('/api-media/news-anon/news/dynamicNews').then(({ data }) => {
       if (data.resp_code === 0) {
         this.dynamicNews = data.datas
@@ -173,10 +180,11 @@ export default {
 
 <style lang="less" scoped>
 .swiper-slide {
-  height: 175px;
   width: 80%;
-  background: url(~@/assets/images/swipe.png) 0 0;
-  background-size: 100% 100%;
+
+  img {
+    width: 100%;
+  }
 }
 
 .home {

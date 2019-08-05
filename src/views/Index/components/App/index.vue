@@ -7,13 +7,12 @@
         <div class="block-title">我的应用</div>
         <div class="block-header-link" @click="toggleEdit">管理应用</div>
       </div>
-
       <div class="block-content">
         <div class="app-item-wrap">
           <div class="app-item">
             <div class="app-name">共享打印</div>
             <div class="app-desc">一键发送 送货上门</div>
-            <button v-if="editable" class="editing">
+            <button v-if="editable" class="editing" @click="onRemove">
               <span class="iconfont">&#xe72b;</span>
             </button>
           </div>
@@ -48,7 +47,7 @@
           <div class="app-item">
             <div class="app-name">共享打印</div>
             <div class="app-desc">一键发送 送货上门</div>
-            <button v-if="editable" class="editing">
+            <button v-if="editable" class="editing" @click="onAdd">
               <span class="iconfont">&#xe72a;</span>
             </button>
           </div>
@@ -93,6 +92,14 @@ export default {
     Search,
   },
 
+  created() {
+    this.$http.get('/api-wxmp/cxxz/app/myAppList').then(({ data }) => {
+      if (data.resp_code === 0) {
+        this.apps = data.datas
+      }
+    })
+  },
+
   data() {
     return {
       editable: false,
@@ -102,6 +109,29 @@ export default {
   methods: {
     toggleEdit() {
       this.editable = !this.editable
+    },
+
+    onAdd(setId) {
+      // TODO:
+      this.post(setId, 1)
+    },
+
+    onRemove(setId) {
+      // TODO:
+      this.post(setId, 0)
+    },
+
+    post(setId, isSub) {
+      return this.$http
+        .post('/api-wxmp/cxxz/app/subOrUnSubscribeApp', {
+          setId,
+          isSub,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            return data.datas
+          }
+        })
     },
   },
 }

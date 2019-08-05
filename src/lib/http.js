@@ -1,6 +1,6 @@
 import axios from 'axios'
 import store from '@/store'
-import router from '@/router'
+// import router from '@/router'
 
 const http = axios.create({
   baseURL: process.env.VUE_APP_API_BASE,
@@ -52,8 +52,9 @@ http.interceptors.response.use(
   },
   function(error) {
     if (error.response.status === 401) {
-      store.dispatch('clearUser')
-      router.push('/')
+      // TODO: remove comment
+      // store.dispatch('clearUser')
+      // router.push('/')
     }
   }
 )

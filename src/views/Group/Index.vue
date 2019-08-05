@@ -4,37 +4,9 @@
       <search light />
 
       <ul class="clearfix">
-        <li>
+        <li v-for="c in category" :key="c.categoryId">
           <span class="iconfont">&#xe733;</span>
-          <div class="name">时尚服饰</div>
-        </li>
-        <li>
-          <span class="iconfont">&#xe735;</span>
-          <div class="name">学习用品</div>
-        </li>
-        <li>
-          <span class="iconfont">&#xe732;</span>
-          <div class="name">食品超市</div>
-        </li>
-        <li>
-          <span class="iconfont">&#xe734;</span>
-          <div class="name">手机数码</div>
-        </li>
-        <li>
-          <span class="iconfont">&#xe733;</span>
-          <div class="name">生活用品</div>
-        </li>
-        <li>
-          <span class="iconfont">&#xe731;</span>
-          <div class="name">零食小吃</div>
-        </li>
-        <li>
-          <span class="iconfont">&#xe736;</span>
-          <div class="name">电子产品</div>
-        </li>
-        <li>
-          <span class="iconfont">&#xe738;</span>
-          <div class="name">图书资料</div>
+          <div class="name">{{ c.name }}</div>
         </li>
       </ul>
     </div>
@@ -56,55 +28,19 @@
         <div class="block-title">最新拼团</div>
       </div>
       <div class="block-content clearfix">
-        <div class="list-item-wrap">
+        <div class="list-item-wrap" v-for="l in list" :key="l.id">
           <router-link to="/group/detail/1" class="list-item">
-            <img src="~@/assets/images/group_item.png" alt />
-            <div class="name">JIEMO小众波点连衣裙法式复古</div>
+            <img :src="l.picUrl" alt />
+            <div class="name ellipsis-2">{{ l.name }}</div>
             <div class="detail">
               <div class="price">
                 ￥
-                <span>235</span>.00
+                <span>{{ l.price }}</span
+                >.00
               </div>
-              <div class="count">2-3人团</div>
-            </div>
-          </router-link>
-        </div>
-        <div class="list-item-wrap">
-          <router-link to="/group/detail/1" class="list-item">
-            <img src="~@/assets/images/group_item.png" alt />
-            <div class="name">JIEMO小众波点连衣裙法式复古</div>
-            <div class="detail">
-              <div class="price">
-                ￥
-                <span>235</span>.00
+              <div class="count">
+                {{ l.limitMinSize }}-{{ l.limitMaxSize }}人团
               </div>
-              <div class="count">2-3人团</div>
-            </div>
-          </router-link>
-        </div>
-        <div class="list-item-wrap">
-          <router-link to="/group/detail/1" class="list-item">
-            <img src="~@/assets/images/group_item.png" alt />
-            <div class="name">JIEMO小众波点连衣裙法式复古</div>
-            <div class="detail">
-              <div class="price">
-                ￥
-                <span>235</span>.00
-              </div>
-              <div class="count">2-3人团</div>
-            </div>
-          </router-link>
-        </div>
-        <div class="list-item-wrap">
-          <router-link to="/group/detail/1" class="list-item">
-            <img src="~@/assets/images/group_item.png" alt />
-            <div class="name">JIEMO小众波点连衣裙法式复古</div>
-            <div class="detail">
-              <div class="price">
-                ￥
-                <span>235</span>.00
-              </div>
-              <div class="count">2-3人团</div>
             </div>
           </router-link>
         </div>
@@ -119,6 +55,31 @@ import Search from '@/components/Search'
 export default {
   components: {
     Search,
+  },
+
+  data() {
+    return {
+      category: [],
+      list: [],
+    }
+  },
+
+  created() {
+    this.$http.get('/api-wxmp/cxxz/category/ptTypes').then(({ data }) => {
+      if (data.resp_code === 0) {
+        this.category = data.datas
+      }
+    })
+
+    this.$http
+      .get('/api-wxmp/cxxz/assemble/pageList', {
+        params: { pageIndex: 1, pageSize: 20 },
+      })
+      .then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.list = data.datas.data
+        }
+      })
   },
 }
 </script>
@@ -230,6 +191,10 @@ ul {
   display: block;
   border-radius: 4px;
   background: #fff;
+
+  img {
+    height: 165px;
+  }
 
   .name {
     padding: 6px 7px;

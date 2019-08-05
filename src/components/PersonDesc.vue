@@ -8,7 +8,7 @@
     </div>
     <div class="desc">
       <div>
-        <span class="name">Hi {{ user.name }}</span>
+        <span class="name">Hi {{ user.nicknameStr }}</span>
         <span class="level">
           <span class="iconfont vip-icon">&#xe770;</span
           >{{ user.levelName || '黄金会员' }}
