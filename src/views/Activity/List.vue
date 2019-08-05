@@ -4,18 +4,18 @@
       <search light />
     </div>
 
-    <activity-nav />
+    <activity-nav :topics="topics" />
 
     <div class="list">
       <div class="list-header">
         <div class="title">公益活动</div>
         <div class="dropdown">
           <van-dropdown-menu>
-            <van-dropdown-item v-model="value1" :options="option1" />
+            <van-dropdown-item v-model="school" :options="schools" />
           </van-dropdown-menu>
         </div>
       </div>
-      <activity-list />
+      <activity-list :list="list" />
     </div>
   </div>
 </template>
@@ -34,13 +34,60 @@ export default {
 
   data() {
     return {
-      value1: 0,
       option1: [
         { text: '贵州师范大学', value: 0 },
         { text: '新款商品', value: 1 },
         { text: '活动商品', value: 2 },
       ],
+      topics: [],
+      list: [],
+      schools: [],
+      school: '',
     }
+  },
+
+  created() {
+    this.fetchData()
+  },
+
+  watch: {
+    $route: 'fetchData',
+  },
+
+  methods: {
+    fetchData() {
+      this.$http.get('/api-wxmp/cxxz/topics/banners').then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.topics = data.datas
+        }
+      })
+
+      this.$http.get('/api-wxmp/cxxz/school/findSchools').then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.schools = data.datas.map(x => ({
+            text: x.schoolName,
+            value: x.schoolId,
+          }))
+          this.school = this.schools[0].value
+        }
+      })
+
+      this.fetchList()
+    },
+
+    fetchList() {
+      const { id } = this.$route.params
+
+      this.$http
+        .get('/api-wxmp/cxxz/topics/pageTopics', {
+          params: { pageIndex: 1, pageSize: 20, topicCategoryId: id },
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.list = data.datas.data
+          }
+        })
+    },
   },
 }
 </script>
