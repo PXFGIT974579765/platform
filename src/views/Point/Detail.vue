@@ -1,7 +1,7 @@
 <template>
   <div class="detail">
     <div class="good">
-      <img-swipe />
+      <img-swipe :images="[detail.picUrl]" />
 
       <div class="content">
         <div class="point">
@@ -22,7 +22,11 @@
       </div>
     </div>
 
-    <desc-comment :active="active" @onChange="onChange" />
+    <desc-comment
+      :active="active"
+      :desc="detail.goodsDesc"
+      @onChange="onChange"
+    />
 
     <order-submit @click="onClick" />
   </div>
@@ -44,12 +48,33 @@ export default {
 
   data() {
     return {
-      active: 'comment',
+      active: 'desc',
       complete: false,
+      detail: {},
     }
   },
 
+  created() {
+    this.fetchData()
+  },
+
+  watch: {
+    $route: 'fetchData',
+  },
+
   methods: {
+    fetchData() {
+      this.$http
+        .get('/api-wxmp/cxxz/goods/score/findById', {
+          params: { id: this.$route.params.id },
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.detail = data.datas
+          }
+        })
+    },
+
     onChange(type) {
       this.active = type
     },

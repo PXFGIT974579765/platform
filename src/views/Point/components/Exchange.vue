@@ -10,31 +10,11 @@
     </div>
 
     <van-grid :gutter="15" :column-num="2" class="list">
-      <van-grid-item to="/point/detail/1">
-        <div class="list-item">
-          <img src="~@/assets/images/group_item.png" alt />
-          <div class="name">JIEMO小众波点连衣裙法式复古</div>
-          <div class="point"><span class="count">5000</span>积分</div>
-        </div>
-      </van-grid-item>
-
-      <van-grid-item to="/point/detail/1">
-        <div class="list-item">
-          <img src="~@/assets/images/group_item.png" alt />
-          <div class="name">JIEMO小众波点连衣裙法式复古</div>
-          <div class="point"><span class="count">5000</span>积分</div>
-        </div>
-      </van-grid-item>
-
-      <van-grid-item to="/point/detail/1">
-        <div class="list-item">
-          <img src="~@/assets/images/group_item.png" alt />
-          <div class="name">JIEMO小众波点连衣裙法式复古</div>
-          <div class="point"><span class="count">5000</span>积分</div>
-        </div>
-      </van-grid-item>
-
-      <van-grid-item to="/point/detail/1">
+      <van-grid-item
+        v-for="l in list"
+        :key="l.id"
+        :to="`/point/detail/${l.id}`"
+      >
         <div class="list-item">
           <img src="~@/assets/images/group_item.png" alt />
           <div class="name">JIEMO小众波点连衣裙法式复古</div>
@@ -46,7 +26,13 @@
 </template>
 
 <script>
-export default {}
+export default {
+  props: {
+    list: {
+      type: Array,
+    },
+  },
+}
 </script>
 
 <style lang="less" scoped>
