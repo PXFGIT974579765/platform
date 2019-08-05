@@ -80,8 +80,8 @@
       </van-cell>
     </van-cell-group>
 
-    <div class="ad">
-      <img :src="ad.imgUrl" alt />
+    <div class="ad" v-if="ad.adImg" @click="routeAd">
+      <img :src="ad.adImg" alt />
       <span class="ad-title">{{ ad.title }}</span>
     </div>
 
@@ -103,13 +103,15 @@ export default {
       userInfo: {},
       cardInfo: {},
       ad: {
-        imgUrl: require('./images/ad.png'),
-        title: '邀请新人各得 【Rp 500.000】 奖励',
+        extUrl: '',
+        adImg: '',
+        link: '',
       },
     }
   },
   created() {
     this.fetchInfo()
+    this.fetchAd()
   },
   methods: {
     ...mapActions(['setUser']),
@@ -124,6 +126,16 @@ export default {
             this.setUser(userInfo)
           }
         })
+    },
+    fetchAd() {
+      this.$http.get('/api-media/news-anon/news/pageAd').then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.ad = data.datas
+        }
+      })
+    },
+    routeAd() {
+      location.href = this.ad.extUrl || this.ad.link
     },
   },
 }
@@ -165,7 +177,13 @@ export default {
   .ad {
     position: relative;
     padding: 18px 12px;
+    height: 96px;
     background-color: #fff;
+
+    img {
+      height: 100%;
+      width: 100%;
+    }
   }
 
   .ad-title {
