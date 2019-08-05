@@ -42,8 +42,18 @@
               @input="onContentChanged"
               :error-message="err.content"
             />
-            <div class="camera">
-              <span class="iconfont">&#xe761;</span>
+            <div class="flex">
+              <img v-for="(img, index) in imgs" :key="index" :src="img" alt />
+              <div class="camera" @click="onCameraClick">
+                <span class="iconfont">&#xe761;</span>
+                <input
+                  style="float: left;  display: none;"
+                  type="file"
+                  id="uploadFile"
+                  accept="image/*"
+                  v-on:change="readLocalFile()"
+                />
+              </div>
             </div>
           </div>
           <div class="btn-submit" @click="onSubmit">提交</div>
@@ -58,9 +68,9 @@
           >
             <div class="title flex">
               <span class="time">{{ item.createTime }}</span>
-              <span :class="item.status | statusClass">
-                {{ item.status | statusName }}
-              </span>
+              <span :class="item.status | statusClass">{{
+                item.status | statusName
+              }}</span>
             </div>
             <div class="tag">
               [{{ item.suggestionType | tagFilter }}] {{ item.title }}
@@ -74,6 +84,7 @@
 </template>
 
 <script>
+import httpUpload from '@/lib/httpUpload'
 const STATUS_HASH = {
   0: '处理中',
   1: '已回复',
@@ -95,19 +106,20 @@ export default {
       activeTab: '0',
       title: '',
       content: '',
-      suggestionImgs: '',
       complainList: [],
       suggestionType: 1,
       err: {
         title: '',
         content: '',
       },
+      imgs: [],
     }
   },
   created() {
     this.fetchComplain({})
   },
   methods: {
+    // 拉去咨询建议信息
     fetchComplain({ pageIndex = 1, pageSize = 10 }) {
       this.$http
         .get('/api-media/suggestion/mySuggestionPage', {
@@ -122,10 +134,53 @@ export default {
           }
         })
     },
+
+    // 调起相机或相册
+    onCameraClick() {
+      document.getElementById('uploadFile').click()
+    },
+
+    // 路由转发
     routeDetail(item) {
       this.$router.push(`/my/complain-detail/${item}`)
     },
 
+    //点击选中图片
+    readLocalFile: function() {
+      const localFile = document.getElementById('uploadFile').files[0]
+
+      // 展示图片
+      this.renderImage(localFile)
+
+      // 上传图片
+      this.uploadImage(localFile)
+    },
+
+    // 读取base64展现图片
+    renderImage(localFile) {
+      let reader = new FileReader()
+      reader.onload = function() {
+        //获取图片base64代码
+      }
+      reader.onerror = function() {
+        alert('图片上传失败')
+      }
+      reader.readAsDataURL(localFile, 'UTF-8')
+    },
+    // 上传图片
+    uploadImage(localFile) {
+      let param = new FormData()
+      param.append('file', localFile)
+      httpUpload.post('/api-file/foreign/files', param).then(({ data }) => {
+        if (data.resp_code == 0) {
+          this.imgs.push(data.datas)
+        } else {
+          alert('上传图片失败')
+        }
+      })
+    },
+
+    // 监听title字数变化
     onTitleChanged(value) {
       if (value.length > 15) {
         this.title = value.slice(0, 15)
@@ -133,6 +188,8 @@ export default {
         return
       }
     },
+
+    // 监听内容字数变化
     onContentChanged(value) {
       if (value.length > 200) {
         this.content = value.slice(0, 200)
@@ -141,6 +198,7 @@ export default {
       }
     },
 
+    // 监听radio变化 咨询 投诉
     onRadioChanged(name) {
       this.suggestionType = name
     },
@@ -151,8 +209,8 @@ export default {
         .post('/api-media/suggestion/handleSuggestion', {
           title: this.title,
           suggestionContent: this.content,
-          suggestionImgs: this.suggestionImgs,
           suggestionType: this.suggestionType,
+          suggestionImgs: this.imgs.join('@'),
         })
         .then(({ data }) => {
           if (data.resp_code == 0) {
@@ -176,6 +234,14 @@ export default {
 <style lang="less" scoped>
 .page-my-complain {
   padding: 0;
+
+  img {
+    display: inline-block;
+    margin-top: 15px;
+    margin-right: 20px;
+    width: 70px;
+    height: 55px;
+  }
 
   .i-will {
     width: 100%;
