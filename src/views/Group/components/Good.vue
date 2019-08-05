@@ -1,6 +1,6 @@
 <template>
   <div class="good">
-    <img-swipe />
+    <img-swipe :images="(good.picUrl || '').split('@')" />
 
     <div class="good-info">
       <div class="good-price">

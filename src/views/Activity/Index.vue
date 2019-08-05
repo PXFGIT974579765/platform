@@ -32,11 +32,11 @@
       </div>
     </div>
 
-    <activity-nav />
+    <activity-nav :topics="topics" />
 
     <div class="hot">
       <div class="title">热门活动</div>
-      <activity-list />
+      <activity-list :list="list" />
     </div>
   </div>
 </template>
@@ -51,6 +51,31 @@ export default {
     Search,
     ActivityNav,
     ActivityList,
+  },
+
+  data() {
+    return {
+      topics: [],
+      list: [],
+    }
+  },
+
+  created() {
+    this.$http.get('/api-wxmp/cxxz/topics/banners').then(({ data }) => {
+      if (data.resp_code === 0) {
+        this.topics = data.datas
+      }
+    })
+
+    this.$http
+      .get('/api-wxmp/cxxz/topics/pageTopics', {
+        params: { pageIndex: 1, pageSize: 20 },
+      })
+      .then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.list = data.datas.data
+        }
+      })
   },
 }
 </script>

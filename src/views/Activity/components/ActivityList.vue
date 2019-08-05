@@ -1,52 +1,25 @@
 <template>
   <div class="activity-list">
-    <router-link to="/activity/detail/1" class="activity-item">
-      <img src="~@/assets/images/activity_item.png" alt />
+    <router-link
+      v-for="l in list"
+      :key="l.id"
+      :to="`/activity/detail/${l.id}`"
+      class="activity-item"
+    >
+      <img :src="l.itemPicUrl" alt />
       <div class="content">
-        <div class="name">PS照片调色详细讲解色详细讲解色详细讲解</div>
+        <div class="name ellipsis-2">{{ l.title }}</div>
         <div class="date">
-          <span>6月13日</span>
-          <span>星期六</span>
-          <span>09:00-12:00</span>
+          <span>{{ l.startTime }}</span>
+          <!-- <span></span> -->
+          <!-- <span>{{l.startTime}}</span> -->
         </div>
-        <div class="address">贵州师范大学</div>
+        <div class="address">{{ l.address }}</div>
         <div class="others">
-          <div class="price">免费参加</div>
-          <div class="count">50人报名</div>
-        </div>
-      </div>
-    </router-link>
-
-    <router-link to="/activity/detail/1" class="activity-item">
-      <img src="~@/assets/images/activity_item.png" alt />
-      <div class="content">
-        <div class="name">PS照片调色详细讲解色详细讲解色详细讲解</div>
-        <div class="date">
-          <span>6月13日</span>
-          <span>星期六</span>
-          <span>09:00-12:00</span>
-        </div>
-        <div class="address">贵州师范大学</div>
-        <div class="others">
-          <div class="price">免费参加</div>
-          <div class="count">50人报名</div>
-        </div>
-      </div>
-    </router-link>
-
-    <router-link to="/activity/detail/1" class="activity-item">
-      <img src="~@/assets/images/activity_item.png" alt />
-      <div class="content">
-        <div class="name">PS照片调色详细讲解色详细讲解色详细讲解</div>
-        <div class="date">
-          <span>6月13日</span>
-          <span>星期六</span>
-          <span>09:00-12:00</span>
-        </div>
-        <div class="address">贵州师范大学</div>
-        <div class="others">
-          <div class="price">免费参加</div>
-          <div class="count">50人报名</div>
+          <div class="price">
+            {{ l.priceInfo ? `¥${l.priceInfo}` : '免费参加' }}
+          </div>
+          <div class="count">{{ l.enrollmentNum }}人报名</div>
         </div>
       </div>
     </router-link>
@@ -54,7 +27,13 @@
 </template>
 
 <script>
-export default {}
+export default {
+  props: {
+    list: {
+      type: Array,
+    },
+  },
+}
 </script>
 
 <style lang="less" scoped>
@@ -64,13 +43,15 @@ export default {}
   border-top: solid 1px #dadada;
 
   img {
+    width: 150px;
     height: 112px;
     margin-right: 12px;
   }
 
   .name {
-    height: 50px;
+    height: 3em;
     line-height: 1.5;
+    margin-bottom: 5px;
     font-size: 15px;
     color: #2d2d2d;
   }
