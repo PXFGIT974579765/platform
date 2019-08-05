@@ -2,7 +2,7 @@
   <div class="info-card" :style="{ paddingBottom: paddingBottom + 'px' }">
     <div class="header" v-if="hasSearch">
       <search />
-      <button class="qrcode">
+      <button class="qrcode" @click="onScan">
         <span class="iconfont">&#xe746;</span>
       </button>
     </div>
@@ -45,6 +45,7 @@ import { mapGetters } from 'vuex'
 
 export default {
   computed: mapGetters(['user']),
+
   components: {
     Search,
     PersonDesc,
@@ -61,6 +62,7 @@ export default {
       default: 20,
     },
   },
+
   data() {
     return {
       value: '',
@@ -71,12 +73,30 @@ export default {
     onSearch() {
       //
     },
+
+    onScan() {
+      console.log('onScan')
+      // wx.scanQRCode({
+      //   needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+      //   scanType: ['qrCode', 'barCode'], // 可以指定扫二维码还是一维码，默认二者都有
+      //   success(res) {
+      //     console.log(res)
+      //     var result = res.resultStr // 当needResult 为 1 时，扫码返回的结果
+      //   },
+      //   fail(err) {
+      //     console.log(err)
+      //   },
+      // })
+    },
+
     signRoute() {
       this.$router.push('/my/sign')
     },
+
     scoreRoute() {
       this.$router.push('/my/score')
     },
+
     levelRoute() {
       this.$router.push('/my/level')
     },
