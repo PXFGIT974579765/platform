@@ -1,8 +1,16 @@
 <template>
   <div class="page-student-card">
     <div class="img-area" @click="showDailog">
+      <div v-show="status == 0" class="status success flex-col">
+        <span class="iconfont">&#xe77d;</span>
+        <span class="message">上传成功</span>
+      </div>
+      <div v-show="status == 1" class="status fail flex-col">
+        <span class="iconfont">&#xe77f;</span>
+        <span class="message">上传失败,请重新上传</span>
+      </div>
       <div v-if="imgs.length == 0" class="white flex-col">
-        <span class="iconfont">&#xe754;</span>
+        <span class="iconfont">&#xe77e;</span>
         <span class="message">上传证件</span>
       </div>
       <div v-else class="imgs">
@@ -16,19 +24,27 @@
         v-on:change="readLocalFile()"
       />
     </div>
-    <div class="btn-submit">提交认证</div>
+    <div class="btn-submit" @click="onSubmit">提交认证</div>
   </div>
 </template>
 
 <script>
+import httpUpload from '@/lib/httpUpload'
+
+import { mapGetters, mapActions } from 'vuex'
+
 export default {
+  computed: mapGetters(['user']),
   data() {
     return {
       imgs: [],
+      resultUrl: '',
+      status: -1, // -1 无状态 0 成功 1 失败
     }
   },
-  created() {},
   methods: {
+    ...mapActions(['setUser']),
+
     // 手动触发图片输入框
     showDailog() {
       document.getElementById('uploadFile').click()
@@ -37,21 +53,58 @@ export default {
     readLocalFile: function() {
       const localFile = document.getElementById('uploadFile').files[0]
 
+      // 展示图片
+      this.renderImage(localFile)
+
+      // 上传图片
+      this.uploadImage(localFile)
+    },
+
+    // 读取base64展现图片
+    renderImage(localFile) {
       let reader = new FileReader()
-      let content
       let _self = this
       reader.onload = function(event) {
-        content = event.target.result
-        console.log(content)
         //获取图片base64代码
-        _self.imgs.push(content)
+        _self.imgs = []
+        _self.imgs.push(event.target.result)
       }
       reader.onerror = function() {
         alert('图片上传失败')
       }
-      content = reader.readAsDataURL(localFile, 'UTF-8')
-      var sss = document.getElementById('uploadFile').value
-      console.log(sss)
+      reader.readAsDataURL(localFile, 'UTF-8')
+    },
+    // 上传图片
+    uploadImage(localFile) {
+      let param = new FormData()
+      param.append('file', localFile)
+      httpUpload.post('/api-file/foreign/files', param).then(({ data }) => {
+        if (data.resp_code == 0) {
+          this.resultUrl = data.datas
+          this.status = 0
+        } else {
+          this.status = 1
+        }
+      })
+    },
+
+    // 提交保存
+    onSubmit() {
+      if (this.status != 0) {
+        return
+      }
+      this.$http
+        .post('/api-wxmp/cxxz/registerUser/registerUserInfo', {
+          ...this.user,
+          cardImg: this.resultUrl,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.status = -1
+            this.setUser(this.user)
+            alert('信息保存成功')
+          }
+        })
     },
   },
 }
@@ -62,6 +115,7 @@ export default {
   padding: 28px 15px;
 
   .img-area {
+    position: relative;
     width: 100%;
     height: 190px;
     background-color: #fff;
@@ -70,16 +124,33 @@ export default {
       height: 100%;
       justify-content: center;
       align-items: center;
+      color: #6b6b6b;
+    }
 
-      .iconfont {
-        color: #dedede;
-      }
+    .iconfont {
+      font-size: 30px;
+    }
 
-      .message {
-        margin-top: 22px;
-        font-size: 15px;
-        color: #6b6b6b;
-      }
+    .message {
+      margin-top: 22px;
+      font-size: 15px;
+    }
+
+    .status {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      letter-spacing: 2px;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    .fail {
+      color: #ff5050;
+    }
+
+    .success {
+      color: #06c0b5;
     }
 
     .imgs {
