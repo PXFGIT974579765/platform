@@ -6,12 +6,12 @@
 
     <div class="activity">
       <div class="activity-detail">
-        <img src="~@/assets/images/activity_detail.jpg" alt />
+        <img :src="detail.avatar" alt />
 
         <div class="activity-content">
           <div class="name">
-            <div class="tag">比赛</div>
-            刀剑2贵州赛区英雄争霸赛
+            <div class="tag">{{ detail.categoryName }}</div>
+            {{ detail.title }}
           </div>
           <div class="detail">
             <div class="read-count">
@@ -23,7 +23,7 @@
             <share-button />
           </div>
           <div class="others">
-            <div class="price">¥20</div>
+            <div class="price">¥{{ detail.price }}</div>
             <div class="points">成功参与可获500积分奖励</div>
           </div>
         </div>
@@ -33,16 +33,14 @@
         <div class="item date">
           <div class="item-name">日期</div>
           <div class="item-value">
-            <span>6月13日</span>
-            <span>星期六</span>
-            <span>09:00 - 12:00</span>
+            <span>{{ detail.startTime }}</span>
+            <!-- <span>星期六</span>
+            <span>09:00 - 12:00</span>-->
           </div>
         </div>
         <div class="item address">
           <div class="item-name">地址</div>
-          <div class="item-value">
-            贵州大学城师范学院同心路15号（创星校园实训中心）
-          </div>
+          <div class="item-value">{{ detail.address }}</div>
         </div>
       </div>
     </div>
@@ -65,9 +63,7 @@
 
     <div class="intro">
       <div class="intro-header">介绍</div>
-      <p>
-        首届以物联网、大数据、云计算、人工智能、互联网等产业融合发展为主题的“智能互联融合创新发展论坛”(简称：智融大会)由中国信息通信研究院主导，以“智融未来，慧聚创新”主题，针对政策、技术、应用三大方向，深入探讨智能技术与相关产业融合与创新发展，进一步加强政产学研各界的交流沟通。届时，国家发改委、工信部等有关领导，中国科学院院士、中国工程院院士等权威专家，华为、腾讯、阿里等行业领军企业高管将齐聚重庆，共筑产业“融合·创新·发展”之路。
-      </p>
+      <div v-html="detail.content"></div>
     </div>
 
     <div class="comment-block">
@@ -95,7 +91,33 @@ export default {
     ShareButton,
   },
 
+  data() {
+    return {
+      detail: {},
+    }
+  },
+
+  created() {
+    this.fetchData()
+  },
+
+  watch: {
+    $route: 'fetchData',
+  },
+
   methods: {
+    fetchData() {
+      this.$http
+        .get('/api-wxmp/cxxz/topics/findTopic', {
+          params: { id: this.$route.params.id },
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.detail = data.datas
+          }
+        })
+    },
+
     onSubmit() {
       this.$router.push('/activity/order')
     },
@@ -120,14 +142,13 @@ export default {
 
   img {
     display: block;
+    width: 100%;
   }
 }
 
 .activity-content {
-  position: absolute;
-  left: 15px;
-  right: 15px;
-  top: 100%;
+  position: relative;
+  margin: 15px;
   margin-top: -33px;
   padding: 13px;
   border-radius: 3px;
@@ -136,7 +157,7 @@ export default {
 
   .name {
     display: flex;
-    align-items: center;
+    line-height: 1.5;
     margin-bottom: 16px;
     font-size: 16px;
   }
@@ -147,6 +168,7 @@ export default {
     line-height: 18px;
     text-align: center;
     margin-right: 8px;
+    margin-top: 0.2em;
     border-radius: 2px;
     font-size: 12px;
     color: #fff;
@@ -182,7 +204,7 @@ export default {
 }
 
 .date-address {
-  margin: 84px 15px 0;
+  margin: 12px 15px 0;
   padding: 13px;
   border-radius: 3px;
   background-color: #ffffff;

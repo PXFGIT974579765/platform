@@ -1,19 +1,19 @@
 <template>
   <div class="person-card">
-    <img src="~@/assets/images/errand_avatar.png" alt class="avatar" />
+    <img :src="data.headImage" alt class="avatar" />
     <div class="content">
-      <div class="name">{{ data.name }}</div>
+      <div class="name">{{ data.cname }}</div>
       <div class="info">
-        <div class="count">已跑 {{ data.count }} 单</div>
+        <div class="count">已跑 {{ data.orderNum }} 单</div>
         <div class="score">
           <div>
             <van-rate
-              :value="(data.score * 5) / 10"
+              :value="(data.ratings * 5) / 10"
               :size="12"
               color="#ffad43"
             />
           </div>
-          <div class="score-num">{{ data.score }}</div>
+          <div class="score-num">{{ data.ratings }}</div>
         </div>
       </div>
     </div>
