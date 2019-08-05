@@ -42,7 +42,11 @@
 
     <manual />
 
-    <desc-comment :active="active" @onChange="onChange" />
+    <desc-comment
+      :active="active"
+      :desc="good.goodsDesc"
+      @onChange="onChange"
+    />
   </div>
 </template>
 
@@ -62,7 +66,7 @@ export default {
 
   data() {
     return {
-      active: 'comment',
+      active: 'desc',
       complete: false,
       good: {},
     }

@@ -1,24 +1,23 @@
 <template>
   <van-swipe @change="onChange">
-    <van-swipe-item>
-      <img src="~@/assets/images/group_good.png" alt />
-    </van-swipe-item>
-    <van-swipe-item>
-      <img src="~@/assets/images/group_good.png" alt />
-    </van-swipe-item>
-    <van-swipe-item>
-      <img src="~@/assets/images/group_good.png" alt />
-    </van-swipe-item>
-    <van-swipe-item>
-      <img src="~@/assets/images/group_good.png" alt />
+    <van-swipe-item v-for="url in images" :key="url">
+      <img :src="url" alt />
     </van-swipe-item>
 
-    <div class="custom-indicator" slot="indicator">{{ current + 1 }}/4</div>
+    <div class="custom-indicator" slot="indicator">
+      {{ current + 1 }}/{{ images.length }}
+    </div>
   </van-swipe>
 </template>
 
 <script>
 export default {
+  props: {
+    images: {
+      type: Array,
+    },
+  },
+
   data() {
     return {
       current: 0,
@@ -33,7 +32,12 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less" scoped>
+img {
+  display: block;
+  margin: auto;
+}
+
 .custom-indicator {
   position: absolute;
   right: 16px;

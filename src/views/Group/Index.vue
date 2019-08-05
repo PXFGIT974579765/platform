@@ -3,9 +3,9 @@
     <div class="header">
       <search light />
 
-      <ul class="clearfix">
+      <ul class="clearfix category">
         <li v-for="c in category" :key="c.categoryId">
-          <span class="iconfont">&#xe733;</span>
+          <img :src="c.iconUrl" alt="" />
           <div class="name">{{ c.name }}</div>
         </li>
       </ul>
@@ -29,7 +29,7 @@
       </div>
       <div class="block-content clearfix">
         <div class="list-item-wrap" v-for="l in list" :key="l.id">
-          <router-link to="/group/detail/1" class="list-item">
+          <router-link :to="`/group/detail/${l.id}`" class="list-item">
             <img :src="l.picUrl" alt />
             <div class="name ellipsis-2">{{ l.name }}</div>
             <div class="detail">
@@ -91,7 +91,7 @@ export default {
   background: #fff;
 }
 
-ul {
+.category {
   text-align: center;
   margin-top: 23px;
 
@@ -101,11 +101,8 @@ ul {
     margin-bottom: 20px;
   }
 
-  .iconfont {
-    font-size: 20px;
-    background: linear-gradient(90deg, #ff6565 0%, #ff1f26 100%);
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+  img {
+    max-width: 22px;
   }
 
   .name {
@@ -189,22 +186,29 @@ ul {
 
 .list-item {
   display: block;
+  text-align: center;
   border-radius: 4px;
   background: #fff;
 
   img {
+    // TODO: height
     height: 165px;
+    background-color: #fff;
   }
 
   .name {
+    text-align: left;
+    margin-bottom: 3px;
     padding: 6px 7px;
     line-height: 1.5;
+    height: 3.5em;
     font-size: 16px;
     color: #4e4e4e;
   }
 
   .detail {
     display: flex;
+    align-items: center;
     padding: 0 6px 15px;
   }
 
