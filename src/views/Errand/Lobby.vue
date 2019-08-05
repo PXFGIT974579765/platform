@@ -1,6 +1,6 @@
 <template>
   <div class="lobby">
-    <p>当前共有 {{ count }} 名跑腿员等待接单</p>
+    <p>当前共有 {{ list.length }} 名跑腿员等待接单</p>
 
     <van-list
       v-model="loading"
@@ -29,40 +29,23 @@ export default {
   data() {
     return {
       count: 18,
-      list: [
-        {
-          id: 1,
-          name: '王多鱼',
-          sex: '男',
-          count: 20,
-          score: 9.2,
-        },
-        {
-          id: 2,
-          name: '王多鱼',
-          sex: '男',
-          count: 20,
-          score: 9.2,
-        },
-        {
-          id: 3,
-          name: '王多鱼',
-          sex: '男',
-          count: 20,
-          score: 9.2,
-        },
-        {
-          id: 4,
-          name: '王多鱼',
-          sex: '男',
-          count: 20,
-          score: 9.2,
-        },
-      ],
+      list: [],
       loading: false,
       finished: true,
       error: false,
     }
+  },
+
+  created() {
+    this.$http
+      .get('/api-wxmp/cxxz/distriButtion/runnerErrands', {
+        params: { pageIndex: 1, pageSize: 20 },
+      })
+      .then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.list = data.datas.data
+        }
+      })
   },
 
   methods: {
