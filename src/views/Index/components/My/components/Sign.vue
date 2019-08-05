@@ -101,8 +101,17 @@ export default {
       ],
     }
   },
+  created() {
+    this.fetchInfo()
+  },
   methods: {
-    onLoad() {},
+    fetchInfo() {
+      this.$http.get('/foreignUser/sign/getSetting').then(({ data }) => {
+        if (data.resp_code === 0) {
+          console.log(data.datas)
+        }
+      })
+    },
     formatDay(n) {
       const days = this.sign.days
       return days < 6 ? n : days - 6 + n

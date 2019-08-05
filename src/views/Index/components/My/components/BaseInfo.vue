@@ -92,7 +92,9 @@
       </van-cell>
 
       <van-cell title="身份认证" class="cell" is-link>
-        <span v-if="!user.isReviewed">请上传学生证</span>
+        <span v-if="!user.isReviewed" @click="routeStudentCard"
+          >请上传学生证</span
+        >
         <span v-else class="is-authed" @click="routeStudentCard">
           <span class="iconfont">&#xe75e;</span>已认证
         </span>
@@ -103,7 +105,7 @@
       <div class="btn-submit" @click="onSubmit">提交</div>
     </div>
 
-    <!-- 弹框部分 -->
+    <!-- 学校弹框 -->
     <van-action-sheet
       v-model="showSchool"
       title="请选择学校"
@@ -121,6 +123,7 @@
       </div>
     </van-action-sheet>
 
+    <!-- 学院弹框 -->
     <van-action-sheet
       v-model="showMajors"
       title="请选择学院"
