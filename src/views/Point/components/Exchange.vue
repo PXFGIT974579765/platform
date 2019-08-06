@@ -16,9 +16,12 @@
         :to="`/point/detail/${l.id}`"
       >
         <div class="list-item">
-          <img src="~@/assets/images/group_item.png" alt />
-          <div class="name">JIEMO小众波点连衣裙法式复古</div>
-          <div class="point"><span class="count">5000</span>积分</div>
+          <img :src="l.picUrl" alt />
+          <div class="name ellipsis-2">{{ l.name }}</div>
+          <div class="point">
+            <span class="count">{{ l.score }}</span
+            >积分
+          </div>
         </div>
       </van-grid-item>
     </van-grid>
@@ -68,10 +71,12 @@ export default {
   }
 
   img {
+    height: 165px;
     border-radius: 4px 4px 0px 0px;
   }
 
   .name {
+    height: 3.1em;
     margin: 8px 8px 8px;
     line-height: 1.5;
     font-size: 16px;

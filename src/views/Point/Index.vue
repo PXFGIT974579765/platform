@@ -45,6 +45,7 @@ export default {
     return {
       active: 'a',
       exchange: [],
+      category: [],
     }
   },
 
@@ -58,6 +59,12 @@ export default {
           this.exchange = data.datas.data
         }
       })
+
+    this.$http.get('/api-wxmp/cxxz/category/types').then(({ data }) => {
+      if (data.resp_code === 0) {
+        this.category = data.datas
+      }
+    })
   },
 }
 </script>

@@ -6,15 +6,15 @@
       <div class="content">
         <div class="point">
           <div class="price">
-            <div class="point-num">5000</div>
+            <div class="point-num">{{ detail.score }}</div>
             积分
             <div class="tag">爆款推荐</div>
           </div>
-          <div class="count">已兑 50 件</div>
+          <div class="count">已兑 {{ detail.sellVolume }} 件</div>
         </div>
 
         <div class="name-share">
-          <div class="name">机械手感键盘鼠标套装</div>
+          <div class="name">{{ detail.name }}</div>
           <share-button />
         </div>
 
