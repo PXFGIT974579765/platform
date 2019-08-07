@@ -13,16 +13,28 @@
       <div class="good-count">已拼{{ good.sellVolume }}件</div>
     </div>
     <div class="good-name">{{ good.name }}</div>
-    <div class="good-verdor">厂商：贵州省莫白传媒科技有限公司</div>
+    <div class="good-verdor" @click="onShowManufacturer">
+      厂商：贵州省莫白传媒科技有限公司
+    </div>
+
+    <van-popup
+      v-model="manufacturerShow"
+      position="bottom"
+      :style="{ maxHeight: '75%' }"
+    >
+      <manufacturer />
+    </van-popup>
   </div>
 </template>
 
 <script>
 import ImgSwipe from '@/components/ImgSwipe'
+import Manufacturer from '@/components/Manufacturer'
 
 export default {
   components: {
     ImgSwipe,
+    Manufacturer,
   },
 
   props: {
@@ -34,12 +46,17 @@ export default {
   data() {
     return {
       current: 0,
+      manufacturerShow: false,
     }
   },
 
   methods: {
     onChange(index) {
       this.current = index
+    },
+
+    onShowManufacturer() {
+      this.manufacturerShow = true
     },
   },
 }

@@ -92,18 +92,26 @@ export default {
     Search,
   },
 
-  created() {
-    this.$http.get('/api-wxmp/cxxz/app/myAppList').then(({ data }) => {
-      if (data.resp_code === 0) {
-        this.apps = data.datas
-      }
-    })
-  },
-
   data() {
     return {
       editable: false,
+      myApps: [],
+      allApps: [],
     }
+  },
+
+  created() {
+    this.$http.get('/api-wxmp/cxxz/app/myAppList').then(({ data }) => {
+      if (data.resp_code === 0) {
+        this.myApps = data.datas
+      }
+    })
+
+    this.$http.get('/api-wxmp/cxxz/app/findAppList').then(({ data }) => {
+      if (data.resp_code === 0) {
+        this.allApps = data.datas
+      }
+    })
   },
 
   methods: {

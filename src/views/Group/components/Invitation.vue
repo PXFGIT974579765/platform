@@ -1,5 +1,5 @@
 <template>
-  <button :class="['invitation', { wireframe: wireframe }]">
+  <button :class="['invitation', { wireframe: wireframe }]" @click="onClick">
     <slot></slot>
   </button>
 </template>
@@ -8,6 +8,12 @@
 export default {
   props: {
     wireframe: Boolean,
+  },
+
+  methods: {
+    onClick() {
+      this.$emit('click')
+    },
   },
 }
 </script>

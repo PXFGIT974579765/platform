@@ -4,11 +4,11 @@
 
     <nav>
       <router-link to="/my/sign">
-        <span class="iconfont nav-score">&#xe72c;</span>
+        <span class="iconfont nav-score">&#xe77b;</span>
         <div>赚积分</div>
       </router-link>
       <router-link to="/point">
-        <span class="iconfont nav-small">&#xe72c;</span>
+        <span class="iconfont nav-small">&#xe776;</span>
         <div>积分商城</div>
       </router-link>
       <router-link to="/my/order-first">
@@ -163,11 +163,13 @@ export default {
         }
       })
 
-    this.$http.get('/api-wxmp/cxxz/app/findAppList').then(({ data }) => {
-      if (data.resp_code === 0) {
-        this.apps = data.datas
-      }
-    })
+    this.$http
+      .get('/api-wxmp/cxxz/app/findAppList', { params: { isDefault: 1 } })
+      .then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.apps = data.datas
+        }
+      })
   },
 
   methods: {

@@ -23,18 +23,45 @@
     </div>
 
     <div class="operation">
-      <button class="link">联系跑腿员</button>
+      <button class="link" @click="onClick">联系跑腿员</button>
       <router-link to="/errand/detail" class="link">订单详情</router-link>
     </div>
+
+    <van-dialog
+      v-model="show"
+      :showConfirmButton="false"
+      closeOnPopstate
+      closeOnClickOverlay
+    >
+      <errand-comment @close="onClose" />
+    </van-dialog>
   </div>
 </template>
 
 <script>
+import ErrandComment from '@/components/ErrandComment'
 import Commodity from './Commodity'
 
 export default {
   components: {
+    ErrandComment,
     Commodity,
+  },
+
+  data() {
+    return {
+      show: false,
+    }
+  },
+
+  methods: {
+    onClick() {
+      this.show = true
+    },
+
+    onClose() {
+      this.show = false
+    },
   },
 }
 </script>

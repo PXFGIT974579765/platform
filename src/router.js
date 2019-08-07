@@ -301,7 +301,7 @@ const activity = [
     component: ActivityDetail,
   },
   {
-    path: '/activity/order',
+    path: '/activity/order/:id',
     name: 'activity/order',
     component: ActivityOrder,
   },
