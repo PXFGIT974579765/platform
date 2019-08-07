@@ -2,7 +2,7 @@
   <div class="comp-order-goods-card" v-wechat-title="$route.meta.title">
     <router-link :to="'/order/goods-detail/' + goods.orderNo">
       <div class="header flex">
-        <span class="order-no">订单编号: {{ goods.orderNo }}</span>
+        <span class="order-no">订单编号: {{ goods.orderId }}</span>
         <span v-if="showStatus" class="status">{{
           goods.status | statusFilter
         }}</span>
@@ -11,19 +11,19 @@
         <img :src="goods.imgUrl" />
         <div class="content-right flex">
           <div class="detail flex-col">
-            <span class="title">{{ goods.title }}</span>
-            <span class="tag">{{ goods.tagName }}: {{ goods.tagDesc }}</span>
+            <span class="title">{{ goods.goodsName }}</span>
+            <!-- <span class="tag">{{ goods.tagName }}: {{ goods.tagDesc }}</span> -->
           </div>
           <div class="price">
-            <div>￥{{ goods.price }}</div>
-            <div>X{{ goods.num }}</div>
+            <div>￥{{ goods.orderMoney }}</div>
+            <div>X{{ goods.goodsSize || 1 }}</div>
           </div>
         </div>
       </div>
     </router-link>
     <div class="footer">
       <div class="total">
-        共{{ goods.num }}件商品 合计: ￥{{ goods.amount }}
+        共{{ goods.goodsSize || 1 }}件商品 合计: ￥{{ goods.money }}
       </div>
       <div class="btn-area">
         <span class="btn">等待提货</span>

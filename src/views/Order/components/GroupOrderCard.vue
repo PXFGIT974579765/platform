@@ -1,7 +1,7 @@
 <template>
   <div class="comp-order-goods-card" v-wechat-title="$route.meta.title">
     <div class="header flex">
-      <span class="order-no">订单编号: {{ group.orderNo }}</span>
+      <span class="order-no">订单编号: {{ group.goodsId }}</span>
       <span v-if="showStatus" class="status">{{
         group.status | statusFilter
       }}</span>
@@ -9,21 +9,21 @@
     <router-link :to="'/order/group-detail/' + group.orderNo">
       <div class="content flex">
         <img :src="group.imgUrl" />
-        <div class="content-right flex">
+        <div class="content-right flex flex-1">
           <div class="detail flex-col">
-            <span class="title">{{ group.title }}</span>
+            <span class="title">{{ group.goodsName }}</span>
             <span class="tag">{{ group.tagName }}: {{ group.tagDesc }}</span>
           </div>
           <div class="price">
-            <div>￥{{ group.price }}</div>
-            <div>X{{ group.num }}</div>
+            <div>￥{{ group.orderMoney }}</div>
+            <div>X{{ group.goodsSize || 1 }}</div>
           </div>
         </div>
       </div>
     </router-link>
     <div class="footer">
       <div class="total">
-        共{{ group.num }}件商品 合计: ￥{{ group.amount }}
+        共{{ group.goodsSize || 1 }}件商品 合计: ￥{{ group.money }}
       </div>
       <div class="btn-area">
         <span class="btn">等待提货</span>
@@ -108,6 +108,7 @@ export default {
 
     .content-right {
       margin-left: 11px;
+      justify-content: space-between;
 
       .detail {
         margin-right: 15px;

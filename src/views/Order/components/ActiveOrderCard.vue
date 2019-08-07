@@ -2,7 +2,7 @@
   <div class="comp-order-active-card" v-wechat-title="$route.meta.title">
     <router-link :to="'/order/active-detail/' + active.activeNo">
       <div class="header flex">
-        <span class="order-no">活动编号: {{ active.activeNo }}</span>
+        <span class="order-no">活动编号: {{ active.goodsId }}</span>
         <span v-if="showStatus" class="status">{{
           active.status | statusFilter
         }}</span>
@@ -15,8 +15,8 @@
       </div>
 
       <div class="title-area flex">
-        <span class="title">{{ active.title }}</span>
-        <div v-if="showPrice" class="price">￥{{ active.price }}</div>
+        <span class="title">{{ active.goodsName }}</span>
+        <div v-if="showPrice" class="price">￥{{ active.orderMoney }}</div>
       </div>
       <div class="time-area">
         <span>日期</span>

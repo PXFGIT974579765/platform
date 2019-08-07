@@ -112,7 +112,7 @@ export default {
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
-            console.log(data.datas)
+            this.goods = data.datas.data
           }
         })
     },
