@@ -99,8 +99,23 @@ export default {
       ],
     }
   },
+  created() {
+    this.fetchOrders({})
+  },
   methods: {
-    onLoad() {},
+    // 拉去活动信息
+    fetchOrders({ pageIndex = 1, pageSize = 10 }) {
+      this.$http
+        .post('/api-wxmp/cxxz/order/pageCZ', {
+          pageIndex,
+          pageSize,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.active = data.datas.data
+          }
+        })
+    },
     activeFilter(status) {
       return status === -1
         ? this.active

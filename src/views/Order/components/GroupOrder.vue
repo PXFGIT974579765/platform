@@ -97,8 +97,23 @@ export default {
       ],
     }
   },
+  created() {
+    this.fetchOrders({})
+  },
   methods: {
-    onLoad() {},
+    // 拉去商品信息
+    fetchOrders({ pageIndex = 1, pageSize = 10 }) {
+      this.$http
+        .post('/api-wxmp/cxxz/order/pagePT', {
+          pageIndex,
+          pageSize,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.groups = data.datas.data
+          }
+        })
+    },
     groupsFilter(status) {
       return status === -1
         ? this.groups

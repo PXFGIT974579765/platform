@@ -4,11 +4,9 @@
       <div class="score-box flex-col">
         <span>可用积分</span>
         <span>{{ sign.score }}</span>
-        <span
-          >{{ sign.latestTime | formatDate }} 签到 积分+{{
-            sign.latestScore
-          }}</span
-        >
+        <span>
+          {{ sign.latestTime | formatDate }} 签到 积分+{{ sign.latestScore }}
+        </span>
       </div>
       <span class="btn_score_detail">积分明细</span>
     </div>
@@ -20,7 +18,9 @@
           <span>已连续签到{{ sign.days }}天</span>
         </div>
       </div>
-      <div class="btn_sign">签到</div>
+      <div class="btn_sign" @click="onSignClick">
+        {{ user.isSign | statusFilter }}
+      </div>
     </div>
     <div class="sign-days card-item">
       <div class="title">
@@ -28,7 +28,11 @@
         <span>签到规则</span>
       </div>
       <div class="days-card flex">
-        <div v-for="n in 6" :key="n" class="icon-day flex-col">
+        <!-- <div v-for="n in 6" :key="n" class="icon-day flex-col">
+          <div :class="['icon', formatIconClass(n)]">+{{ formatScore(n) }}</div>
+          <div :class="['day', formatDayClass(n)]">{{ formatDay(n) }}天</div>
+        </div>-->
+        <div v-for="n in sign.keys" :key="n" class="icon-day flex-col">
           <div :class="['icon', formatIconClass(n)]">+{{ formatScore(n) }}</div>
           <div :class="['day', formatDayClass(n)]">{{ formatDay(n) }}天</div>
         </div>
@@ -39,20 +43,15 @@
       <div class="title">去完成任务赚更多积分</div>
       <div class="link-item flex" v-for="link in links" :key="link.icon">
         <div class="flex">
-          <span
-            class="iconfont icon-link"
-            :style="{ color: link.color }"
-            v-html="link.icon"
-          ></span>
+          <img :src="link.icon.split('@')[0]" alt="" />
           <div class="link-desc flex-col">
             <span>
-              {{ link.theme }}
-              <span class="link_score">+{{ link.score }} 积分</span>
+              {{ link.title }}
             </span>
-            <span>{{ link.desc }}</span>
+            <span>{{ link.brief }}</span>
           </div>
         </div>
-        <div class="btn_go" @click="routePage(link.url)">GO</div>
+        <div class="btn_go" @click="routePage(link.extUrl)">GO</div>
       </div>
       <div class="btn-more">查看更多</div>
     </div>
@@ -60,9 +59,15 @@
 </template>
 
 <script>
+const SIGN_STATUS = {
+  1: '已签到',
+  0: '签到',
+}
 import { dateTime } from '@/lib/format'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  computed: mapGetters(['user']),
   data() {
     return {
       sign: {
@@ -70,57 +75,50 @@ export default {
         latestScore: 20,
         latestTime: 1500034995950,
         days: 5, // 连续签到第四天
+        scoreSetting: {},
+        keys: [],
       },
       loading: false,
       finished: false,
-      links: [
-        {
-          icon: '&#xe762;',
-          color: '#7ecef4',
-          theme: '分享链接',
-          score: 500,
-          desc: '把你喜欢的活动分享到朋友圈',
-          url: '#',
-        },
-        {
-          icon: '&#xe763;',
-          color: '#ff6b6b',
-          theme: '参与拼团',
-          score: 1000,
-          desc: '成功发起一次拼团活动',
-          url: '#',
-        },
-        {
-          icon: '&#xe764;',
-          color: '#ffbf5a',
-          theme: '公益活动',
-          score: 1500,
-          desc: '成功参加一次公益活动',
-          url: '#',
-        },
-      ],
+      links: [],
     }
   },
   created() {
     this.fetchInfo()
+    this.fetchLinks()
   },
   methods: {
+    ...mapActions(['setUser']),
     fetchInfo() {
-      this.$http.get('/foreignUser/sign/getSetting').then(({ data }) => {
+      this.$http
+        .get('/api-wxmp/cxxz/registerUser/sign/getSetting')
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            const scoreSetting = data.datas.scoreSetting
+            const keys = Object.keys(scoreSetting).sort()
+            this.sign.scoreSetting = scoreSetting
+            this.sign.keys = keys
+          }
+        })
+    },
+    fetchLinks() {
+      this.$http.get('/api-media/share/task/list').then(({ data }) => {
         if (data.resp_code === 0) {
-          console.log(data.datas)
+          this.links = data.datas
         }
       })
     },
     formatDay(n) {
-      const days = this.sign.days
-      return days < 6 ? n : days - 6 + n
+      // const days = this.sign.days
+      // return days < 6 ? n : days - 6 + n
+      return n.split('_')[1]
     },
     formatScore(n) {
-      const days = this.sign.days
-      const th = days < 6 ? n : days - 6 + n
-      const score = th * 5
-      return score > 30 ? 30 : score
+      // const days = this.sign.days
+      // const th = days < 6 ? n : days - 6 + n
+      // const score = th * 5
+      // return score > 30 ? 30 : score
+      return this.sign.scoreSetting[n]
     },
     formatIconClass(n) {
       const days = this.sign.days
@@ -143,9 +141,27 @@ export default {
     routePage(url) {
       this.$router.push(url)
     },
+    // 点击签到
+    onSignClick() {
+      if (this.user.isSign == 1) {
+        return
+      }
+      this.$http
+        .post('/api-wxmp/cxxz/registerUser/sign/days')
+        .then(({ data }) => {
+          if (data.resp_code == 0) {
+            this.user.isSign = 1
+            this.setUser(this.user)
+            alert('签到成功')
+          } else {
+            alert(data.resp_msg)
+          }
+        })
+    },
   },
   filters: {
     formatDate: dateTime,
+    statusFilter: status => SIGN_STATUS[status],
   },
 }
 </script>
@@ -277,13 +293,9 @@ export default {
       background-color: #fff;
       border-bottom: 1px solid #dedede;
 
-      .icon-link {
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        color: #07c1b2;
-        font-size: 45px;
-        text-align: center;
+      img {
+        width: 50px;
+        height: 50px;
       }
 
       .link-desc {
