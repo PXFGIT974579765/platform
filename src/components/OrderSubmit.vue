@@ -20,10 +20,13 @@ export default {
 
 <style lang="less" scoped>
 .order-submit {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   display: flex;
   align-items: center;
   text-align: center;
-  margin: 170px 0 22px;
   background: #ffffff;
 
   .price {
