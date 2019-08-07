@@ -13,7 +13,7 @@
 
     <order-price />
     <order-pay />
-    <order-submit />
+    <order-submit @submit="onSubmit" />
   </div>
 </template>
 
@@ -27,6 +27,30 @@ export default {
     OrderPrice,
     OrderPay,
     OrderSubmit,
+  },
+
+  methods: {
+    onSubmit() {
+      this.$http
+        .post('/api-wxmp/cxxz/topicPay/createOrder', {
+          code: 'code',
+        })
+        .then(({ data }) => {
+          if (data.resp_code !== 0) {
+            //
+          }
+          wx.chooseWXPay({
+            timestamp: 0,
+            nonceStr: '',
+            package: '',
+            signType: '',
+            paySign: '',
+            success: function(res) {
+              console.log(res)
+            },
+          })
+        })
+    },
   },
 }
 </script>

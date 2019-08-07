@@ -119,7 +119,7 @@ export default {
     },
 
     onSubmit() {
-      this.$router.push('/activity/order')
+      this.$router.push(`/activity/order/${this.$route.params.id}`)
     },
   },
 }
@@ -275,13 +275,14 @@ export default {
 }
 
 .comment-block {
-  margin: 10px 0 30px;
+  margin: 10px 0 41px;
   padding: 15px;
   background: #fff;
 }
 
 .submit {
-  display: block;
+  position: fixed;
+  bottom: 0;
   width: 100%;
   text-align: center;
   padding: 20px 0;
