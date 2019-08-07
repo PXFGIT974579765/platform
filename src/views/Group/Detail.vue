@@ -37,7 +37,7 @@
         <span class="iconfont">&#xe75e;</span>已参团，等待满员
       </div>
 
-      <invitation wireframe>邀请好友参团</invitation>
+      <invitation wireframe @click="onShowShare">邀请好友参团</invitation>
     </div>
 
     <manual />
@@ -47,6 +47,14 @@
       :desc="good.goodsDesc"
       @onChange="onChange"
     />
+
+    <van-popup
+      v-model="shareShow"
+      position="bottom"
+      :style="{ maxHeight: '75%' }"
+    >
+      <share />
+    </van-popup>
   </div>
 </template>
 
@@ -55,10 +63,12 @@ import Good from './components/Good'
 import Manual from './components/Manual'
 import Invitation from './components/Invitation'
 import DescComment from '@/components/DescComment'
+import Share from '@/components/Share'
 
 export default {
   components: {
     Good,
+    Share,
     Manual,
     Invitation,
     DescComment,
@@ -68,6 +78,7 @@ export default {
     return {
       active: 'desc',
       complete: false,
+      shareShow: false,
       good: {},
     }
   },
@@ -95,6 +106,10 @@ export default {
 
     onChange(type) {
       this.active = type
+    },
+
+    onShowShare() {
+      this.shareShow = true
     },
   },
 }
