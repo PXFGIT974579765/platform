@@ -62,41 +62,7 @@ export default {
           value: 3,
         },
       ],
-      goods: [
-        {
-          orderNo: '557879582',
-          imgUrl: require('../images/good.png'),
-          title: '华为路由器无线全千兆端口家用WIFI穿墙王大功率户型',
-          tagName: '标准套餐',
-          tagDesc: '白色-定制版',
-          num: 1, // 数量
-          price: 189, // 单价
-          amount: 189, // 总金额 = 单价*数量
-          status: 0,
-        },
-        {
-          orderNo: '557879583',
-          imgUrl: require('../images/good.png'),
-          title: '华为路由器无线全千兆端口家用WIFI穿墙王大功率户型',
-          tagName: '标准套餐',
-          tagDesc: '白色-定制版',
-          num: 1, // 数量
-          price: 189, // 单价
-          amount: 189, // 总金额 = 单价*数量
-          status: 2,
-        },
-        {
-          orderNo: '557879584',
-          imgUrl: require('../images/good.png'),
-          title: '华为路由器无线全千兆端口家用WIFI穿墙王大功率户型',
-          tagName: '标准套餐',
-          tagDesc: '白色-定制版',
-          num: 1, // 数量
-          price: 189, // 单价
-          amount: 189, // 总金额 = 单价*数量
-          status: 1,
-        },
-      ],
+      goods: [],
     }
   },
   created() {
