@@ -1,6 +1,6 @@
 <template>
   <div class="comp-order-goods-card" v-wechat-title="$route.meta.title">
-    <div class="header flex" @click="routeDetail(goods.orderNo)">
+    <div class="header flex" @click="routeDetail(goods.orderId)">
       <span class="order-no">订单编号: {{ goods.orderId }}</span>
       <span v-if="showStatus" class="status">
         {{ goods.status | statusFilter }}

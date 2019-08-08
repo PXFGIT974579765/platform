@@ -106,7 +106,7 @@ export default {
     // 拉去活动信息
     fetchOrders({ pageIndex = 1, pageSize = 10 }) {
       this.$http
-        .post('/api-wxmp/cxxz/order/pageCZ', {
+        .post('/api-wxmp/cxxz/order/pageHD', {
           pageIndex,
           pageSize,
         })

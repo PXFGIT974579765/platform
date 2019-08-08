@@ -9,24 +9,24 @@
       <div class="price-group">
         <div class="price-item flex">
           <span>商品总价</span>
-          <span>￥{{ group.amount }}</span>
+          <span>￥{{ group.orderMoney }}</span>
         </div>
-        <div class="price-item flex">
+        <!-- <div class="price-item flex">
           <span>运费(快递)</span>
           <span>{{ group.amount }}</span>
-        </div>
+        </div> -->
         <div class="price-item flex">
           <span>优惠</span>
-          <span>-{{ group.couponAmount }}</span>
+          <span>-{{ group.couponMoney }}</span>
         </div>
         <div class="price-item flex total">
           <span>订单总价</span>
-          <span>￥{{ group.amount - group.couponAmount }}</span>
+          <span>￥{{ group.orderMoney - group.couponMoney }}</span>
         </div>
         <div class="price-item flex actual">
           <span>{{ group.status === 5 ? '退款金额' : '实付款' }}</span>
           <span style="color: #ff6c00"
-            >￥{{ group.amount - group.couponAmount }}</span
+            >￥{{ group.orderMoney - group.couponMoney }}</span
           >
         </div>
       </div>
@@ -39,11 +39,11 @@
         </div>
         <div class="order-item">
           <span>个人积分 :</span>
-          <span>获得{{ group.score }}点积分</span>
+          <span>获得{{ group.userGetScore }}点积分</span>
         </div>
         <div class="order-item">
           <span>订单编号 :</span>
-          <span>{{ group.orderNo }}</span>
+          <span>{{ group.orderId }}</span>
         </div>
         <div class="order-item">
           <span>创建时间 :</span>
@@ -133,8 +133,23 @@ export default {
       },
     }
   },
+  created() {
+    const { id } = this.$route.params
+    this.fetchOrderDetail(id)
+  },
   methods: {
-    onLoad() {},
+    // 拉去详情信息
+    fetchOrderDetail(orderId) {
+      this.$http
+        .post('/api-wxmp/cxxz/order/getPT', {
+          orderId,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.group = data.datas
+          }
+        })
+    },
   },
   filters: {
     statusFilter: function(status) {
