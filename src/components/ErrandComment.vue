@@ -65,7 +65,6 @@ export default {
   top: 12px;
   right: 12px;
   color: #adadad;
-  cursor: pointer;
 }
 
 .avatar {

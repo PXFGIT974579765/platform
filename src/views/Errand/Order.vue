@@ -149,6 +149,10 @@ export default {
   }
 }
 
+.pay-methods {
+  margin-bottom: 48px;
+}
+
 .pay-method {
   display: flex;
   align-items: center;
@@ -179,10 +183,14 @@ export default {
 }
 
 .pay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   display: flex;
   align-items: center;
   text-align: center;
-  margin: 84px -15px 76px;
+  // margin: 84px -15px 76px;
   background: #ffffff;
   > * {
     flex: 1;
