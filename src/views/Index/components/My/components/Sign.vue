@@ -3,10 +3,8 @@
     <div class="page-header">
       <div class="score-box flex-col">
         <span>可用积分</span>
-        <span>{{ sign.score }}</span>
-        <span>
-          {{ sign.latestTime | formatDate }} 签到 积分+{{ sign.latestScore }}
-        </span>
+        <span>{{ user.integral }}</span>
+        <span>{{ sign.scoreTime }} 签到 积分+{{ sign.score }}</span>
       </div>
       <span class="btn_score_detail">积分明细</span>
     </div>
@@ -15,7 +13,7 @@
         <span class="iconfont icon-calender">&#xe760;</span>
         <div class="sign-desc flex-col">
           <span>每日签到</span>
-          <span>已连续签到{{ sign.days }}天</span>
+          <span>已连续签到{{ user.signDays || 0 }}天</span>
         </div>
       </div>
       <div class="btn_sign" @click="onSignClick">
@@ -28,26 +26,20 @@
         <span>签到规则</span>
       </div>
       <div class="days-card flex">
-        <!-- <div v-for="n in 6" :key="n" class="icon-day flex-col">
-          <div :class="['icon', formatIconClass(n)]">+{{ formatScore(n) }}</div>
-          <div :class="['day', formatDayClass(n)]">{{ formatDay(n) }}天</div>
-        </div>-->
-        <div v-for="n in sign.keys" :key="n" class="icon-day flex-col">
+        <div v-for="n in sign.keys.length" :key="n" class="icon-day flex-col">
           <div :class="['icon', formatIconClass(n)]">+{{ formatScore(n) }}</div>
           <div :class="['day', formatDayClass(n)]">{{ formatDay(n) }}天</div>
         </div>
       </div>
-      <div class="sign-desc">连续签到6天及以上，每日签到积分+30</div>
+      <div class="sign-desc">{{ sign.remarks }}</div>
     </div>
     <div class="sign-links card-item">
       <div class="title">去完成任务赚更多积分</div>
       <div class="link-item flex" v-for="link in links" :key="link.icon">
         <div class="flex">
-          <img :src="link.icon.split('@')[0]" alt="" />
+          <img :src="link.icon.split('@')[0]" alt />
           <div class="link-desc flex-col">
-            <span>
-              {{ link.title }}
-            </span>
+            <span>{{ link.title }}</span>
             <span>{{ link.brief }}</span>
           </div>
         </div>
@@ -63,7 +55,6 @@ const SIGN_STATUS = {
   1: '已签到',
   0: '签到',
 }
-import { dateTime } from '@/lib/format'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -72,9 +63,10 @@ export default {
     return {
       sign: {
         score: 1598,
-        latestScore: 20,
-        latestTime: 1500034995950,
+        scoreTime: '',
         days: 5, // 连续签到第四天
+        remarks: '',
+
         scoreSetting: {},
         keys: [],
       },
@@ -94,6 +86,7 @@ export default {
         .get('/api-wxmp/cxxz/registerUser/sign/getSetting')
         .then(({ data }) => {
           if (data.resp_code === 0) {
+            this.sign = data.datas
             const scoreSetting = data.datas.scoreSetting
             const keys = Object.keys(scoreSetting).sort()
             this.sign.scoreSetting = scoreSetting
@@ -109,20 +102,26 @@ export default {
       })
     },
     formatDay(n) {
-      // const days = this.sign.days
-      // return days < 6 ? n : days - 6 + n
-      return n.split('_')[1]
+      const days = this.user.signDays
+      const length = this.sign.keys.length
+      return days < length ? n : days - length + n
     },
     formatScore(n) {
-      // const days = this.sign.days
-      // const th = days < 6 ? n : days - 6 + n
-      // const score = th * 5
-      // return score > 30 ? 30 : score
-      return this.sign.scoreSetting[n]
+      const days = this.user.signDays
+      const length = this.sign.keys.length
+      if (days < length) {
+        return this.sign.scoreSetting[`day_${n}`]
+      } else {
+        const th = days - length + n
+        return th < this.sign.keys.length
+          ? this.sign.scoreSetting[`day_${th}`]
+          : this.sign.scoreSetting[`day_${this.sign.keys.length}`]
+      }
     },
     formatIconClass(n) {
-      const days = this.sign.days
-      const th = days < 6 ? n : days - 6 + n
+      const days = this.user.signDays
+      const length = this.sign.keys.length
+      const th = days < length ? n : days - length + n
       let iconClass = ''
       if (th === days) {
         iconClass = 'icon_cur'
@@ -134,12 +133,13 @@ export default {
       return iconClass
     },
     formatDayClass(n) {
-      const days = this.sign.days
-      const th = days < 6 ? n : days - 6 + n
+      const days = this.user.signDays
+      const length = this.sign.keys.length
+      const th = days < length ? n : days - length + n
       return th === days && 'day_cur'
     },
     routePage(url) {
-      this.$router.push(url)
+      this.$router.push(`/${url}`)
     },
     // 点击签到
     onSignClick() {
@@ -160,7 +160,6 @@ export default {
     },
   },
   filters: {
-    formatDate: dateTime,
     statusFilter: status => SIGN_STATUS[status],
   },
 }

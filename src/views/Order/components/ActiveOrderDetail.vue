@@ -16,17 +16,15 @@
         </div>
         <div class="price-item flex">
           <span>优惠</span>
-          <span>-{{ active.couponAmount }}</span>
+          <span>-{{ active.couponMoney }}</span>
         </div>
         <div class="price-item flex total">
           <span>订单总价</span>
-          <span>￥{{ active.price - active.couponAmount }}</span>
+          <span>￥{{ active.orderMoney }}</span>
         </div>
         <div class="price-item flex actual">
           <span>实付款</span>
-          <span style="color: #ff6c00"
-            >￥{{ active.price - active.couponAmount }}</span
-          >
+          <span style="color: #ff6c00">￥{{ active.money }}</span>
         </div>
       </div>
 
@@ -40,11 +38,11 @@
         </div>
         <div class="order-item">
           <span>个人积分 :</span>
-          <span>获得{{ active.score }}点积分</span>
+          <span>获得{{ active.userGetScore }}点积分</span>
         </div>
         <div class="order-item">
           <span>订单编号 :</span>
-          <span>{{ active.activeNo }}</span>
+          <span>{{ active.orderId }}</span>
         </div>
         <div class="order-item">
           <span>创建时间 :</span>
@@ -98,8 +96,24 @@ export default {
       },
     }
   },
+  created() {
+    const { id } = this.$route.params
+    console.log(id)
+    this.fetchOrderDetail(id)
+  },
   methods: {
-    onLoad() {},
+    // 拉去详情信息
+    fetchOrderDetail(orderId) {
+      this.$http
+        .post('/api-wxmp/cxxz/order/getHD', {
+          orderId,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.active = data.datas
+          }
+        })
+    },
   },
   filters: {
     statusFilter: function(status) {

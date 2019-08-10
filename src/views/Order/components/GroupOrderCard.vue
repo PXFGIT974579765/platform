@@ -1,14 +1,14 @@
 <template>
   <div class="comp-order-goods-card" v-wechat-title="$route.meta.title">
     <div class="header flex">
-      <span class="order-no">订单编号: {{ group.goodsId }}</span>
+      <span class="order-no">订单编号: {{ group.orderId }}</span>
       <span v-if="showStatus" class="status">{{
         group.status | statusFilter
       }}</span>
     </div>
-    <router-link :to="'/order/group-detail/' + group.orderNo">
+    <router-link :to="'/order/group-detail/' + group.orderId">
       <div class="content flex">
-        <img :src="group.imgUrl" />
+        <img :src="group.goodsImg" />
         <div class="content-right flex flex-1">
           <div class="detail flex-col">
             <span class="title">{{ group.goodsName }}</span>

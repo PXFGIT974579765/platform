@@ -15,16 +15,21 @@
       <van-list v-model="loading" :finished="finished" @load="onLoad">
         <div v-for="(item, index) in list" :key="index" class="list-item">
           <div>
-            <div class="name">{{ item.name }}</div>
-            <div class="time">{{ item.time | formatDate }}</div>
+            <div class="name">{{ item.scoreSettingName }}</div>
+            <div class="time">{{ item.createTime }}</div>
           </div>
           <div>
             <div
-              :class="[item.status === 0 ? 'score-in' : 'score-out', 'score']"
+              :class="[
+                item.operateType === 0 ? 'score-in' : 'score-out',
+                'score',
+              ]"
             >
-              {{ item.status === 0 ? `+${item.score}` : `-${item.score}` }}
+              {{ item.operateType === 0 ? `+${item.score}` : `-${item.score}` }}
             </div>
-            <div class="status">{{ item.status === 0 ? '收入' : '支出' }}</div>
+            <div class="status">
+              {{ item.operateType === 0 ? '收入' : '支出' }}
+            </div>
           </div>
         </div>
       </van-list>
@@ -38,49 +43,28 @@ import { dateTime } from '@/lib/format'
 export default {
   data() {
     return {
-      list: [
-        {
-          name: '每日签到',
-          time: 1500034995950,
-          score: 10,
-          status: 0, // 0 收入  1 支出
-        },
-        {
-          name: '礼品兑换',
-          time: 1500034995950,
-          score: 10,
-          status: 1, // 0 收入  1 支出
-        },
-        {
-          name: '每日签到',
-          time: 1500034995950,
-          score: 10,
-          status: 0, // 0 收入  1 支出
-        },
-        {
-          name: '每日签到',
-          time: 1500034995950,
-          score: 10,
-          status: 0, // 0 收入  1 支出
-        },
-        {
-          name: '每日签到',
-          time: 1500034995950,
-          score: 10,
-          status: 0, // 0 收入  1 支出
-        },
-        {
-          name: '每日签到',
-          time: 1500034995950,
-          score: 10,
-          status: 0, // 0 收入  1 支出
-        },
-      ],
+      list: [],
       loading: false,
       finished: true,
     }
   },
+  created() {
+    this.fetchInfo({})
+  },
   methods: {
+    // 拉去活动信息
+    fetchInfo({ pageIndex = 1, pageSize = 10 }) {
+      this.$http
+        .post('/api-wxmp/cxxz/score/page', {
+          pageIndex,
+          pageSize,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.list = data.datas.data
+          }
+        })
+    },
     onLoad() {
       // 异步更新数据
       // setTimeout(() => {

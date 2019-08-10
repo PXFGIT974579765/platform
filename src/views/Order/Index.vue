@@ -1,15 +1,15 @@
 <template>
   <div class="page-my-order-first" v-wechat-title="$route.meta.title">
     <van-grid :gutter="10" :column-num="3">
-      <van-grid-item v-for="item in orderType" :key="item.name">
-        <router-link :to="item.to" class="type-item flex-col">
+      <van-grid-item v-for="item in orderType" :key="item.goodsType">
+        <router-link :to="item.goodsType | toFilter" class="type-item flex-col">
           <div class="flex-col item-icon">
             <span
-              :style="{ color: item.color }"
+              :style="{ color: colorFilter(item.goodsType) }"
               class="iconfont icon"
-              v-html="item.icon"
+              v-html="iconFilter(item.goodsType)"
             ></span>
-            <span class="name">{{ item.name }}</span>
+            <span class="name">{{ item.goodsType | nameFilter }}</span>
           </div>
           <div class="tag" v-if="item.num > 0">{{ item.num }}</div>
         </router-link>
@@ -19,57 +19,77 @@
 </template>
 
 <script>
+const TYPE_HASH = {
+  HD: {
+    icon: '&#xe769;',
+    name: '活动订单',
+    color: '#ffd163',
+    to: '/order/active',
+  },
+  PT: {
+    icon: '&#xe76c;',
+    name: '拼团订单',
+    color: '#ff766e',
+    to: '/order/group',
+  },
+  PTSC: {
+    icon: '&#xe76b;',
+    name: '商品订单',
+    color: '#55c2ff',
+    to: '/order/goods',
+  },
+  DY: {
+    icon: '&#xe76a;',
+    name: '打印订单',
+    color: '#b985ff',
+    to: '',
+  },
+  ZN: {
+    icon: '&#xe767;',
+    name: '租赁订单',
+    color: '#6cf088',
+    to: '',
+  },
+  RT: {
+    icon: '&#xe766;',
+    name: '跑腿订单',
+    color: '#4ac1ff',
+    to: '/errand/orders',
+  },
+}
+
 export default {
   data() {
     return {
-      orderType: [
-        {
-          name: '商品订单',
-          icon: '&#xe76b;',
-          color: '#55c2ff',
-          num: 12,
-          to: '/order/goods',
-        },
-        {
-          name: '拼团订单',
-          icon: '&#xe76c;',
-          color: '#ff766e',
-          num: 0,
-          to: '/order/group',
-        },
-        {
-          name: '打印订单',
-          icon: '&#xe76a;',
-          color: '#b985ff',
-          num: 2,
-          to: '',
-        },
-        {
-          name: '活动订单',
-          icon: '&#xe769;',
-          color: '#ffd163',
-          num: 2,
-          to: '/order/active',
-        },
-        {
-          name: '租赁订单',
-          icon: '&#xe767;',
-          color: '#6cf088',
-          num: 2,
-          to: '',
-        },
-        {
-          name: '跑腿订单',
-          icon: '&#xe766;',
-          color: '#4ac1ff',
-          num: 2,
-          to: '/errand/orders',
-        },
-      ],
+      orderType: [],
     }
   },
+  created() {
+    this.fetchInfo()
+  },
   methods: {
-    onLoad() {},
+    fetchInfo() {
+      this.$http
+        .get('/api-wxmp/cxxz/order/myOrder/statistics')
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            const type = data.datas.filter(item => !!TYPE_HASH[item.goodsType])
+            console.log(type)
+            this.orderType = type
+          }
+        })
+    },
+    colorFilter(goodsType) {
+      return TYPE_HASH[goodsType].color
+    },
+    iconFilter(goodsType) {
+      return TYPE_HASH[goodsType].icon
+    },
+  },
+  filters: {
+    toFilter: goodsType => TYPE_HASH[goodsType].to,
+    iconFilter: goodsType => TYPE_HASH[goodsType].icon,
+    nameFilter: goodsType => TYPE_HASH[goodsType].name,
   },
 }
 </script>

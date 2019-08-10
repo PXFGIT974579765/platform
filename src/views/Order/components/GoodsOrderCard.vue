@@ -1,26 +1,24 @@
 <template>
   <div class="comp-order-goods-card" v-wechat-title="$route.meta.title">
-    <router-link :to="'/order/goods-detail/' + goods.orderNo">
-      <div class="header flex">
-        <span class="order-no">订单编号: {{ goods.orderId }}</span>
-        <span v-if="showStatus" class="status">{{
-          goods.status | statusFilter
-        }}</span>
-      </div>
-      <div class="content flex">
-        <img :src="goods.imgUrl" />
-        <div class="content-right flex">
-          <div class="detail flex-col">
-            <span class="title">{{ goods.goodsName }}</span>
-            <!-- <span class="tag">{{ goods.tagName }}: {{ goods.tagDesc }}</span> -->
-          </div>
-          <div class="price">
-            <div>￥{{ goods.orderMoney }}</div>
-            <div>X{{ goods.goodsSize || 1 }}</div>
-          </div>
+    <div class="header flex" @click="routeDetail(goods.orderId)">
+      <span class="order-no">订单编号: {{ goods.orderId }}</span>
+      <span v-if="showStatus" class="status">
+        {{ goods.status | statusFilter }}
+      </span>
+    </div>
+    <div class="content flex" @click="routeGoodsPage(goods.goodsId)">
+      <img :src="goods.goodsImg" />
+      <div class="content-right flex flex-1">
+        <div class="detail flex-col">
+          <span class="title">{{ goods.goodsName }}</span>
+          <!-- <span class="tag">{{ goods.tagName }}: {{ goods.tagDesc }}</span> -->
+        </div>
+        <div class="price">
+          <div>￥{{ goods.orderMoney }}</div>
+          <div>X{{ goods.goodsSize || 1 }}</div>
         </div>
       </div>
-    </router-link>
+    </div>
     <div class="footer">
       <div class="total">
         共{{ goods.goodsSize || 1 }}件商品 合计: ￥{{ goods.money }}
@@ -71,7 +69,14 @@ export default {
     }
   },
   methods: {
-    onLoad() {},
+    // 商品路由
+    routeGoodsPage(goodsId) {
+      this.$router.push(`/point/detail/${goodsId}`)
+    },
+    // 订单详情路由
+    routeDetail(orderNo) {
+      this.$router.push(`/order/goods-detail/${orderNo}`)
+    },
   },
   filters: {
     statusFilter: function(status) {
@@ -106,6 +111,7 @@ export default {
 
     .content-right {
       margin-left: 11px;
+      justify-content: space-between;
 
       .detail {
         margin-right: 15px;

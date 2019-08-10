@@ -55,7 +55,7 @@ export default {
   data() {
     return {
       checked: true,
-      hasMessage: true,
+      hasMessage: false,
       info: {
         status: 1, // 0 未开始接单   1 接单中
         nickname: '小刘哥',
@@ -63,7 +63,6 @@ export default {
     }
   },
   methods: {
-    onLoad() {},
     routeCondition() {
       this.$router.push('/my/distribution/condition')
     },

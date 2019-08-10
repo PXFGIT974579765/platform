@@ -1,14 +1,14 @@
 <template>
   <div class="comp-order-active-card" v-wechat-title="$route.meta.title">
-    <router-link :to="'/order/active-detail/' + active.activeNo">
+    <router-link :to="'/order/active-detail/' + active.orderId">
       <div class="header flex">
-        <span class="order-no">活动编号: {{ active.goodsId }}</span>
+        <span class="order-no">活动编号: {{ active.orderId }}</span>
         <span v-if="showStatus" class="status">{{
           active.status | statusFilter
         }}</span>
       </div>
       <div class="img">
-        <img :src="active.imgUrl" />
+        <img :src="active.goodsImg" />
         <span :class="['tag', active.tag === 'race' ? 'tag-race' : 'tag-pg']">{{
           active.tag === 'race' ? '比赛' : '公益'
         }}</span>
