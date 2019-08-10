@@ -362,7 +362,7 @@ const distribution = [
     meta: { title: '配送中心' }, // 选择接单范围
   },
   {
-    path: '/my/distribution-detail',
+    path: '/my/distribution-detail/:id',
     name: '/my/distribution-detail',
     component: DistributionDetail,
     meta: { title: '订单派送' }, // 选择接单范围
