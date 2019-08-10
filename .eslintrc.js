@@ -5,6 +5,7 @@ module.exports = {
   },
   globals: {
     wx: true,
+    WeixinJSBridge: true,
   },
   extends: ['plugin:vue/essential', '@vue/prettier'],
   rules: {
