@@ -1,8 +1,8 @@
 <template>
-  <div class="order-submit">
+  <div :class="['order-submit', `theme-${theme}`]">
     <div class="price">
       实付款:
-      <span>￥225.00元免运费</span>
+      <span>￥{{ order.price }}元</span>
     </div>
     <button @click="onSubmit">立即支付</button>
   </div>
@@ -10,6 +10,17 @@
 
 <script>
 export default {
+  props: {
+    order: {
+      type: Object,
+      default: () => ({}),
+    },
+    theme: {
+      type: String,
+      default: 'red',
+    },
+  },
+
   methods: {
     onSubmit() {
       this.$emit('submit')
@@ -42,6 +53,16 @@ export default {
     padding: 21px 30px;
     color: #fff;
     background: #f94141;
+  }
+}
+
+.theme-green {
+  button {
+    background: #06c0b5;
+  }
+
+  .price span {
+    color: #565656;
   }
 }
 </style>
