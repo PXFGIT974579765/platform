@@ -59,27 +59,25 @@ export default {
 
     onSubmit() {
       const { id } = this.order
-      const { openId, title } = this.user
+      const { openId } = this.user
 
       this.$http
         .post('/api-wxmp/cxxz/topicPay/createOrder', {
-          mchIdmchId: '100000001',
-          channelId: 'channelId',
+          mchId: '100000001',
+          channelId: 1,
           fromType: 1,
           payType: 2,
           goodsId: id,
           goodsType: 'HD',
-          goodsName: title,
-          goodsInfo: 'xx',
           goodsSize: 1,
           orderMoney: 0.01,
           oneMoney: 0.01,
           money: 0.01,
-          isUseScore: false,
+          isUseScore: 0,
           score: 0,
           scoreMoney: 0,
-          isUseCoupon: false,
-          couponNo: 0,
+          isUseCoupon: 0,
+          couponNo: null,
           couponMoney: 0,
           payCode: '',
           openId,
@@ -94,23 +92,13 @@ export default {
 
     pay(opts) {
       console.log('----', opts)
-      // WeixinJSBridge.invoke(
-      //   'getBrandWCPayRequest',
-      //   {
-      //     appId: 'wx2421b1c4370ec43b', //公众号名称，由商户传入
-      //     timeStamp: '1395712654', //时间戳，自1970年以来的秒数
-      //     nonceStr: 'e61463f8efa94090b1f366cccfbbb444', //随机串
-      //     package: 'prepay_id=u802345jgfjsdfgsdg888',
-      //     signType: 'MD5', //微信签名方式：
-      //     paySign: '70EA570631E4BB79628FBCA90534C63FF7FADD89', //微信签名
-      //   },
-      //   function(res) {
-      //     if (res.err_msg == 'get_brand_wcpay_request:ok') {
-      //       // 使用以上方式判断前端返回,微信团队郑重提示：
-      //       //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
-      //     }
-      //   }
-      // )
+      WeixinJSBridge.invoke('getBrandWCPayRequest', opts, function(res) {
+        console.log(res)
+        if (res.err_msg == 'get_brand_wcpay_request:ok') {
+          // 使用以上方式判断前端返回,微信团队郑重提示：
+          //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+        }
+      })
     },
   },
 }

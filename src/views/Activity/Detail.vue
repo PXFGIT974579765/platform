@@ -75,7 +75,10 @@
       </div>
     </div>
 
-    <button class="submit" @click="onSubmit">立即报名</button>
+    <div class="submit">
+      <button class="sign" @click="onSubmit">立即报名</button>
+      <button class="check" @click="onSubmit">现场扫码签到</button>
+    </div>
   </div>
 </template>
 
@@ -284,9 +287,17 @@ export default {
   position: fixed;
   bottom: 0;
   width: 100%;
-  text-align: center;
-  padding: 20px 0;
-  color: #fff;
-  background-color: #06c0b5;
+
+  button {
+    width: 100%;
+    text-align: center;
+    padding: 20px 0;
+    color: #fff;
+    background-color: #06c0b5;
+  }
+
+  .check {
+    background-color: #00a0e9;
+  }
 }
 </style>
