@@ -10,13 +10,20 @@
     </div>
     <div class="item">
       <div class="item-name">订单总价</div>
-      <div class="item-value price">￥225.00</div>
+      <div class="item-value price">￥{{ order.price }}</div>
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  props: {
+    order: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
+}
 </script>
 
 <style lang="less" scoped>

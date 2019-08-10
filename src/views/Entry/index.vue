@@ -4,11 +4,14 @@
 
 <script>
 import { mapGetters } from 'vuex'
+// import store from '@/store'
 
 export default {
   computed: mapGetters(['user']),
 
   created() {
+    // store.dispatch('clearUser')
+
     if (this.user.id) {
       this.$router.push('/index/home')
       return
