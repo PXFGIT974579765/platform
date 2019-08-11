@@ -13,16 +13,22 @@
         <div class="coin-area flex">
           <div>￥</div>
           <div class="flex-1">
-            <input type="number" placeholder="0.00" class="coin" />
+            <input
+              type="number"
+              placeholder="0.00"
+              v-model.number="money"
+              @input="onInput"
+              class="coin"
+            />
           </div>
         </div>
       </div>
       <div class="btn-area">
         <div class="coin-able flex">
-          <span>可提现金额￥{{ coinAble | numFilter }}</span>
-          <span class="btn-all-cash">全部提现</span>
+          <span>可提现金额￥{{ user.wallet | numFilter }}</span>
+          <span class="btn-all-cash" @click="allCash">全部提现</span>
         </div>
-        <div class="btn-submit">提现</div>
+        <div class="btn-submit" @click="onCashSubmit">提现</div>
       </div>
     </div>
     <div class="footer" @click="routeRecord">查看我的提现记录</div>
@@ -30,16 +36,51 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
 export default {
+  computed: mapGetters(['user']),
   data() {
     return {
       coinAble: 568,
+      money: null,
     }
   },
+  created() {
+    console.log(this.user)
+  },
   methods: {
-    onLoad() {},
+    ...mapActions(['setUser']),
     routeRecord() {
       this.$router.push('/my/wallet/cash/record')
+    },
+    // 全部提现
+    allCash() {
+      this.money = String(this.user.wallet).match(/^\d*(\.?\d{0,2})/g)[0]
+    },
+    // 监听金额输入最多两位小数
+    onInput(e) {
+      e.target.value = e.target.value.match(/^\d*(\.?\d{0,2})/g)[0] || null
+      this.money = e.target.value
+    },
+    onCashSubmit() {
+      if (!this.money || parseFloat(this.money) == 0) {
+        return
+      }
+      this.$http
+        .post('/api-wxmp/cxxz/moneyApply/apply', {
+          money: this.money,
+          openId: this.user.openId,
+        })
+        .then(({ data }) => {
+          if (data.resp_code == 0) {
+            alert('提现申请成功')
+            this.user.wallet -= this.money
+            this.setUser(this.user)
+            this.$router.push('/my/wallet')
+          } else {
+            alert(data.resp_msg)
+          }
+        })
     },
   },
   filters: {

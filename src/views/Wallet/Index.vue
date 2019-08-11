@@ -6,7 +6,7 @@
           <span>账户余额(元)</span>
           <span class="iconfont icon-help">&#xe757;</span>
         </div>
-        <div class="coin">{{ wallet.coin | numFilter }}</div>
+        <div class="coin">{{ user.wallet | numFilter }}</div>
         <div class="in-out flex">
           <span>
             本月支出:
@@ -41,7 +41,10 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
+  computed: mapGetters(['user']),
   data() {
     return {
       wallet: {

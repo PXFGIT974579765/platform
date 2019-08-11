@@ -7,30 +7,41 @@
         title-active-color="#06bcbf"
         color="#06bcbf"
         background="#fff"
+        @click="onClick"
       >
         <van-tab v-for="item in typeList" :key="item.value" :title="item.name">
           <section class="record-list">
-            <ul>
-              <li
-                v-for="(coinLog, index) in coinLogFilter(item.value)"
+            <van-list
+              v-model="loading"
+              :finished="finished"
+              finished-text="没有更多了"
+              class="ul"
+              @load="onLoad"
+            >
+              <div
+                v-for="(coinLog, index) in coinLogs"
                 :key="index"
-                class="flex"
+                class="li flex"
               >
                 <div class="record-item flex-col">
-                  <span class="info">
-                    {{ coinLog.info }}
-                  </span>
-                  <span class="time">{{ coinLog.time | dateFormat }}</span>
+                  <span class="info">{{ coinLog.orderType }}</span>
+                  <span class="time">{{ coinLog.createTime }}</span>
                 </div>
                 <div class="record-item flex-col">
-                  <span :class="['amount', coinLog.type === 0 ? 'in' : 'out']"
-                    >{{ coinLog.type === 1 ? '-' : ''
-                    }}{{ coinLog.amount }}</span
+                  <span
+                    :class="[
+                      'amount',
+                      coinLog.operateType === 0 ? 'in' : 'out',
+                    ]"
                   >
-                  <span class="status">{{ coinLog.status }}</span>
+                    {{ coinLog.operateType === 1 ? '-' : '' }} ￥{{
+                      coinLog.money | numFilter
+                    }}
+                  </span>
+                  <span class="status">余额：￥{{ coinLog.coin }}</span>
                 </div>
-              </li>
-            </ul>
+              </div>
+            </van-list>
           </section>
         </van-tab>
       </van-tabs>
@@ -39,8 +50,6 @@
 </template>
 
 <script>
-import { dateTime } from '@/lib/format'
-
 export default {
   data() {
     return {
@@ -60,51 +69,54 @@ export default {
           value: 1,
         },
       ],
-      coinLogs: [
-        {
-          type: 1,
-          info: '充值',
-          amount: 105.56,
-          time: 1500000000,
-          status: '充值成功',
-        },
-        {
-          type: 1,
-          info: '充值',
-          amount: 105.56,
-          time: 1500000000,
-          status: '充值成功',
-        },
-        {
-          type: 0,
-          info: '银行卡余额不足',
-          amount: 105.56,
-          time: 1500000000,
-          status: '充值失败',
-        },
-        {
-          type: 0,
-          info: '充值',
-          amount: 105.56,
-          time: 1500000000,
-          status: '充值成功',
-        },
-        {
-          type: 0,
-          info: '充值',
-          amount: 105.56,
-          time: 1500000000,
-          status: '充值成功',
-        },
-      ],
+      coinLogs: [],
+      page: 1,
+      finished: false,
+      loading: true,
+      name: '全部',
     }
   },
+  created() {
+    this.fetchList({ pageIndex: this.page })
+  },
   methods: {
-    onLoad() {},
-    coinLogFilter(type) {
-      return type === -1
-        ? this.coinLogs
-        : this.coinLogs.filter(item => item.type === type)
+    startFetch() {
+      this.finished = false
+      this.loading = true
+    },
+    endFetch() {
+      this.finished = true
+      this.loading = false
+    },
+    fetchList({ pageIndex = 1, pageSize = 10, operateType }) {
+      this.startFetch()
+      this.$http
+        .post('/api-wxmp/cxxz/money/page', {
+          params: {
+            pageIndex,
+            pageSize,
+            operateType,
+          },
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.endFetch()
+            this.coinLogs = []
+            this.coinLogs = data.datas.data
+          }
+        })
+    },
+    onClick(_, title) {
+      if (this.name == title) {
+        return
+      }
+      this.name = title
+      const status = this.typeList.find(item => item.name == title).value
+      if (status == -1) {
+        this.fetchList({})
+      } else {
+        this.fetchList({ operateType: status })
+      }
     },
   },
   filters: {
@@ -112,9 +124,6 @@ export default {
       // 截取当前数据到小数点后两位
       let realVal = parseFloat(value).toFixed(2)
       return realVal
-    },
-    dateFormat: function(value) {
-      return dateTime(value, 'YYYY-MM-DD hh:mm:ss')
     },
   },
 }
@@ -143,8 +152,8 @@ export default {
     .record-list {
       padding: 0 15px 10px;
 
-      ul {
-        li {
+      .ul {
+        .li {
           justify-content: space-between;
           text-align: center;
           height: 69px;
