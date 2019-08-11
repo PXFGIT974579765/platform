@@ -7,7 +7,9 @@
       </div>
       <div class="date">{{ info.startTime.slice(0, 10) }}</div>
       <div>
-        <div>{{ info.status === 0 ? '--:--' : timeFormat(info.endTime) }}</div>
+        <div>
+          {{ info.status === 0 ? '--:--' : info.endTime.slice(10, 16) }}
+        </div>
         <span>结束时间</span>
       </div>
     </div>

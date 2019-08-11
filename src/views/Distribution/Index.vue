@@ -22,10 +22,10 @@
           <div class="condition flex">
             <div>
               <span class="iconfont">&#xe74c;</span>
-              <span
-                >今天 {{ runner.startTime.slice(10, 16) }} -
-                {{ runner.endTime.slice(10, 16) }}</span
-              >
+              <span>
+                今天 {{ runner.startTime.slice(10, 16) }} -
+                {{ runner.endTime.slice(10, 16) }}
+              </span>
             </div>
             <div class="btn-switch-block flex">
               提前下线
@@ -43,7 +43,7 @@
         <div class="status">接单中</div>
       </div>
     </div>
-    <div class="btn-my-order">我的配送订单</div>
+    <div class="btn-my-order" @click="routeOrderList">我的配送订单</div>
     <div class="footer">
       <span>了解规则</span>
       <span>|</span>
@@ -90,6 +90,11 @@ export default {
     // 路由到详情页
     routeDetail() {
       this.$router.push(`/my/distribution-detail/${this.distriOrderId}`)
+    },
+
+    // 路由到订单列表状态
+    routeOrderList() {
+      this.$router.push('/my/distribution/order')
     },
 
     // 上下线开关

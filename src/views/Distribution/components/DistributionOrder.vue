@@ -62,45 +62,28 @@ export default {
           value: 3,
         },
       ],
-      distributions: [
-        {
-          orderNo: '557879582',
-          imgUrl: require('../images/goods.png'),
-          title: '华为路由器无线全千兆端口家用WIFI穿墙王大功率户型',
-          tagName: '标准套餐',
-          tagDesc: '白色-定制版',
-          num: 1, // 数量
-          price: 189, // 单价
-          amount: 189, // 总金额 = 单价*数量
-          status: 0,
-        },
-        {
-          orderNo: '557879583',
-          imgUrl: require('../images/goods.png'),
-          title: '华为路由器无线全千兆端口家用WIFI穿墙王大功率户型',
-          tagName: '标准套餐',
-          tagDesc: '白色-定制版',
-          num: 1, // 数量
-          price: 189, // 单价
-          amount: 189, // 总金额 = 单价*数量
-          status: 1,
-        },
-        {
-          orderNo: '557879584',
-          imgUrl: require('../images/goods.png'),
-          title: '华为路由器无线全千兆端口家用WIFI穿墙王大功率户型',
-          tagName: '标准套餐',
-          tagDesc: '白色-定制版',
-          num: 1, // 数量
-          price: 189, // 单价
-          amount: 189, // 总金额 = 单价*数量
-          status: 1,
-        },
-      ],
+      distributions: [],
     }
   },
+  created() {
+    this.fetchList({})
+  },
   methods: {
-    onLoad() {},
+    // 拉去订单信息
+    fetchList({ pageIndex = 1, pageSize = 10 }) {
+      this.$http
+        .post('/api-wxmp/cxxz/distriButtion/order/findMyDistriOrderPage', {
+          params: {
+            pageIndex,
+            pageSize,
+          },
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.distributions = data.datas.data
+          }
+        })
+    },
     distributionsFilter(status) {
       return status === -1
         ? this.distributions
