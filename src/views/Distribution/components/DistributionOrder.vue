@@ -11,35 +11,49 @@
       line-height="1px"
       :border="false"
       :swipe-threshold="5"
+      @click="onClick"
     >
-      <van-tab v-for="item in statusList" :key="item.value" :title="item.name">
+      <van-tab
+        v-for="item in statusList"
+        :key="item.value"
+        :title="item.name"
+        :name="item.value"
+      >
         <div
           v-for="order in distributionsFilter(item.value)"
           :key="order.id"
           class="goods-item"
         >
-          <!-- <router-link :to="'/order/goods-detail/' + good.orderNo"> -->
-          <Card :order="order" />
-          <!-- </router-link> -->
+          <Card :order="order" @onShowDialog="onShowDialog" />
         </div>
       </van-tab>
     </van-tabs>
+
+    <AppraiseDialog
+      :showDialog="showDialog"
+      :info="appraise"
+      @onCancel="onCancel"
+    />
   </div>
 </template>
 
 <script>
 import Search from '@/components/Search'
 import Card from './DistributionOrderCard'
+import AppraiseDialog from './AppraiseDialog'
 
 export default {
   components: {
     Search,
     Card,
+    AppraiseDialog,
   },
   data() {
     return {
-      active: '0',
+      active: -1,
+      showDialog: false,
       keyword: '',
+      name: '全部',
       statusList: [
         {
           name: '全部',
@@ -63,6 +77,11 @@ export default {
         },
       ],
       distributions: [],
+      appraise: {
+        createTime: '',
+        commContent: '',
+        rates: 0,
+      }, // 评价对象
     }
   },
   created() {
@@ -84,10 +103,35 @@ export default {
           }
         })
     },
+    onClick(name, title) {
+      this.name = title
+      console.log(this.name)
+    },
     distributionsFilter(status) {
       return status === -1
         ? this.distributions
         : this.distributions.filter(item => item.status === status)
+    },
+    // 关掉评价窗口
+    onCancel() {
+      this.showDialog = false
+    },
+    // 点击查看评价
+    onShowDialog(orderId) {
+      this.$http
+        .get('/api-wxmp/cxxz/distriButtion/order/findDistriOrderComment', {
+          params: {
+            id: orderId,
+          },
+        })
+        .then(({ data }) => {
+          if (data.resp_code == 0) {
+            this.appraise = data.datas
+            this.showDialog = true
+          } else {
+            alert(data.resp_msg)
+          }
+        })
     },
   },
 }

@@ -9,16 +9,16 @@
       :showConfirmButton="false"
     >
       <div class="header flex">
-        <img :src="info.headImgUrl" alt />
+        <img :src="appraise.headImgUrl" alt />
         <div class="text flex-col">
-          <div>{{ info.nickName }}</div>
-          <span>{{ info.createTime.slice(0, 10) }}</span>
+          <div>{{ appraise.nickName }}</div>
+          <span>{{ appraise.createTime.slice(0, 10) }}</span>
         </div>
       </div>
       <div class="middle">
         <div>对您的服务进行了评价</div>
-        <van-rate class="rate" v-model="rate" size="35" />
-        <div class="rate-desc">{{ info.rates | rateFilter }}</div>
+        <van-rate class="rate" v-model="appraise.rates" size="35" />
+        <div class="rate-desc">{{ appraise.rates | rateFilter }}</div>
       </div>
 
       <div class="tag-area flex">
@@ -55,8 +55,6 @@
 </template>
 
 <script>
-import { dateTime } from '@/lib/format'
-
 const RATE_STATUS = {
   1: '不满意',
   2: '一般',
@@ -87,8 +85,7 @@ export default {
   },
   data() {
     return {
-      message: '',
-      rate: 5,
+      appraise: this.info,
       rateList: [
         '服务态度好',
         '配送及时',
@@ -101,10 +98,10 @@ export default {
   },
   methods: {
     onCancel() {
-      this.$emit('cancel')
+      this.$emit('onCancel')
     },
     tagInclude(value) {
-      return this.info.commContent.includes(value)
+      return this.appraise.commContent.includes(value)
     },
     index0() {
       return this.rateList.filter((item, index) => index % 3 === 0)
@@ -117,11 +114,14 @@ export default {
     },
   },
   filters: {
-    dateFormat: function(value) {
-      return dateTime(value, 'YYYY-MM-DD')
-    },
     rateFilter: function(value) {
       return RATE_STATUS[Math.floor(value)]
+    },
+  },
+  // 子组件监听获取父组件动态数据
+  watch: {
+    info(newValue) {
+      this.appraise = newValue
     },
   },
 }
@@ -138,6 +138,7 @@ export default {
       img {
         width: 55px;
         height: 55px;
+        border-radius: 50%;
       }
 
       .text {
