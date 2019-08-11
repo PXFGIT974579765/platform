@@ -1,7 +1,7 @@
 <template>
   <div class="order">
-    <order-good />
-    <order-distribution />
+    <order-good :order="order" />
+    <order-distribution :addressList="addressList" />
 
     <div class="pay">
       <div class="pay-header">
@@ -34,12 +34,13 @@
     </div>
 
     <div class="submit-wrap">
-      <button class="submit">立即兑换</button>
+      <button @click="onSubmit" class="submit">立即兑换</button>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import OrderGood from '@/components/OrderGood'
 import OrderDistribution from '@/components/OrderDistribution'
 
@@ -47,6 +48,95 @@ export default {
   components: {
     OrderGood,
     OrderDistribution,
+  },
+
+  computed: mapGetters(['user']),
+
+  data() {
+    return {
+      order: {
+        price: 0,
+        user: {},
+      },
+      addressList: [],
+    }
+  },
+
+  created() {
+    this.fetchData()
+  },
+
+  watch: {
+    $route: 'fetchData',
+  },
+
+  methods: {
+    fetchData() {
+      this.$http
+        .post('/api-wxmp/cxxz/scorePay/find', { id: this.$route.params.id })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.order = data.datas
+          }
+        })
+
+      this.$http.get('/api-user/cxxz/branch/list').then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.addressList = data.datas
+        }
+      })
+    },
+
+    onSubmit() {
+      const { id } = this.order
+      const { openId } = this.user
+      console.log(id)
+
+      this.$http
+        .post('/api-wxmp/cxxz/scorePay//createOrder', {
+          mchId: '100000001',
+          channelId: 1,
+          fromType: 1,
+          payType: 2,
+          goodsId: id,
+          goodsType: 'JFSC',
+          goodsSize: 1,
+          orderMoney: 0.01,
+          oneMoney: 0.01,
+          money: 0.01,
+          isUseScore: 0,
+          score: 0,
+          scoreMoney: 0,
+          isUseCoupon: 0,
+          couponNo: null,
+          couponMoney: 0,
+          payCode: '',
+          openId,
+          address: '花溪大学城贵州大学创新学子空间',
+          addressId: '073c556eb3ea4075becfe645a1f6a914',
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.pay(data.datas)
+            return
+          }
+        })
+    },
+
+    pay(opts) {
+      WeixinJSBridge.invoke('getBrandWCPayRequest', opts, res => {
+        if (res.err_msg === 'get_brand_wcpay_request:ok') {
+          this.$router.push('/order/goods')
+          return
+        }
+        // if (res.err_msg === 'get_brand_wcpay_request:cancel') {
+        //   // return
+        // }
+        // if (res.err_msg === 'get_brand_wcpay_request:fail') {
+        //   // return
+        // }
+      })
+    },
   },
 }
 </script>

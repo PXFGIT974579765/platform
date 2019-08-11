@@ -3,18 +3,18 @@
     <div class="title">拼团订单</div>
 
     <div class="good">
-      <img src="~@/assets/images/group_good.png" alt />
+      <img :src="order.picUrl" alt />
 
       <div class="detail">
-        <div class="name">新款时尚简约休闲小西服阔腿短裤韩国两件</div>
+        <div class="name">{{ order.name }}</div>
 
-        <div class="style">
+        <!-- <div class="style">
           <div class="color">蓝色</div>
           <div class="size">M号</div>
-        </div>
+        </div>-->
 
         <div class="buy">
-          <div class="price">￥235.00</div>
+          <div class="price">￥{{ order.price * value }}</div>
           <div class="count">X{{ value }}</div>
         </div>
       </div>
@@ -28,7 +28,18 @@
 </template>
 
 <script>
+// import {
+//   atan2, chain, derivative, e, evaluate, log, pi, pow, round, sqrt
+// } from 'mathjs'
+
 export default {
+  props: {
+    order: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
+
   data() {
     return {
       value: 1,
@@ -52,22 +63,28 @@ export default {
     margin-right: 10px;
   }
 
+  .detail {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
   .name {
     line-height: 1.4;
     font-size: 16px;
     color: #4e4e4e;
   }
 
-  .style {
-    display: flex;
-    margin: 10px 0 15px;
-    font-size: 13px;
-    color: #ababab;
-  }
+  // .style {
+  //   display: flex;
+  //   margin: 10px 0 15px;
+  //   font-size: 13px;
+  //   color: #ababab;
+  // }
 
-  .color {
-    margin-right: 15px;
-  }
+  // .color {
+  //   margin-right: 15px;
+  // }
 
   .buy {
     display: flex;

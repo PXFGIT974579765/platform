@@ -10,7 +10,7 @@
         <span class="iconfont">&#xe777;</span>
         <div class="name">
           余额
-          <span>可用余额: {{ order.wallet }}元</span>
+          <span>可用余额: {{ order.user.wallet }}元</span>
         </div>
         <van-radio :name="2" checked-color="#07c160" />
       </div>

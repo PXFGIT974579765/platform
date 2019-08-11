@@ -36,39 +36,13 @@
         <van-icon name="cross" :size="16" class="close" @click="onClose" />
         <div class="addres-list">
           <van-radio-group v-model="radio">
-            <div class="addres-item">
-              <van-radio :name="2" checked-color="#07c160" />
+            <div v-for="a in addressList" :key="a.id" class="addres-item">
+              <van-radio :name="a.id" checked-color="#07c160" />
               <div class="address-detail">
-                <div class="address-name">
-                  贵阳市花溪大学城贵州师范大学科创园B5栋负一层
-                </div>
+                <div class="address-name">{{ a.address }}</div>
                 <div class="contact">
-                  白小姐
-                  <span class="phone">19985501144</span>
-                </div>
-              </div>
-            </div>
-            <div class="addres-item">
-              <van-radio :name="1" checked-color="#07c160" />
-              <div class="address-detail">
-                <div class="address-name">
-                  贵州财经大学（大学城校区）A3栋一楼12号
-                </div>
-                <div class="contact">
-                  李小姐
-                  <span class="phone">18085070709</span>
-                </div>
-              </div>
-            </div>
-            <div class="addres-item">
-              <van-radio :name="1" checked-color="#07c160" />
-              <div class="address-detail">
-                <div class="address-name">
-                  贵州财经大学（大学城校区）A3栋一楼12号
-                </div>
-                <div class="contact">
-                  李小姐
-                  <span class="phone">18085070709</span>
+                  {{ a.name }}
+                  <span class="phone">{{ a.phone }}</span>
                 </div>
               </div>
             </div>
@@ -81,11 +55,18 @@
 
 <script>
 export default {
+  props: {
+    addressList: {
+      type: Array,
+      default: () => [],
+    },
+  },
+
   data() {
     return {
       selected: false,
       addressShow: false,
-      radio: 1,
+      radio: '',
     }
   },
 

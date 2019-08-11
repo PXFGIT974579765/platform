@@ -28,7 +28,13 @@
       @onChange="onChange"
     />
 
-    <order-submit @click="onClick" />
+    <div class="submit">
+      <div class="price">
+        支付:
+        <span>￥{{ detail.score }}积分</span>
+      </div>
+      <button @click="onClick">立即支付</button>
+    </div>
   </div>
 </template>
 
@@ -36,14 +42,14 @@
 import ImgSwipe from '@/components/ImgSwipe'
 import DescComment from '@/components/DescComment'
 import ShareButton from '@/components/ShareButton'
-import OrderSubmit from '@/components/OrderSubmit'
+// import OrderSubmit from '@/components/OrderSubmit'
 
 export default {
   components: {
     DescComment,
     ImgSwipe,
     ShareButton,
-    OrderSubmit,
+    // OrderSubmit,
   },
 
   data() {
@@ -80,7 +86,7 @@ export default {
     },
 
     onClick() {
-      this.$router.push('/point/order/1')
+      this.$router.push(`/point/order/${this.$route.params.id}`)
     },
   },
 }
@@ -140,5 +146,31 @@ export default {
   margin: 13px 15px 0;
   font-size: 13px;
   color: #a7a7a7;
+}
+
+.submit {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  background: #ffffff;
+
+  .price {
+    flex: 1;
+    padding: 21px 0;
+    color: #565656;
+    span {
+      color: #06c0b5;
+    }
+  }
+
+  button {
+    padding: 21px 30px;
+    color: #fff;
+    background: #06c0b5;
+  }
 }
 </style>
