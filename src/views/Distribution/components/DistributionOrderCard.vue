@@ -23,10 +23,9 @@
     <div class="footer">
       <div class="total">共 1 件商品 合计: ￥{{ order.distributionPrice }}</div>
       <div class="btn-area">
-        <span class="btn" @click="onShowDialog(order.orderId)">待评价</span>
-        <router-link
-          :to="'/my/distribution-detail/' + order.orderId"
-          class="btn"
+        <span v-if="order.status == 5" class="btn">待评价</span>
+        <span v-else class="btn" @click="onShowDialog(order.id)">已评价</span>
+        <router-link :to="'/my/distribution-detail/' + order.id" class="btn"
           >查看详情</router-link
         >
       </div>
@@ -36,11 +35,13 @@
 
 <script>
 const ORDER_STATUS = {
-  0: '待付款',
-  1: '待配送',
-  2: '待提货',
-  3: '待评价',
+  0: '取货中',
+  1: '派送中',
+  2: '已完成',
+  3: '已完成',
 }
+
+// const APPRAISE_STATUS = 5
 
 export default {
   props: {
@@ -69,8 +70,8 @@ export default {
     return {}
   },
   methods: {
-    onShowDialog(orderId) {
-      this.$emit('onShowDialog', orderId)
+    onShowDialog(id) {
+      this.$emit('onShowDialog', id)
     },
   },
   filters: {

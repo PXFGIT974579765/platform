@@ -19,13 +19,20 @@
         :title="item.name"
         :name="item.value"
       >
-        <div
-          v-for="order in distributionsFilter(item.value)"
-          :key="order.id"
-          class="goods-item"
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
         >
-          <Card :order="order" @onShowDialog="onShowDialog" />
-        </div>
+          <div
+            v-for="order in distributions"
+            :key="order.id"
+            class="goods-item"
+          >
+            <Card :order="order" @onShowDialog="onShowDialog" />
+          </div>
+        </van-list>
       </van-tab>
     </van-tabs>
 
@@ -52,6 +59,9 @@ export default {
     return {
       active: -1,
       showDialog: false,
+      page: 1,
+      finished: false,
+      loading: true,
       keyword: '',
       name: '全部',
       statusList: [
@@ -85,43 +95,55 @@ export default {
     }
   },
   created() {
-    this.fetchList({})
+    this.fetchList({ pageIndex: this.page + 1 })
   },
   methods: {
+    startFetch() {
+      this.finished = false
+      this.loading = true
+    },
+    endFetch() {
+      this.finished = true
+      this.loading = false
+    },
     // 拉去订单信息
-    fetchList({ pageIndex = 1, pageSize = 10 }) {
+    fetchList({ pageIndex = 1, pageSize = 10, status = -1 }) {
+      this.startFetch()
       this.$http
         .post('/api-wxmp/cxxz/distriButtion/order/findMyDistriOrderPage', {
           params: {
             pageIndex,
             pageSize,
+            status,
           },
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
+            this.endFetch()
+            this.distributions = []
             this.distributions = data.datas.data
           }
         })
     },
-    onClick(name, title) {
+    onClick(_, title) {
+      if (this.name == title) {
+        return
+      }
       this.name = title
-      console.log(this.name)
+      const status = this.statusList.find(item => item.name == title).value
+      this.fetchList({ status })
     },
-    distributionsFilter(status) {
-      return status === -1
-        ? this.distributions
-        : this.distributions.filter(item => item.status === status)
-    },
+
     // 关掉评价窗口
     onCancel() {
       this.showDialog = false
     },
     // 点击查看评价
-    onShowDialog(orderId) {
+    onShowDialog(id) {
       this.$http
         .get('/api-wxmp/cxxz/distriButtion/order/findDistriOrderComment', {
           params: {
-            id: orderId,
+            id,
           },
         })
         .then(({ data }) => {
