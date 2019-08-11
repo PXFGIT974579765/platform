@@ -101,11 +101,11 @@ export default {
   },
   methods: {
     // 拉去详情信息
-    fetchOrderDetail(orderId) {
+    fetchOrderDetail(id) {
       this.$http
         .get('/api-wxmp/cxxz/distriButtion/order/orderSend', {
           params: {
-            orderId,
+            id,
           },
         })
         .then(({ data }) => {

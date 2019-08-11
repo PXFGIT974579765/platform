@@ -3,16 +3,15 @@
     <router-link :to="'/order/goods-detail/' + order.orderNo">
       <div class="header flex">
         <span class="order-no">跑腿编号: {{ order.distributionNo }}</span>
-        <span v-if="showStatus" class="status">
-          {{ order.status | statusFilter }}
-        </span>
+        <span v-if="showStatus" class="status">{{
+          order.status | statusFilter
+        }}</span>
       </div>
       <div class="content flex">
         <img :src="order.goodsImg" />
         <div class="content-right flex">
           <div class="detail flex-col">
             <span class="title">{{ order.goodsName }}</span>
-            <!-- <span class="tag">{{ order.tagName }}: {{ order.tagDesc }}</span> -->
           </div>
           <div class="price">
             <div>￥{{ order.distributionPrice }}</div>
@@ -24,36 +23,27 @@
     <div class="footer">
       <div class="total">共 1 件商品 合计: ￥{{ order.distributionPrice }}</div>
       <div class="btn-area">
-        <span class="btn" @click="onShowDialog">待评价</span>
-        <router-link
-          :to="'/my/distribution-detail/' + order.orderId"
-          class="btn"
+        <span v-if="order.status == 5" class="btn">待评价</span>
+        <span v-else class="btn" @click="onShowDialog(order.id)">已评价</span>
+        <router-link :to="'/my/distribution-detail/' + order.id" class="btn"
           >查看详情</router-link
         >
       </div>
     </div>
-    <AppraiseDialog
-      :showDialog="showDialog"
-      :info="appraise"
-      @cancel="onCancel"
-    />
   </div>
 </template>
 
 <script>
-import AppraiseDialog from './AppraiseDialog'
-
 const ORDER_STATUS = {
-  0: '待付款',
-  1: '待配送',
-  2: '待提货',
-  3: '待评价',
+  0: '取货中',
+  1: '派送中',
+  2: '已完成',
+  3: '已完成',
 }
 
+// const APPRAISE_STATUS = 5
+
 export default {
-  components: {
-    AppraiseDialog,
-  },
   props: {
     showStatus: {
       type: Boolean,
@@ -63,50 +53,25 @@ export default {
       type: Object,
       default: function() {
         return {
-          orderNo: '557879582',
-          imgUrl: '../images/goods.png',
-          title: '华为路由器无线全千兆端口家用WIFI穿墙王大功率户型',
-          tagName: '标准套餐',
-          tagDesc: '白色-定制版',
+          orderNo: '',
+          imgUrl: '',
+          title: '',
+          tagName: '',
+          tagDesc: '',
           num: 1, // 数量
-          price: 189, // 单价
-          amount: 189, // 总金额 = 单价*数量
+          price: 0, // 单价
+          amount: 0, // 总金额 = 单价*数量
           status: 0,
         }
       },
     },
   },
   data() {
-    return {
-      showDialog: false,
-      appraise: {
-        name: '王多鱼',
-        imgUrl: require('../images/avator1.png'),
-        time: 1500000000,
-        tags: ['配送及时', '服务态度好'],
-      },
-    }
+    return {}
   },
   methods: {
-    onLoad() {},
-    onShowDialog() {
-      this.$http
-        .get('/api-wxmp/cxxz/distriButtion/order/findDistriOrderComment', {
-          params: {
-            id: this.order.id,
-          },
-        })
-        .then(({ data }) => {
-          if (data.resp_code == 0) {
-            this.appraise = data.datas
-          } else {
-            alert(data.resp_msg)
-          }
-        })
-      this.showDialog = true
-    },
-    onCancel() {
-      this.showDialog = false
+    onShowDialog(id) {
+      this.$emit('onShowDialog', id)
     },
   },
   filters: {

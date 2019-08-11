@@ -11,35 +11,59 @@
       line-height="1px"
       :border="false"
       :swipe-threshold="5"
+      @click="onClick"
     >
-      <van-tab v-for="item in statusList" :key="item.value" :title="item.name">
-        <div
-          v-for="order in distributionsFilter(item.value)"
-          :key="order.id"
-          class="goods-item"
+      <van-tab
+        v-for="item in statusList"
+        :key="item.value"
+        :title="item.name"
+        :name="item.value"
+      >
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
         >
-          <!-- <router-link :to="'/order/goods-detail/' + good.orderNo"> -->
-          <Card :order="order" />
-          <!-- </router-link> -->
-        </div>
+          <div
+            v-for="order in distributions"
+            :key="order.id"
+            class="goods-item"
+          >
+            <Card :order="order" @onShowDialog="onShowDialog" />
+          </div>
+        </van-list>
       </van-tab>
     </van-tabs>
+
+    <AppraiseDialog
+      :showDialog="showDialog"
+      :info="appraise"
+      @onCancel="onCancel"
+    />
   </div>
 </template>
 
 <script>
 import Search from '@/components/Search'
 import Card from './DistributionOrderCard'
+import AppraiseDialog from './AppraiseDialog'
 
 export default {
   components: {
     Search,
     Card,
+    AppraiseDialog,
   },
   data() {
     return {
-      active: '0',
+      active: -1,
+      showDialog: false,
+      page: 1,
+      finished: false,
+      loading: true,
       keyword: '',
+      name: '全部',
       statusList: [
         {
           name: '全部',
@@ -63,31 +87,73 @@ export default {
         },
       ],
       distributions: [],
+      appraise: {
+        createTime: '',
+        commContent: '',
+        rates: 0,
+      }, // 评价对象
     }
   },
   created() {
-    this.fetchList({})
+    this.fetchList({ pageIndex: this.page + 1 })
   },
   methods: {
+    startFetch() {
+      this.finished = false
+      this.loading = true
+    },
+    endFetch() {
+      this.finished = true
+      this.loading = false
+    },
     // 拉去订单信息
-    fetchList({ pageIndex = 1, pageSize = 10 }) {
+    fetchList({ pageIndex = 1, pageSize = 10, status = -1 }) {
+      this.startFetch()
       this.$http
         .post('/api-wxmp/cxxz/distriButtion/order/findMyDistriOrderPage', {
           params: {
             pageIndex,
             pageSize,
+            status,
           },
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
+            this.endFetch()
+            this.distributions = []
             this.distributions = data.datas.data
           }
         })
     },
-    distributionsFilter(status) {
-      return status === -1
-        ? this.distributions
-        : this.distributions.filter(item => item.status === status)
+    onClick(_, title) {
+      if (this.name == title) {
+        return
+      }
+      this.name = title
+      const status = this.statusList.find(item => item.name == title).value
+      this.fetchList({ status })
+    },
+
+    // 关掉评价窗口
+    onCancel() {
+      this.showDialog = false
+    },
+    // 点击查看评价
+    onShowDialog(id) {
+      this.$http
+        .get('/api-wxmp/cxxz/distriButtion/order/findDistriOrderComment', {
+          params: {
+            id,
+          },
+        })
+        .then(({ data }) => {
+          if (data.resp_code == 0) {
+            this.appraise = data.datas
+            this.showDialog = true
+          } else {
+            alert(data.resp_msg)
+          }
+        })
     },
   },
 }
