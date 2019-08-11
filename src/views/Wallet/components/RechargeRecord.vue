@@ -8,95 +8,108 @@
         <div class="condition-desc">{{ curConditionDesc }}</div>
         <div>
           <van-dropdown-menu>
-            <van-dropdown-item
-              v-model="curCondition"
-              :options="condition"
-              @change="onChange"
-            />
+            <van-dropdown-item title="选择日期" ref="item">
+              <van-datetime-picker
+                v-model="currentDate"
+                :show-toolbar="false"
+                type="year-month"
+                @change="onTimeChange"
+              />
+            </van-dropdown-item>
           </van-dropdown-menu>
         </div>
       </header>
       <section class="record-list">
-        <ul>
-          <li v-for="(record, index) in records" :key="index" class="flex">
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+          class="ul"
+        >
+          <div class="li flex" v-for="(record, index) in records" :key="index">
             <div class="record-item flex-col">
-              <span :class="['info', record.status === '充值失败' && 'fail']">{{
-                record.info
+              <span :class="['info', record.status != 1 && 'fail']">充值</span>
+              <span class="time">{{ record.createTime }}</span>
+            </div>
+            <div class="record-item flex-col">
+              <span :class="['amount', record.status != 1 && 'fail']">
+                ￥{{ record.money | numFilter }}</span
+              >
+              <span :class="['status', record.status != 1 && 'fail']">{{
+                record.status == 1 ? '成功' : '失败'
               }}</span>
-              <span class="time">{{ record.time | dateFormat }}</span>
             </div>
-            <div class="record-item flex-col">
-              <span
-                :class="['amount', record.status === '充值失败' && 'fail']"
-                >{{ record.amount }}</span
-              >
-              <span
-                :class="['status', record.status === '充值失败' && 'fail']"
-                >{{ record.status }}</span
-              >
-            </div>
-          </li>
-        </ul>
+          </div>
+        </van-list>
       </section>
     </div>
   </div>
 </template>
 
 <script>
-import { dateTime } from '@/lib/format'
+import { curDate } from '@/lib/format'
 
 export default {
   data() {
     return {
       curConditionDesc: '全部',
-      curCondition: -1,
-      condition: [
-        { text: '全部', value: -1 },
-        { text: '2019.6', value: 1 },
-        { text: '2019.5', value: 2 },
-        { text: '2019.4', value: 3 },
-        { text: '2019.3', value: 4 },
-      ],
-      records: [
-        {
-          info: '充值',
-          amount: 105.56,
-          time: 1500000000,
-          status: '充值成功',
-        },
-        {
-          info: '充值',
-          amount: 105.56,
-          time: 1500000000,
-          status: '充值成功',
-        },
-        {
-          info: '银行卡余额不足',
-          amount: 105.56,
-          time: 1500000000,
-          status: '充值失败',
-        },
-        {
-          info: '充值',
-          amount: 105.56,
-          time: 1500000000,
-          status: '充值成功',
-        },
-        {
-          info: '充值',
-          amount: 105.56,
-          time: 1500000000,
-          status: '充值成功',
-        },
-      ],
+      currentDate: new Date(),
+      time: curDate('yyyy-MM'),
+      finished: false,
+      loading: true,
+      records: [],
     }
   },
+  created() {
+    this.fetchList({})
+  },
   methods: {
-    onLoad() {},
-    onChange(value) {
-      const conditionDesc = this.condition.find(item => item.value === value)
-        .text
-      this.curConditionDesc = conditionDesc
+    startFetch() {
+      this.finished = false
+      this.loading = true
+    },
+    endFetch() {
+      this.finished = true
+      this.loading = false
+    },
+    // 拉去订单信息
+    fetchList({
+      pageIndex = 1,
+      pageSize = 10,
+      applyTime = curDate('yyyy-MM'),
+    }) {
+      this.startFetch()
+      this.$http
+        .post('/api-wxmp/cxxz/money/page', {
+          params: {
+            pageIndex,
+            pageSize,
+            applyTime,
+            orderType: 'CZ',
+          },
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.endFetch()
+            this.records = []
+            this.records = data.datas.data
+          }
+        })
+    },
+    // 上拉加载更多
+    onLoad() {
+      this.fetchList({ pageIndex: this.page + 1 })
+    },
+    onTimeChange(picker) {
+      const values = picker.getValues()
+      const time = `${values[0]}-${values[1]}`
+      if (this.time == time) {
+        return
+      }
+      this.time = time
+      this.curConditionDesc = this.time
+      this.fetchList({ applyTime: this.time })
     },
   },
   filters: {
@@ -104,9 +117,6 @@ export default {
       // 截取当前数据到小数点后两位
       let realVal = parseFloat(value).toFixed(2)
       return realVal
-    },
-    dateFormat: function(value) {
-      return dateTime(value, 'YYYY-MM-DD hh:mm:ss')
     },
   },
 }
@@ -135,8 +145,8 @@ export default {
     .record-list {
       padding: 0 15px 10px;
 
-      ul {
-        li {
+      .ul {
+        .li {
           justify-content: space-between;
           text-align: center;
           height: 69px;
