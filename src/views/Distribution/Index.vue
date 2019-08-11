@@ -1,10 +1,14 @@
 <template>
   <div class="page-my-distribution" v-wechat-title="$route.meta.title">
     <div class="info-card">
-      <img src="./images/avator2.png" class="avator" alt />
-      <div class="nickname">Hi {{ info.nickname }}</div>
+      <img :src="user.headImgUrl" class="avator" alt />
+      <div class="nickname">Hi {{ user.name || user.nicknameStr }}</div>
       <div class="title">今天又是美好的一天，加油哦！</div>
-      <div v-if="info.status === 0" class="btn-online" @click="routeCondition">
+      <div
+        v-if="user.onlineStatus === 0"
+        class="btn-online"
+        @click="routeCondition"
+      >
         上线接单
       </div>
       <div v-else>
@@ -12,13 +16,16 @@
           <div class="condition flex">
             <div>
               <span class="iconfont">&#xe74f;</span>
-              <span>贵州大学城贵州师范大学***B2栋</span>
+              <span>{{ schoolFilter(runner.schoolId) }}</span>
             </div>
           </div>
           <div class="condition flex">
             <div>
               <span class="iconfont">&#xe74c;</span>
-              <span>今天 12:00 - 14:00</span>
+              <span>
+                今天 {{ runner.startTime.slice(10, 16) }} -
+                {{ runner.endTime.slice(10, 16) }}
+              </span>
             </div>
             <div class="btn-switch-block flex">
               提前下线
@@ -28,6 +35,7 @@
                 active-color="#06bcbf"
                 inactive-color="#eee"
                 size="20px"
+                @change="onSwitch"
               />
             </div>
           </div>
@@ -35,20 +43,23 @@
         <div class="status">接单中</div>
       </div>
     </div>
-    <div class="btn-my-order">我的配送订单</div>
+    <div class="btn-my-order" @click="routeOrderList">我的配送订单</div>
     <div class="footer">
       <span>了解规则</span>
       <span>|</span>
       <span>联系客服</span>
     </div>
-    <NewOrderNotifyCard :showDialog="hasMessage" @cancel="onCancel" />
+    <NewOrderNotifyCard :showDialog="hasMsg" @routeDetail="routeDetail" />
   </div>
 </template>
 
 <script>
 import NewOrderNotifyCard from './components/NewOrderNotifyCard'
+import { mapGetters, mapActions } from 'vuex'
+import local from '@/lib/local'
 
 export default {
+  computed: mapGetters(['user']),
   components: {
     NewOrderNotifyCard,
   },
@@ -56,18 +67,69 @@ export default {
     return {
       checked: true,
       hasMessage: false,
-      info: {
-        status: 1, // 0 未开始接单   1 接单中
-        nickname: '小刘哥',
-      },
+      runner: {},
+      hasMsg: false,
+      distriOrderId: '',
     }
   },
+  created() {
+    if (this.user.onlineStatus == 1) {
+      this.checked = false
+      this.fetchOrder()
+    } else {
+      this.checked = false
+    }
+    this.runner = local.get('runner')
+  },
   methods: {
+    ...mapActions(['setUser']),
     routeCondition() {
       this.$router.push('/my/distribution/condition')
     },
-    onCancel() {
-      this.hasMessage = false
+
+    // 路由到详情页
+    routeDetail() {
+      this.$router.push(`/my/distribution-detail/${this.distriOrderId}`)
+    },
+
+    // 路由到订单列表状态
+    routeOrderList() {
+      this.$router.push('/my/distribution/order')
+    },
+
+    // 上下线开关
+    onSwitch(checked) {
+      this.checked = checked
+      if (checked) {
+        this.$http
+          .post('/api-wxmp/cxxz/distriButtion/onLineOrOutLine', {
+            userId: this.user.userId,
+            onlineStatus: 0,
+          })
+          .then(({ data }) => {
+            if (data.resp_code == 0) {
+              this.user.onlineStatus = 0
+              this.setUser(this.user)
+            } else {
+              alert(data.resp_msg)
+            }
+          })
+      }
+    },
+    schoolFilter(schoolId) {
+      const school = this.runner.schools.find(item => item.schoolId == schoolId)
+      return school && school.schoolName
+    },
+    // 查看是否有新订单
+    fetchOrder() {
+      this.$http
+        .get('/api-wxmp/cxxz/distriButtion/order/findMyOrder/status')
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.hasMsg = data.datas.hasMsg == 1 ? true : false
+            this.distriOrderId = data.datas.distriOrderId
+          }
+        })
     },
   },
 }
@@ -89,6 +151,7 @@ export default {
       margin-top: -30px;
       width: 78px;
       height: 78px;
+      border-radius: 50%;
     }
 
     .nickname {

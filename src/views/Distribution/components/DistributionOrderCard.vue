@@ -2,37 +2,39 @@
   <div class="comp-order-distribution-card" v-wechat-title="$route.meta.title">
     <router-link :to="'/order/goods-detail/' + order.orderNo">
       <div class="header flex">
-        <span class="order-no">跑腿编号: {{ order.orderNo }}</span>
-        <span v-if="showStatus" class="status">{{
-          order.status | statusFilter
-        }}</span>
+        <span class="order-no">跑腿编号: {{ order.distributionNo }}</span>
+        <span v-if="showStatus" class="status">
+          {{ order.status | statusFilter }}
+        </span>
       </div>
       <div class="content flex">
-        <img :src="order.imgUrl" />
+        <img :src="order.goodsImg" />
         <div class="content-right flex">
           <div class="detail flex-col">
-            <span class="title">{{ order.title }}</span>
-            <span class="tag">{{ order.tagName }}: {{ order.tagDesc }}</span>
+            <span class="title">{{ order.goodsName }}</span>
+            <!-- <span class="tag">{{ order.tagName }}: {{ order.tagDesc }}</span> -->
           </div>
           <div class="price">
-            <div>￥{{ order.price }}</div>
-            <div>X{{ order.num }}</div>
+            <div>￥{{ order.distributionPrice }}</div>
+            <div>X 1</div>
           </div>
         </div>
       </div>
     </router-link>
     <div class="footer">
-      <div class="total">
-        共{{ order.num }}件商品 合计: ￥{{ order.amount }}
-      </div>
+      <div class="total">共 1 件商品 合计: ￥{{ order.distributionPrice }}</div>
       <div class="btn-area">
         <span class="btn" @click="onShowDialog">待评价</span>
-        <router-link to="/errand" class="btn">查看详情</router-link>
+        <router-link
+          :to="'/my/distribution-detail/' + order.orderId"
+          class="btn"
+          >查看详情</router-link
+        >
       </div>
     </div>
     <AppraiseDialog
       :showDialog="showDialog"
-      :info="order.appraise"
+      :info="appraise"
       @cancel="onCancel"
     />
   </div>
@@ -55,7 +57,7 @@ export default {
   props: {
     showStatus: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     order: {
       type: Object,
@@ -70,24 +72,37 @@ export default {
           price: 189, // 单价
           amount: 189, // 总金额 = 单价*数量
           status: 0,
-          appraise: {
-            name: '王多鱼',
-            imgUrl: require('../images/avator1.png'),
-            time: 1500000000,
-            tags: ['配送及时', '服务态度好'],
-          },
         }
       },
     },
   },
   data() {
     return {
-      showDialog: true,
+      showDialog: false,
+      appraise: {
+        name: '王多鱼',
+        imgUrl: require('../images/avator1.png'),
+        time: 1500000000,
+        tags: ['配送及时', '服务态度好'],
+      },
     }
   },
   methods: {
     onLoad() {},
     onShowDialog() {
+      this.$http
+        .get('/api-wxmp/cxxz/distriButtion/order/findDistriOrderComment', {
+          params: {
+            id: this.order.id,
+          },
+        })
+        .then(({ data }) => {
+          if (data.resp_code == 0) {
+            this.appraise = data.datas
+          } else {
+            alert(data.resp_msg)
+          }
+        })
       this.showDialog = true
     },
     onCancel() {

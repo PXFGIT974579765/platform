@@ -9,16 +9,16 @@
       :showConfirmButton="false"
     >
       <div class="header flex">
-        <img :src="info.imgUrl" alt />
+        <img :src="info.headImgUrl" alt />
         <div class="text flex-col">
-          <div>{{ info.name }}</div>
-          <span>{{ info.time | dateFormat }}</span>
+          <div>{{ info.nickName }}</div>
+          <span>{{ info.createTime.slice(0, 10) }}</span>
         </div>
       </div>
       <div class="middle">
         <div>对您的服务进行了评价</div>
         <van-rate class="rate" v-model="rate" size="35" />
-        <div class="rate-desc">{{ rate | rateFilter }}</div>
+        <div class="rate-desc">{{ info.rates | rateFilter }}</div>
       </div>
 
       <div class="tag-area flex">
@@ -74,10 +74,13 @@ export default {
       type: Object,
       default: function() {
         return {
-          name: '王多鱼',
-          imgUrl: require('../images/avator1.png'),
-          time: 1500000000,
-          tags: ['配送及时', '服务态度好'],
+          id: '',
+          nickName: '',
+          headImgUrl: '',
+          commContent: '',
+          rates: 4.5,
+          userId: '',
+          createTime: '',
         }
       },
     },
@@ -101,7 +104,7 @@ export default {
       this.$emit('cancel')
     },
     tagInclude(value) {
-      return this.info.tags.includes(value)
+      return this.info.commContent.includes(value)
     },
     index0() {
       return this.rateList.filter((item, index) => index % 3 === 0)
@@ -118,7 +121,7 @@ export default {
       return dateTime(value, 'YYYY-MM-DD')
     },
     rateFilter: function(value) {
-      return RATE_STATUS[value]
+      return RATE_STATUS[Math.floor(value)]
     },
   },
 }

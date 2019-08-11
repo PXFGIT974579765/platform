@@ -1,10 +1,9 @@
 <template>
   <div class="comp-new-order-notify-card">
     <van-dialog
-      v-model="showDialog"
+      v-model="hasMsg"
       class="dialog"
       closeOnPopstate
-      closeOnClickOverlay
       :beforeClose="onCancel"
       :showConfirmButton="false"
     >
@@ -27,16 +26,24 @@ export default {
   },
   data() {
     return {
-      message: '',
-      rate: 5,
+      hasMsg: this.showDialog,
     }
+  },
+  created() {
+    console.log(this.hasMsg)
   },
   methods: {
     onCancel() {
       this.$emit('cancel')
     },
     routeDetail() {
-      this.$router.push('/my/distribution-detail')
+      this.hasMsg = false
+      this.$emit('routeDetail')
+    },
+  },
+  watch: {
+    showDialog(newValue) {
+      this.hasMsg = newValue
     },
   },
 }

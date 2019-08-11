@@ -2,41 +2,43 @@
   <div class="page-my-distribution-detail" v-wechat-title="$route.meta.title">
     <div class="time area flex">
       <div>
-        <div>{{ info.startTime | timeFormat }}</div>
+        <div>{{ info.startTime.slice(10, 16) }}</div>
         <span>开始时间</span>
       </div>
-      <div class="date">{{ info.startTime | dateFormat }}</div>
+      <div class="date">{{ info.startTime.slice(0, 10) }}</div>
       <div>
-        <div>{{ info.status === 0 ? '--:--' : timeFormat(info.endTime) }}</div>
+        <div>
+          {{ info.status === 0 ? '--:--' : info.endTime.slice(10, 16) }}
+        </div>
         <span>结束时间</span>
       </div>
     </div>
     <div class="goods area">
       <div class="title">跑腿商品</div>
       <div class="goods-item flex">
-        <img :src="info.imgUrl" alt />
+        <img :src="info.goodsImg" alt />
         <div class="goods-right flex-col">
-          <span class="title">{{ info.title }}</span>
-          <span class="tag">{{ info.tagName }}: {{ info.tagDesc }}</span>
+          <span class="title">{{ info.goodsName }}</span>
+          <!-- <span class="tag">{{ info.tagName }}: {{ info.tagDesc }}</span> -->
         </div>
       </div>
-      <div class="getNo">取单码 {{ info.getNo }}</div>
+      <div class="getNo">取单码 {{ info.orderId }}</div>
     </div>
     <div class="detail area">
-      <div class="title">跑腿编号：{{ info.errandNo }}</div>
+      <div class="title">跑腿编号：{{ info.pickUpCode }}</div>
       <div class="address-price flex">
         <div class="address-area">
           <div class="from">
             <span class="icon get">取</span>
-            <span class="address">{{ info.fromAddress }}</span>
+            <span class="address">{{ info.pickUpAddress }}</span>
           </div>
           <div class="to">
             <span class="icon send">送</span>
-            <span class="address">{{ info.toAddress }}</span>
+            <span class="address">{{ info.sendAddress }}</span>
           </div>
         </div>
         <div class="price-area">
-          <span class="price">{{ info.errandPrice }}</span>
+          <span class="price">{{ info.distributionPrice }}</span>
           <span>元</span>
         </div>
       </div>
@@ -44,11 +46,11 @@
         <div class="info-area">
           <div class="to-name">
             <span class="name">收货人</span>
-            <span class="value">{{ info.toName }}</span>
+            <span class="value">{{ info.userName }}</span>
           </div>
           <div class="phone">
             <span class="name">电 话</span>
-            <span class="value">{{ info.toPhone }}</span>
+            <span class="value">{{ info.userPhone }}</span>
           </div>
         </div>
         <span class="iconfont">&#xe745;</span>
@@ -60,60 +62,73 @@
     </div>
 
     <div class="footer">
-      <div v-if="info.status === 1" class="btn-finished">已完成配送</div>
-      <div v-else class="flex">
+      <div v-if="info.status === 0" class="flex">
         <input
           class="flex-2"
           v-model="curSendNo"
           type="text"
           placeholder="请输入收货码"
         />
-        <div :class="['btn-will', 'flex-1', curSendNo === '' && 'btn-disable']">
+        <div
+          :class="['btn-will', 'flex-1', curSendNo === '' && 'btn-disable']"
+          @click="finishSend"
+        >
           完成派送
         </div>
       </div>
+      <div v-else class="btn-finished">已完成配送</div>
     </div>
   </div>
 </template>
 
 <script>
-import { dateTime } from '@/lib/format'
-
 export default {
   data() {
     return {
       curSendNo: '', // 收货码
+      id: '',
       info: {
-        startTime: 1500000000,
-        endTime: 1500000000,
-        status: 0, // 0 正在派送   1 已完成派送
-        imgUrl: require('../images/goods.png'),
-        title: '华为路由器无线全千兆端口家用WIFI穿墙王大功率户型',
-        tagName: '标准套餐',
-        tagDesc: '白色-定制版',
-        errandNo: '1504955',
-        getNo: '201906199527',
-        errandPrice: 6,
-        fromAddress: '科技园实训中心',
-        toAddress: '图书馆6号楼704',
-        toName: '张小先',
-        toPhone: 199893848484,
-        remark: '跑腿小哥哥快点送哦',
+        startTime: '1500000000',
+        endTime: '1500000000',
+        status: 0, // status 0 取货中 1已完成 2待评价 3已评价 4审核
       },
     }
   },
-  methods: {
-    onLoad() {},
-    timeFormat: function(value) {
-      return dateTime(value, 'hh:mm')
-    },
+  created() {
+    const { id } = this.$route.params
+    this.id = id
+    this.fetchOrderDetail(id)
   },
-  filters: {
-    dateFormat: function(value) {
-      return dateTime(value, 'YYYY-MM-DD')
+  methods: {
+    // 拉去详情信息
+    fetchOrderDetail(orderId) {
+      this.$http
+        .get('/api-wxmp/cxxz/distriButtion/order/orderSend', {
+          params: {
+            orderId,
+          },
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.info = data.datas
+          }
+        })
     },
-    timeFormat: function(value) {
-      return dateTime(value, 'hh:mm')
+    // 完成配送提交动作
+    finishSend() {
+      this.$http
+        .post('/api-wxmp/cxxz/distriButtion/order/callBackOrderCode', {
+          id: this.id,
+          code: this.curSendNo,
+        })
+        .then(({ data }) => {
+          if (data.resp_code == 0) {
+            alert('订单已完成配送')
+            this.info.status = 1
+          } else {
+            alert(data.resp_msg)
+          }
+        })
     },
   },
 }
@@ -192,10 +207,9 @@ export default {
     }
 
     .getNo {
-      height: 55px;
-      line-height: 55px;
+      line-height: 30px;
       text-align: center;
-      font-size: 23px;
+      font-size: 18px;
       color: #0294fe;
     }
   }
