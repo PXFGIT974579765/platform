@@ -100,10 +100,10 @@
     </div>
 
     <div class="rec-block-wrap">
-      <div class="rec-block">
-        <div class="rec-block-title">AD 英语六级 视频听力训练</div>
-        <img src="./images/ad.png" alt />
-      </div>
+      <a :href="ad.link" class="rec-block">
+        <div class="rec-block-title">{{ ad.title }}</div>
+        <img :src="ad.adImg" alt />
+      </a>
     </div>
   </div>
 </template>
@@ -137,6 +137,9 @@ export default {
       groups: [],
       apps: [],
       activity: [],
+      ad: {
+        link: '',
+      },
     }
   },
 
@@ -168,6 +171,14 @@ export default {
       .then(({ data }) => {
         if (data.resp_code === 0) {
           this.apps = data.datas
+        }
+      })
+
+    this.$http
+      .get('/api-media/news-anon/news/pageAd', { params: { isDefault: 1 } })
+      .then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.ad = data.datas
         }
       })
   },
@@ -310,7 +321,7 @@ nav {
 
 .rec-app-item {
   flex: 1;
-  height: 130px;
+  height: 34vw;
   margin-right: 14px;
   padding: 13px;
   border-radius: 6px;
@@ -376,6 +387,7 @@ nav {
   background: #f6f6f6;
 }
 .rec-block {
+  display: block;
   padding: 15px;
   font-size: 10px;
   color: #626262;
@@ -384,7 +396,6 @@ nav {
     display: block;
     margin-top: 7px;
     width: 100%;
-    height: 108px;
   }
 }
 </style>
