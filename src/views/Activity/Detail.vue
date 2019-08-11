@@ -77,7 +77,11 @@
 
     <div class="submit">
       <button class="sign" @click="onSubmit">立即报名</button>
-      <button class="check" @click="onSubmit">现场扫码签到</button>
+      <button class="check">
+        <span class="iconfont">&#xe746;</span>现场扫码签到
+      </button>
+      <button class="check checked">已扫码签到</button>
+      <button class="end">活动结束，请对本次活动进行评价！</button>
     </div>
   </div>
 </template>
@@ -298,6 +302,14 @@ export default {
 
   .check {
     background-color: #00a0e9;
+  }
+
+  .end {
+    background-color: #0cde8c;
+  }
+
+  .iconfont {
+    margin-right: 10px;
   }
 }
 </style>
