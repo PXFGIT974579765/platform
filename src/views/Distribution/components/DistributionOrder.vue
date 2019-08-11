@@ -95,7 +95,7 @@ export default {
     }
   },
   created() {
-    this.fetchList({ pageIndex: this.page + 1 })
+    this.fetchList({ pageIndex: this.page })
   },
   methods: {
     startFetch() {
@@ -124,6 +124,10 @@ export default {
             this.distributions = data.datas.data
           }
         })
+    },
+    // 上拉加载更多
+    onLoad() {
+      this.fetchList({ pageIndex: this.page + 1 })
     },
     onClick(_, title) {
       if (this.name == title) {
