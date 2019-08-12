@@ -18,7 +18,7 @@
       <van-cell
         class="cell"
         title="我的钱包"
-        :value="'￥' + userInfo.wallet"
+        :value="'￥' + (userInfo.wallet || 0)"
         is-link
         to="/my/wallet"
       >

@@ -11,17 +11,19 @@
       line-height="1px"
       :border="false"
       :swipe-threshold="5"
+      @click="onClick"
     >
       <van-tab v-for="item in statusList" :key="item.value" :title="item.name">
-        <div
-          v-for="good in goodsFilter(item.value)"
-          :key="good.id"
-          class="goods-item"
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
         >
-          <!-- <router-link :to="'/order/goods-detail/' + good.orderNo"> -->
-          <Card :goods="good" />
-          <!-- </router-link> -->
-        </div>
+          <div v-for="good in goods" :key="good.id" class="goods-item">
+            <Card :goods="good" />
+          </div>
+        </van-list>
       </van-tab>
     </van-tabs>
   </div>
@@ -38,8 +40,12 @@ export default {
   },
   data() {
     return {
-      active: '0',
+      active: -1,
       keyword: '',
+      page: 1,
+      finished: false,
+      loading: true,
+      name: '全部',
       statusList: [
         {
           name: '全部',
@@ -66,26 +72,49 @@ export default {
     }
   },
   created() {
-    this.fetchOrders({})
+    this.fetchList({ pageIndex: this.page })
   },
   methods: {
+    startFetch() {
+      this.finished = false
+      this.loading = true
+    },
+    endFetch() {
+      this.finished = true
+      this.loading = false
+    },
     // 拉去商品信息
-    fetchOrders({ pageIndex = 1, pageSize = 10 }) {
+    fetchList({ pageIndex = 1, pageSize = 10, status }) {
+      this.startFetch()
       this.$http
         .post('/api-wxmp/cxxz/order/pagePTSC', {
           pageIndex,
           pageSize,
+          status,
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
+            this.endFetch()
+            this.goods = []
             this.goods = data.datas.data
           }
         })
     },
-    goodsFilter(status) {
-      return status === -1
-        ? this.goods
-        : this.goods.filter(item => item.status === status)
+    // 上拉加载更多
+    onLoad() {
+      this.fetchList({ pageIndex: this.page + 1 })
+    },
+    onClick(_, title) {
+      if (this.name == title) {
+        return
+      }
+      this.name = title
+      const status = this.statusList.find(item => item.name == title).value
+      if (status == -1) {
+        this.fetchList({})
+      } else {
+        this.fetchList({ status })
+      }
     },
   },
 }

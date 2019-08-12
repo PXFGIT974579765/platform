@@ -9,17 +9,19 @@
       color="#06bcbf"
       background="#f4f4f4"
       :swipe-threshold="5"
+      @click="onClick"
     >
       <van-tab v-for="item in statusList" :key="item.value" :title="item.name">
-        <div
-          v-for="group in groupsFilter(item.value)"
-          :key="group.id"
-          class="gruup-item"
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
         >
-          <!-- <router-link :to="'/order/goods-detail/' + good.orderNo"> -->
-          <Card :group="group" />
-          <!-- </router-link> -->
-        </div>
+          <div v-for="group in groups" :key="group.id" class="gruup-item">
+            <Card :group="group" />
+          </div>
+        </van-list>
       </van-tab>
     </van-tabs>
   </div>
@@ -36,8 +38,12 @@ export default {
   },
   data() {
     return {
-      active: '0',
+      active: -1,
       keyword: '',
+      page: 1,
+      finished: false,
+      loading: true,
+      name: '全部',
       statusList: [
         {
           name: '全部',
@@ -49,75 +55,64 @@ export default {
         },
         {
           name: '待配送',
-          value: 1,
-        },
-        {
-          name: '待提货',
           value: 2,
         },
         {
-          name: '待评价',
+          name: '待提货',
           value: 3,
         },
-      ],
-      groups: [
         {
-          orderNo: '557879582',
-          imgUrl: require('../images/good.png'),
-          title: '华为路由器无线全千兆端口家用WIFI穿墙王大功率户型',
-          tagName: '标准套餐',
-          tagDesc: '白色-定制版',
-          num: 1, // 数量
-          price: 189, // 单价
-          amount: 189, // 总金额 = 单价*数量
-          status: 4,
-        },
-        {
-          orderNo: '557879583',
-          imgUrl: require('../images/good.png'),
-          title: '华为路由器无线全千兆端口家用WIFI穿墙王大功率户型',
-          tagName: '标准套餐',
-          tagDesc: '白色-定制版',
-          num: 1, // 数量
-          price: 189, // 单价
-          amount: 189, // 总金额 = 单价*数量
-          status: 5,
-        },
-        {
-          orderNo: '557879584',
-          imgUrl: require('../images/good.png'),
-          title: '华为路由器无线全千兆端口家用WIFI穿墙王大功率户型',
-          tagName: '标准套餐',
-          tagDesc: '白色-定制版',
-          num: 1, // 数量
-          price: 189, // 单价
-          amount: 189, // 总金额 = 单价*数量
-          status: 4,
+          name: '待评价',
+          value: 4,
         },
       ],
+      groups: [],
     }
   },
   created() {
-    this.fetchOrders({})
+    this.fetchList({})
   },
   methods: {
+    startFetch() {
+      this.finished = false
+      this.loading = true
+    },
+    endFetch() {
+      this.finished = true
+      this.loading = false
+    },
     // 拉去商品信息
-    fetchOrders({ pageIndex = 1, pageSize = 10 }) {
+    fetchList({ pageIndex = 1, pageSize = 10, status }) {
+      this.startFetch()
       this.$http
         .post('/api-wxmp/cxxz/order/pagePT', {
           pageIndex,
           pageSize,
+          status,
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
+            this.endFetch()
+            this.groups = []
             this.groups = data.datas.data
           }
         })
     },
-    groupsFilter(status) {
-      return status === -1
-        ? this.groups
-        : this.groups.filter(item => item.status === status)
+    // 上拉加载更多
+    onLoad() {
+      this.fetchList({ pageIndex: this.page + 1 })
+    },
+    onClick(_, title) {
+      if (this.name == title) {
+        return
+      }
+      this.name = title
+      const status = this.statusList.find(item => item.name == title).value
+      if (status == -1) {
+        this.fetchList({})
+      } else {
+        this.fetchList({ status })
+      }
     },
   },
 }
