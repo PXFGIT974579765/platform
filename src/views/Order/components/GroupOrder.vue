@@ -38,7 +38,7 @@ export default {
   },
   data() {
     return {
-      active: '0',
+      active: -1,
       keyword: '',
       page: 1,
       finished: false,
