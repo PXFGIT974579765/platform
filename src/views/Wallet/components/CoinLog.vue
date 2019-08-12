@@ -24,7 +24,7 @@
                 class="li flex"
               >
                 <div class="record-item flex-col">
-                  <span class="info">{{ coinLog.orderType }}</span>
+                  <span class="info">{{ coinLog.moneyInfo }}</span>
                   <span class="time">{{ coinLog.createTime }}</span>
                 </div>
                 <div class="record-item flex-col">
@@ -38,7 +38,7 @@
                       coinLog.money | numFilter
                     }}
                   </span>
-                  <span class="status">余额：￥{{ coinLog.coin }}</span>
+                  <span class="status">余额：￥{{ coinLog.afterMoney }}</span>
                 </div>
               </div>
             </van-list>
