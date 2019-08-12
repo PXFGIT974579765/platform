@@ -1,8 +1,13 @@
 <template>
   <div class="order">
-    <person-card :data="person" />
+    <person-card :data="userDetail" />
 
-    <good class="block" />
+    <good
+      class="block"
+      :good="good"
+      :addressList="addressList"
+      @selectAddress="fetchPrice"
+    />
 
     <div class="comment block">
       <label class="input-field">
@@ -17,27 +22,31 @@
         <router-link to="/news" class="block-header-link">收费标准</router-link>
       </div>
       <div class="prices">
-        <button class="active">2元</button>
-        <button>3元</button>
-        <button>4元</button>
+        <button class="active">{{ price }}元</button>
         <button>自定义</button>
       </div>
     </div>
 
-    <div class="pay-methods block">
+    <div class="pay-methods">
       <van-radio-group v-model="radio">
         <div class="pay-method weixin">
-          <span class="iconfont">&#xe758;</span>
-          <div class="name">微信支付</div>
-          <van-radio :name="1" checked-color="#07c160" />
+          <van-radio :name="1" label-position="left" checked-color="#07c160">
+            <div class="label">
+              <span class="iconfont">&#xe758;</span>
+              <div class="name">微信支付</div>
+            </div>
+          </van-radio>
         </div>
         <div class="pay-method account">
-          <span class="iconfont">&#xe777;</span>
-          <div class="name">
-            余额
-            <span>可用余额: 89.80元</span>
-          </div>
-          <van-radio :name="2" checked-color="#07c160" />
+          <van-radio :name="2" label-position="left" checked-color="#07c160">
+            <div class="label">
+              <span class="iconfont">&#xe777;</span>
+              <div class="name">
+                余额
+                <span>可用余额: {{ wallet }}元</span>
+              </div>
+            </div>
+          </van-radio>
         </div>
       </van-radio-group>
     </div>
@@ -45,7 +54,7 @@
     <div class="pay">
       <div class="price">
         支付
-        <span>￥2.00元</span>
+        <span>￥{{ price }}元</span>
       </div>
       <button @click="onSubmit">提交订单</button>
     </div>
@@ -64,21 +73,110 @@ export default {
 
   data() {
     return {
-      person: {
-        id: 3,
-        name: '王多鱼',
-        sex: '男',
-        count: 20,
-        score: 9.2,
-      },
       comment: '',
       radio: 1,
+      userDetail: {},
+      good: {},
+      addressList: [{}],
+      price: 0,
+      wallet: 0,
     }
   },
 
+  created() {
+    this.fetchData()
+  },
+
+  watch: {
+    $route: 'fetchData',
+  },
+
   methods: {
+    fetchData() {
+      this.$http
+        .post('/api-wxmp/cxxz/runner/hire', {
+          distributionId: this.$route.params.id,
+          orderId: this.$route.query.order,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            const { userDetail, goods } = data.datas
+            this.userDetail = userDetail
+            this.good = goods
+          }
+        })
+
+      this.$http
+        .get('/api-wxmp/cxxz/address/findAddressByUserId')
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.addressList = data.datas
+          }
+        })
+    },
+
+    fetchPrice(id) {
+      this.$http
+        .post('/api-wxmp/cxxz/runner/choice/fee', {
+          schoolId: this.good.pickUpAaddressId,
+          schoolbId: id,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.price = data.datas.fee
+            this.wallet = data.datas.wallet
+          }
+        })
+    },
+
     onSubmit() {
-      this.$router.push('/errand/detail')
+      const { id } = this.order
+      const { openId } = this.user
+
+      this.$http
+        .post('/api-wxmp/cxxz/runnerPay/createOrder', {
+          mchId: '100000001',
+          channelId: 1,
+          fromType: 1,
+          payType: 2,
+          goodsId: id,
+          goodsType: 'PT',
+          goodsSize: 1,
+          orderMoney: 0.01,
+          oneMoney: 0.01,
+          money: 0.01,
+          isUseScore: 0,
+          score: 0,
+          scoreMoney: 0,
+          isUseCoupon: 0,
+          couponNo: null,
+          couponMoney: 0,
+          payCode: '',
+          openId,
+          address: '花溪大学城贵州大学创新学子空间',
+          addressId: '073c556eb3ea4075becfe645a1f6a914',
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.pay(data.datas)
+            return
+          }
+        })
+    },
+
+    pay(opts) {
+      WeixinJSBridge.invoke('getBrandWCPayRequest', opts, res => {
+        if (res.err_msg === 'get_brand_wcpay_request:ok') {
+          this.$router.push('/order/group')
+          return
+        }
+        // if (res.err_msg === 'get_brand_wcpay_request:cancel') {
+        //   // return
+        // }
+        // if (res.err_msg === 'get_brand_wcpay_request:fail') {
+        //   // return
+        // }
+      })
     },
   },
 }
@@ -153,35 +251,6 @@ export default {
   margin-bottom: 48px;
 }
 
-.pay-method {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #c8c8c8;
-  &:last-child {
-    margin: 0;
-    padding: 0;
-    border: 0;
-  }
-  .name {
-    flex: 1;
-    margin: 0 11px;
-    color: #585858;
-    span {
-      margin-left: 12px;
-      font-size: 13px;
-      color: #a4a4a4;
-    }
-  }
-  &.weixin .iconfont {
-    color: #00b700;
-  }
-  &.account .iconfont {
-    color: #ffc000;
-  }
-}
-
 .pay {
   position: fixed;
   bottom: 0;
@@ -190,7 +259,6 @@ export default {
   display: flex;
   align-items: center;
   text-align: center;
-  // margin: 84px -15px 76px;
   background: #ffffff;
   > * {
     flex: 1;

@@ -41,7 +41,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .pay-methods {
   margin: 8px 0;
   padding: 0 15px;
@@ -55,31 +55,31 @@ export default {
   &:last-child {
     border: 0;
   }
-}
 
-.name {
-  margin: 0 11px;
-  color: #585858;
-  span {
-    margin-left: 12px;
-    font-size: 13px;
-    color: #a4a4a4;
+  .name {
+    margin: 0 11px;
+    color: #585858;
+    span {
+      margin-left: 12px;
+      font-size: 13px;
+      color: #a4a4a4;
+    }
   }
-}
 
-.label {
-  display: flex;
-  align-items: center;
-}
+  .label {
+    display: flex;
+    align-items: center;
+  }
 
-/deep/ .van-radio__label--left {
-  flex: 1;
-}
+  /deep/ .van-radio__label--left {
+    flex: 1;
+  }
 
-&.weixin .iconfont {
-  color: #00b700;
-}
-&.account .iconfont {
-  color: #ffc000;
+  &.weixin .iconfont {
+    color: #00b700;
+  }
+  &.account .iconfont {
+    color: #ffc000;
+  }
 }
 </style>
