@@ -74,7 +74,6 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             const type = data.datas.filter(item => !!TYPE_HASH[item.goodsType])
-            console.log(type)
             this.orderType = type
           }
         })
