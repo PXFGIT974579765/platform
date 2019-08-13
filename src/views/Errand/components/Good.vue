@@ -4,25 +4,31 @@
       <div class="title">跑腿订单</div>
     </div>
 
-    <commodity />
+    <commodity :good="good" />
 
     <div class="address">
       <div class="address-item address-get">
         <div class="type">取</div>
         <div class="detail">
-          <div class="name">贵州师范大学花溪校区（创星校园学子实训中心）</div>
-          <div class="phone"><span>莫先生</span>19985501144</div>
+          <div class="name">{{ good.pickUpAaddress }}</div>
+          <div class="phone">
+            <span>联系电话</span>
+            {{ good.phone }}
+          </div>
         </div>
-        <div class="button">选择</div>
+        <!-- <div class="button">选择</div> -->
       </div>
 
       <div class="address-item address-put">
         <div class="type">送</div>
         <div class="detail">
-          <div class="name">贵州师范大学花溪校区-教育科学学院5楼502室</div>
-          <div class="phone"><span>马冬梅</span>13314466110</div>
+          <div class="name">{{ addressList[0].address }}</div>
+          <div class="phone">
+            <span>联系电话</span>
+            {{ addressList[0].telephone }}
+          </div>
         </div>
-        <div class="button">选择</div>
+        <div class="button" @click="onClick">选择</div>
       </div>
     </div>
   </div>
@@ -34,6 +40,17 @@ import Commodity from './Commodity'
 export default {
   components: {
     Commodity,
+  },
+
+  props: {
+    good: Object,
+    addressList: Array,
+  },
+
+  methods: {
+    onClick() {
+      this.$emit('selectAddress', this.addressList[0].id)
+    },
   },
 }
 </script>
@@ -74,6 +91,9 @@ export default {
   .phone {
     font-size: 12px;
     color: #a4a4a4;
+    span {
+      margin-right: 8px;
+    }
   }
   .button,
   .detail {

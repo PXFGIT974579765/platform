@@ -13,6 +13,7 @@
         v-for="item in list"
         :key="item.id"
         :data="item"
+        link
       />
     </van-list>
   </div>
@@ -38,8 +39,8 @@ export default {
 
   created() {
     this.$http
-      .get('/api-wxmp/cxxz/distriButtion/runnerErrands', {
-        params: { pageIndex: 1, pageSize: 20 },
+      .get('/api-wxmp/cxxz/runner/runnerErrands', {
+        params: { pageIndex: 1, pageSize: 20, sourceType: 4 },
       })
       .then(({ data }) => {
         if (data.resp_code === 0) {

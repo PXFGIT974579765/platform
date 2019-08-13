@@ -2,9 +2,9 @@
   <div class="comp-order-goods-card" v-wechat-title="$route.meta.title">
     <div class="header flex">
       <span class="order-no">订单编号: {{ group.orderId }}</span>
-      <span v-if="showStatus" class="status">{{
-        group.status | statusFilter
-      }}</span>
+      <span v-if="showStatus" class="status">
+        {{ group.status | statusFilter }}
+      </span>
     </div>
     <router-link :to="'/order/group-detail/' + group.orderId">
       <div class="content flex">
@@ -27,7 +27,9 @@
       </div>
       <div class="btn-area">
         <span class="btn">等待提货</span>
-        <span class="btn">找跑腿</span>
+        <router-link :to="`/errand/lobby?order=${group.orderId}`" class="btn"
+          >找跑腿</router-link
+        >
       </div>
     </div>
   </div>

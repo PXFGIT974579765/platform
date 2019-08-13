@@ -4,7 +4,7 @@
     <div class="content">
       <div class="name">{{ data.cname }}</div>
       <div class="info">
-        <div class="count">已跑 {{ data.orderNum }} 单</div>
+        <div class="count">已跑 {{ data.orderNum || 0 }} 单</div>
         <div class="score">
           <div>
             <van-rate
@@ -17,7 +17,10 @@
         </div>
       </div>
     </div>
-    <router-link :to="`/errand/order/${data.id}`" class="order"
+    <router-link
+      v-if="link"
+      :to="`/errand/order/${data.id}?order=${$route.query.order}`"
+      class="order"
       >雇TA</router-link
     >
   </div>
@@ -27,6 +30,10 @@
 export default {
   props: {
     data: Object,
+    link: {
+      type: Boolean,
+      default: false,
+    },
   },
 }
 </script>
