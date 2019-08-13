@@ -11,7 +11,6 @@
       <div class="content-right flex flex-1">
         <div class="detail flex-col">
           <span class="title">{{ goods.goodsName }}</span>
-          <!-- <span class="tag">{{ goods.tagName }}: {{ goods.tagDesc }}</span> -->
         </div>
         <div class="price">
           <div>￥{{ goods.orderMoney }}</div>
@@ -24,8 +23,18 @@
         共{{ goods.goodsSize || 1 }}件商品 合计: ￥{{ goods.money }}
       </div>
       <div class="btn-area">
-        <span class="btn">等待提货</span>
-        <router-link to="/errand" class="btn">找跑腿</router-link>
+        <router-link
+          v-if="goods.status == 0"
+          :to="'/point/order?orderId=' + goods.orderId"
+          class="btn"
+          >付款</router-link
+        >
+        <span v-if="goods.status == 0" class="btn">取消订单</span>
+        <span v-if="goods.status == 1" class="btn">配货中</span>
+        <span v-if="goods.status == 2" class="btn">找跑腿</span>
+        <span v-if="goods.status == 2" class="btn">上门自提</span>
+        <span v-if="goods.status == 3" class="btn">待评价</span>
+        <span v-if="goods.status == 3" class="btn">订单详情</span>
       </div>
     </div>
   </div>
@@ -37,6 +46,8 @@ const ORDER_STATUS = {
   1: '待配送',
   2: '待提货',
   3: '待评价',
+  80: '已完成',
+  90: '已取消',
 }
 
 export default {
@@ -80,7 +91,18 @@ export default {
   },
   filters: {
     statusFilter: function(status) {
-      return ORDER_STATUS[status]
+      let name = ''
+      switch (status) {
+        case 3:
+          name = '已完成'
+          break
+        case 1:
+          name = '配货中'
+          break
+        default:
+          name = ORDER_STATUS[status]
+      }
+      return name
     },
   },
 }
