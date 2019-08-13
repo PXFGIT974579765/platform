@@ -181,7 +181,7 @@ export default {
     // 提交评价
     onSubmit(appraise) {
       this.$http
-        .post('/api-wxmp/cxxz/comment/saveComment', {
+        .post('/api-wxmp/cxxz/comment/save', {
           ...appraise,
           orderNo: this.goods.orderId,
           commentType: 1,

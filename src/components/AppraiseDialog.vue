@@ -13,7 +13,7 @@
       <textarea
         class="advice"
         @input="onMessageChange"
-        v-model="appraise.message"
+        v-model="appraise.commContent"
         placeholder="你的建议（控制在100字以内）"
       ></textarea>
       <div class="btn-submit" v-if="appraise.status == -1" @click="onSubmit">
@@ -41,16 +41,16 @@ export default {
     },
     onSubmit() {
       this.$emit('onSubmit', {
-        commContent: this.appraise.message,
+        commContent: this.appraise.commContent,
         rates: this.appraise.rates,
       })
     },
     // 监听评价内容长度
     onMessageChange(e) {
       const value = e.target.value
-      this.appraise.message = value
+      this.appraise.commContent = value
       if (value.length > 100) {
-        this.appraise.message = value.slice(0, 100)
+        this.appraise.commContent = value.slice(0, 100)
       }
     },
   },

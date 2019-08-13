@@ -10,11 +10,11 @@
         <div class="in-out flex">
           <span>
             本月支出:
-            <span class="out">￥{{ wallet.curMonOut | numFilter }}</span>
+            <span class="out">￥{{ wallet.monthOutMoney | numFilter }}</span>
           </span>
           <span>
             本月收入:
-            <span class="in">￥{{ wallet.curMonIn | numFilter }}</span>
+            <span class="in">￥{{ wallet.monthInMoney | numFilter }}</span>
           </span>
         </div>
       </div>
@@ -42,20 +42,34 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { curDate } from '@/lib/format'
 
 export default {
   computed: mapGetters(['user']),
   data() {
     return {
       wallet: {
-        coin: 564.0,
-        curMonIn: 129,
-        curMonOut: 89,
+        wallet: 564.0,
+        monthInMoney: 129,
+        monthOutMoney: 89,
       },
     }
   },
+  created() {
+    this.fetchWallet()
+  },
   methods: {
-    onLoad() {},
+    fetchWallet() {
+      this.$http
+        .post('/api-wxmp/cxxz/money/getUserMonthMoney ', {
+          searchtime: curDate('yyyy-MM'),
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.wallet = data.datas
+          }
+        })
+    },
   },
   filters: {
     numFilter(value) {
