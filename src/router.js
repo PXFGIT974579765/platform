@@ -267,12 +267,12 @@ const errand = [
     meta: { title: '跑腿大厅' },
   },
   {
-    path: '/errand/order/:id',
+    path: '/errand/order',
     name: 'errand/order',
     component: ErrandOrder,
   },
   {
-    path: '/errand/detail',
+    path: '/errand/detail/:id',
     name: 'errand/detail',
     component: ErrandDetail,
   },
