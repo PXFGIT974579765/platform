@@ -19,7 +19,7 @@
     </div>
     <router-link
       v-if="link"
-      :to="`/errand/order/${data.id}?order=${$route.query.order}`"
+      :to="`/errand/order?user=${data.id}&order=${$route.query.order}`"
       class="order"
       >雇TA</router-link
     >

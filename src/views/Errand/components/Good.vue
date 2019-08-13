@@ -10,7 +10,7 @@
       <div class="address-item address-get">
         <div class="type">取</div>
         <div class="detail">
-          <div class="name">{{ good.pickUpAaddress }}</div>
+          <div class="name">{{ good.pickUpAddress }}</div>
           <div class="phone">
             <span>联系电话</span>
             {{ good.phone }}
@@ -49,7 +49,7 @@ export default {
 
   methods: {
     onClick() {
-      this.$emit('selectAddress', this.addressList[0].id)
+      this.$emit('selectAddress', this.addressList[0])
     },
   },
 }

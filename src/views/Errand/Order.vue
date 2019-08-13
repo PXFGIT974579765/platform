@@ -12,7 +12,7 @@
     <div class="comment block">
       <label class="input-field">
         <span>备注</span>
-        <input type="text" placeholder="物品描述或配送要求" />
+        <input v-model="comment" type="text" placeholder="物品描述或配送要求" />
       </label>
     </div>
 
@@ -64,12 +64,15 @@
 <script>
 import PersonCard from './components/PersonCard'
 import Good from './components/Good'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
     PersonCard,
     Good,
   },
+
+  computed: mapGetters(['user']),
 
   data() {
     return {
@@ -80,6 +83,7 @@ export default {
       addressList: [{}],
       price: 0,
       wallet: 0,
+      send: {},
     }
   },
 
@@ -93,10 +97,12 @@ export default {
 
   methods: {
     fetchData() {
+      const { user, order } = this.$route.query
+
       this.$http
         .post('/api-wxmp/cxxz/runner/hire', {
-          distributionId: this.$route.params.id,
-          orderId: this.$route.query.order,
+          distributionId: user,
+          orderId: order,
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
@@ -115,11 +121,13 @@ export default {
         })
     },
 
-    fetchPrice(id) {
+    fetchPrice(send) {
+      this.send = send
+
       this.$http
         .post('/api-wxmp/cxxz/runner/choice/fee', {
           schoolId: this.good.pickUpAaddressId,
-          schoolbId: id,
+          schoolbId: send.id,
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
@@ -130,8 +138,9 @@ export default {
     },
 
     onSubmit() {
-      const { id } = this.order
+      const { user } = this.$route.query
       const { openId } = this.user
+      const { pickUpAddress, pickUpAddressId, goodsId, orderId } = this.good
 
       this.$http
         .post('/api-wxmp/cxxz/runnerPay/createOrder', {
@@ -139,8 +148,8 @@ export default {
           channelId: 1,
           fromType: 1,
           payType: 2,
-          goodsId: id,
-          goodsType: 'PT',
+          goodsId: goodsId,
+          goodsType: 'RT',
           goodsSize: 1,
           orderMoney: 0.01,
           oneMoney: 0.01,
@@ -153,8 +162,15 @@ export default {
           couponMoney: 0,
           payCode: '',
           openId,
-          address: '花溪大学城贵州大学创新学子空间',
-          addressId: '073c556eb3ea4075becfe645a1f6a914',
+          spOrderId: orderId,
+          distributionId: user,
+          pickUpAddress,
+          pickUpAddressId,
+          sendAddress: this.send.address,
+          sendAddressId: this.send.id,
+          userName: this.send.trueName,
+          userPhone: this.send.mobile,
+          remark: this.comment,
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
@@ -167,7 +183,7 @@ export default {
     pay(opts) {
       WeixinJSBridge.invoke('getBrandWCPayRequest', opts, res => {
         if (res.err_msg === 'get_brand_wcpay_request:ok') {
-          this.$router.push('/order/group')
+          this.$router.push('/errand/orders')
           return
         }
         // if (res.err_msg === 'get_brand_wcpay_request:cancel') {
@@ -219,6 +235,7 @@ export default {
   input {
     flex: 1;
     padding: 12px 15px;
+    border: 0;
   }
 }
 
