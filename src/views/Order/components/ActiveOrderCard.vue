@@ -59,7 +59,7 @@ const ORDER_STATUS = {
   0: '进行中',
   1: '已结束',
   2: '已取消',
-  3: '待评价',
+  50: '待评价',
 }
 
 export default {

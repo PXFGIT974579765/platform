@@ -2,9 +2,9 @@
   <div class="comp-order-goods-card" v-wechat-title="$route.meta.title">
     <div class="header flex" @click="routeDetail(goods.orderId)">
       <span class="order-no">订单编号: {{ goods.orderId }}</span>
-      <span v-if="showStatus" class="status">
-        {{ goods.status | statusFilter }}
-      </span>
+      <span v-if="showStatus" class="status">{{
+        goods.status | statusFilter
+      }}</span>
     </div>
     <div class="content flex" @click="routeGoodsPage(goods.goodsId)">
       <img :src="goods.goodsImg" />
@@ -23,20 +23,78 @@
         共{{ goods.goodsSize || 1 }}件商品 合计: ￥{{ goods.money }}
       </div>
       <div class="btn-area">
+        <!-- 待付款对应的按钮 -->
         <router-link
           v-if="goods.status == 0"
-          :to="'/point/order?orderId=' + goods.orderId"
+          :to="`/point/order?order=${goods.orderId}`"
           class="btn"
           >付款</router-link
         >
-        <span v-if="goods.status == 0" class="btn">取消订单</span>
-        <span v-if="goods.status == 1" class="btn">配货中</span>
-        <span v-if="goods.status == 2" class="btn">找跑腿</span>
-        <span v-if="goods.status == 2" class="btn">上门自提</span>
-        <span v-if="goods.status == 3" class="btn">待评价</span>
-        <span v-if="goods.status == 3" class="btn">订单详情</span>
+        <span
+          v-if="goods.status == 0"
+          class="btn"
+          @click="cancelOrder(goods.orderId)"
+          >取消订单</span
+        >
+        <!-- 待配送对应的按钮 -->
+        <span
+          v-if="goods.status == 1"
+          class="btn"
+          @click="routeDetail(goods.orderId)"
+          >配货中</span
+        >
+        <!-- 待提货对应的按钮 -->
+        <router-link
+          v-if="goods.status == 2"
+          :to="`/errand/lobby?order=${goods.orderId}`"
+          class="btn"
+          >找跑腿</router-link
+        >
+        <span
+          v-if="goods.status == 2"
+          class="btn"
+          @click="routeDetail(goods.orderId)"
+          >上门自提</span
+        >
+        <!-- 待评价对应的按钮 -->
+        <span v-if="goods.status == 50" class="btn" @click="onAppraise"
+          >待评价</span
+        >
+        <span
+          v-if="goods.status == 50"
+          class="btn"
+          @click="routeDetail(goods.orderId)"
+          >订单详情</span
+        >
+        <!-- 已完成对应的按钮 -->
+        <span
+          v-if="goods.status == 80"
+          class="btn"
+          @click="detailAppraise(goods.orderId)"
+          >查看评价</span
+        >
+        <span
+          v-if="goods.status == 80"
+          class="btn"
+          @click="routeDetail(goods.orderId)"
+          >订单详情</span
+        >
+        <!-- 已取消对应的按钮 -->
+        <span
+          v-if="goods.status == 90"
+          class="btn"
+          @click="routeDetail(goods.orderId)"
+          >订单详情</span
+        >
       </div>
     </div>
+
+    <AppraiseDialog
+      :showDialog="showDialog"
+      @onSubmit="onSubmit"
+      @cancel="onCancel"
+      :info="appraise"
+    />
   </div>
 </template>
 
@@ -45,12 +103,17 @@ const ORDER_STATUS = {
   0: '待付款',
   1: '待配送',
   2: '待提货',
-  3: '待评价',
+  50: '待评价',
   80: '已完成',
   90: '已取消',
 }
 
+import AppraiseDialog from '@/components/AppraiseDialog'
+
 export default {
+  components: {
+    AppraiseDialog,
+  },
   props: {
     showStatus: {
       type: Boolean,
@@ -59,24 +122,20 @@ export default {
     goods: {
       type: Object,
       default: function() {
-        return {
-          orderNo: '557879582',
-          imgUrl: '../images/good.png',
-          title: '华为路由器无线全千兆端口家用WIFI穿墙王大功率户型',
-          tagName: '标准套餐',
-          tagDesc: '白色-定制版',
-          num: 1, // 数量
-          price: 189, // 单价
-          amount: 189, // 总金额 = 单价*数量
-          status: 0,
-        }
+        return {}
       },
     },
   },
   data() {
     return {
-      active: '0',
       keyword: '',
+      showDialog: false,
+      appraise: {
+        createTime: '',
+        commContent: '',
+        rates: 0,
+        status: -1,
+      }, // 评价对象
     }
   },
   methods: {
@@ -87,6 +146,55 @@ export default {
     // 订单详情路由
     routeDetail(orderNo) {
       this.$router.push(`/order/goods-detail/${orderNo}`)
+    },
+    // 取消订单
+    cancelOrder(orderId) {
+      this.$emit('cancelOrder', orderId)
+    },
+    // 弹出评价窗口
+    onAppraise() {
+      this.showDialog = true
+    },
+
+    onCancel() {
+      this.showDialog = false
+    },
+    // 查看评价
+    detailAppraise(orderId) {
+      this.$http
+        .get('/api-wxmp/cxxz/comment/findComment', {
+          params: {
+            orderId,
+          },
+        })
+        .then(({ data }) => {
+          if (data.resp_code == 0) {
+            this.appraise = data.datas
+            this.appraise.status = 80
+            this.showDialog = true
+          } else {
+            alert(data.resp_msg)
+          }
+        })
+    },
+
+    // 提交评价
+    onSubmit(appraise) {
+      this.$http
+        .post('/api-wxmp/cxxz/comment/saveComment', {
+          ...appraise,
+          orderNo: this.goods.orderId,
+          commentType: 1,
+          // distributionId
+        })
+        .then(({ data }) => {
+          if (data.resp_code == 0) {
+            this.showDialog = false
+            this.goods.status = 80
+          } else {
+            alert(data.resp_msg)
+          }
+        })
     },
   },
   filters: {

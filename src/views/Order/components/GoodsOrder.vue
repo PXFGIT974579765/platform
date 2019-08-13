@@ -21,7 +21,7 @@
           @load="onLoad"
         >
           <div v-for="good in goods" :key="good.id" class="goods-item">
-            <Card :goods="good" />
+            <Card :goods="good" @cancelOrder="cancelOrder" />
           </div>
         </van-list>
       </van-tab>
@@ -115,6 +115,10 @@ export default {
       } else {
         this.fetchList({ status })
       }
+    },
+    // 取消订单
+    cancelOrder(orderId) {
+      this.$router.push(`/order/goods-detail/${orderId}`)
     },
   },
 }
