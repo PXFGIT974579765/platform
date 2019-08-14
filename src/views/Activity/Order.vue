@@ -34,7 +34,9 @@ export default {
 
   data() {
     return {
-      order: {},
+      order: {
+        user: {},
+      },
     }
   },
 

@@ -1,16 +1,19 @@
 <template>
-  <div class="order-price">
-    <div class="item" @click="onSelect">
-      <div class="item-name">优惠券</div>
-      <div class="tag">下单立减10元</div>
-      <div class="item-value ticket">
-        ￥10.00
-        <span class="iconfont">&#xe76e;</span>
+  <div>
+    <div class="order-price">
+      <div class="item" @click="onSelect">
+        <div class="item-name">优惠券</div>
+        <div class="tag">下单立减{{ ticket }}元</div>
+        <div class="item-value ticket">
+          ￥{{ ticket }}
+          <span class="iconfont">&#xe76e;</span>
+        </div>
       </div>
-    </div>
-    <div class="item">
-      <div class="item-name">订单总价</div>
-      <div class="item-value price">￥{{ order.price }}</div>
+
+      <div class="item">
+        <div class="item-name">订单总价</div>
+        <div class="item-value price">￥{{ order.price }}</div>
+      </div>
     </div>
 
     <van-dialog
@@ -21,32 +24,18 @@
     >
       <div class="ticket-select">
         <van-icon name="cross" :size="16" class="close" @click="onClose" />
+
         <div class="ticket-list">
-          <van-radio-group v-model="radio">
-            <div class="ticket-item">
-              <van-radio :name="2" checked-color="#07c160" />
-              <div class="ticket-detail">
-                <div class="ticket-name">
-                  贵阳市花溪大学城贵州师范大学科创园B5栋负一层
-                </div>
-                <div class="contact">
-                  白小姐
-                  <span class="phone">19985501144</span>
-                </div>
-              </div>
-            </div>
-            <div class="ticket-item">
-              <van-radio :name="1" checked-color="#07c160" />
-              <div class="ticket-detail">
-                <div class="ticket-name">
-                  贵州财经大学（大学城校区）A3栋一楼12号
-                </div>
-                <div class="contact">
-                  李小姐
-                  <span class="phone">18085070709</span>
-                </div>
-              </div>
-            </div>
+          <van-radio-group v-model="ticket" @change="onChange">
+            <van-radio :name="10" checked-color="#07c160" class="ticket-item">
+              <div class="ticket-name">下单立减10元</div>
+            </van-radio>
+            <van-radio :name="5" checked-color="#07c160" class="ticket-item">
+              <div class="ticket-name">下单立减5元</div>
+            </van-radio>
+            <van-radio :name="1" checked-color="#07c160" class="ticket-item">
+              <div class="ticket-name">下单立减1元</div>
+            </van-radio>
           </van-radio-group>
         </div>
       </div>
@@ -61,11 +50,15 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    tickets: {
+      type: Array,
+      default: () => [],
+    },
   },
 
   data() {
     return {
-      radio: 1,
+      ticket: 10,
       ticketShow: false,
     }
   },
@@ -77,6 +70,12 @@ export default {
 
     onClose() {
       this.ticketShow = false
+    },
+
+    onChange(value) {
+      this.ticket = value
+      this.ticketShow = false
+      this.$emit('change', value)
     },
   },
 }
@@ -92,7 +91,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: solid 1px #d7d7d7;
+  border-bottom: solid 1px #e5e5e5;
 
   &:last-child {
     border: 0;
@@ -122,7 +121,7 @@ export default {
 
 .ticket-select {
   position: relative;
-  padding: 40px 17px;
+  padding: 30px 0;
 
   .close {
     position: absolute;
@@ -133,32 +132,18 @@ export default {
   }
 }
 
-.ticket-list {
-  max-height: 60vh;
-  overflow: auto;
-}
-
 .ticket-item {
-  display: flex;
-  margin-bottom: 20px;
-  padding-bottom: 20px;
-  border-bottom: solid 1px #e5e5e5;
+  padding: 0 15px;
+  border-bottom: 1px solid #d7d7d7;
 
   &:last-child {
-    margin-bottom: 0;
-    padding-bottom: 0;
     border: 0;
   }
 }
 
-.ticket-detail {
+/deep/ .van-radio__label {
+  height: 50px;
+  line-height: 50px;
   flex: 1;
-  margin-left: 8px;
-  line-height: 1.5;
-  color: #4f4f4f;
-}
-
-.ticket-name {
-  margin-bottom: 10px;
 }
 </style>
