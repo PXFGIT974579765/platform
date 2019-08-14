@@ -139,7 +139,7 @@ export default {
         })
         .catch(() => {
           this.error = true
-          this.endLoading()
+          this.stopLoading()
         })
     },
 
