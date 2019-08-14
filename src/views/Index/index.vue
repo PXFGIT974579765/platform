@@ -16,15 +16,15 @@ export default {
   },
 
   created() {
-    this.$http.post('/api-wxmp/cxxz/wx/getMpConfig').then(({ data }) => {
-      if (data.resp_code === 0) {
-        wx.config({
-          debug: true,
-          jsApiList: ['scanQRCode', 'chooseWXPay'],
-          ...data.datas,
-        })
-      }
-    })
+    // this.$http.post('/api-wxmp/cxxz/wx/getMpConfig').then(({ data }) => {
+    //   if (data.resp_code === 0) {
+    //     wx.config({
+    //       debug: true,
+    //       jsApiList: ['scanQRCode', 'chooseWXPay'],
+    //       ...data.datas,
+    //     })
+    //   }
+    // })
   },
 }
 </script>

@@ -91,7 +91,7 @@ export default {
     fetchList({ pageIndex = 1, pageSize = 10, status, orderStatus }) {
       this.startFetch()
       this.$http
-        .post('/api-wxmp/cxxz/order/pagePTSC', {
+        .post('/api-wxmp/cxxz/order/pageJFSC', {
           pageIndex,
           pageSize,
           status,

@@ -1,20 +1,19 @@
 <template>
   <div class="page-order-goods-detail" v-wechat-title="$route.meta.title">
     <div class="container">
-      <GoodsOrderStatusCard :status="group.status" />
+      <GroupOrderStatusCard
+        :status="group.status"
+        :orderStatus="goods.orderStatus"
+      />
       <AddressCard :contact="group.contact" />
       <div class="goods-item">
-        <Card :goods="group" :showStatus="false" />
+        <Card :goods="group" :showStatus="false" @cancelOrder="cancelOrder" />
       </div>
       <div class="price-group">
         <div class="price-item flex">
           <span>商品总价</span>
           <span>￥{{ group.orderMoney }}</span>
         </div>
-        <!-- <div class="price-item flex">
-          <span>运费(快递)</span>
-          <span>{{ group.amount }}</span>
-        </div> -->
         <div class="price-item flex">
           <span>优惠</span>
           <span>-{{ group.couponMoney }}</span>
@@ -31,11 +30,11 @@
         </div>
       </div>
 
-      <div class="order-info" v-if="group.status !== 5">
+      <div class="order-info" v-if="group.status != -5">
         <div class="title">订单信息</div>
         <div class="order-item">
           <span>订单状态 :</span>
-          <span>{{ group.status | statusFilter }}</span>
+          <span>{{ orderStatusFilter(group.orderStatus, group.status) }}</span>
         </div>
         <div class="order-item">
           <span>个人积分 :</span>
@@ -47,11 +46,11 @@
         </div>
         <div class="order-item">
           <span>创建时间 :</span>
-          <span>{{ group.creatTime | dateFormat }}</span>
+          <span>{{ group.creatTime }}</span>
         </div>
         <div class="order-item">
           <span>付款时间 :</span>
-          <span>{{ group.payTime | dateFormat }}</span>
+          <span>{{ group.payTime }}</span>
         </div>
       </div>
 
@@ -59,7 +58,7 @@
         <div class="title">订单信息</div>
         <div class="order-item">
           <span>订单状态 :</span>
-          <span>{{ group.refundStatus | refundStatusFilter }}</span>
+          <span>{{ orderStatusFilter(group.orderStatus, group.status) }}</span>
         </div>
         <div class="order-item">
           <span>退款金额 :</span>
@@ -84,25 +83,30 @@
 </template>
 
 <script>
-import { dateTime } from '@/lib/format'
-import GoodsOrderStatusCard from './GoodsOrderStatusCard'
+import GroupOrderStatusCard from './GroupOrderStatusCard'
 import AddressCard from './AddressCard'
 import Card from './GoodsOrderCard'
 
 const ORDER_STATUS = {
   0: '待付款',
-  1: '待配送',
-  2: '待提货',
-  3: '待评价',
+  1: '拼团中',
+  2: '待配送',
+  3: '待提货',
+  50: '待评价',
+  80: '已完成',
+  90: '已取消',
+  91: '拼团失败',
 }
 
-const REFUND_STATUS = {
-  1: '退款中',
-  2: '已退款',
+const PAY_STATUS = {
+  '-1': '支付失败',
+  '-2': '订单超时',
+  '-4': '异常关闭',
+  '-5': '已退款',
 }
 export default {
   components: {
-    GoodsOrderStatusCard,
+    GroupOrderStatusCard,
     Card,
     AddressCard,
   },
@@ -138,6 +142,29 @@ export default {
     this.fetchOrderDetail(id)
   },
   methods: {
+    // 状态显示过滤
+    orderStatusFilter: function(orderStatus, status) {
+      let name = ''
+      // 订单状态
+      switch (orderStatus) {
+        case 50:
+          name = '已完成'
+          break
+        case 2:
+          name = '拼团成功'
+          break
+        default:
+          name = ORDER_STATUS[orderStatus]
+      }
+      // 支付状态
+      if (parseInt(status) < 0) {
+        const payStatus = PAY_STATUS[status]
+        if (payStatus) {
+          name = payStatus
+        }
+      }
+      return name
+    },
     // 拉去详情信息
     fetchOrderDetail(orderId) {
       this.$http
@@ -150,16 +177,17 @@ export default {
           }
         })
     },
-  },
-  filters: {
-    statusFilter: function(status) {
-      return ORDER_STATUS[status]
-    },
-    refundStatusFilter: function(status) {
-      return REFUND_STATUS[status]
-    },
-    dateFormat: function(value) {
-      return dateTime(value, 'YYYY-MM-DD hh:mm:ss')
+    // 取消订单
+    cancelOrder(orderId) {
+      this.$http
+        .post('/api-wxmp/cxxz/order/cancelPT', {
+          orderId,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.$router.push('/order/group')
+          }
+        })
     },
   },
 }

@@ -88,7 +88,7 @@
         >
       </div>
     </div>
-
+    <!-- 评价弹框 -->
     <AppraiseDialog
       :showDialog="showDialog"
       @onSubmit="onSubmit"
@@ -162,7 +162,7 @@ export default {
     onAppraise() {
       this.showDialog = true
     },
-
+    // 关掉评价弹窗
     onCancel() {
       this.showDialog = false
     },
@@ -203,11 +203,13 @@ export default {
           }
         })
     },
+
+    // 状态显示过滤
     orderStatusFilter: function(orderStatus, status) {
       let name = ''
       // 订单状态
       switch (orderStatus) {
-        case 3:
+        case 50:
           name = '已完成'
           break
         case 1:

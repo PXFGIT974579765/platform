@@ -32,7 +32,7 @@
         <div class="title">订单信息</div>
         <div class="order-item">
           <span>订单状态 :</span>
-          <span>{{ goods.status | statusFilter }}</span>
+          <span>{{ orderStatusFilter(goods.orderStatus, goods.status) }}</span>
         </div>
         <div class="order-item">
           <span>个人积分 :</span>
@@ -44,11 +44,11 @@
         </div>
         <div class="order-item">
           <span>创建时间 :</span>
-          <span>{{ goods.creatTime | dateFormat }}</span>
+          <span>{{ goods.creatTime }}</span>
         </div>
         <div class="order-item">
           <span>付款时间 :</span>
-          <span>{{ goods.payTime | dateFormat }}</span>
+          <span>{{ goods.payTime }}</span>
         </div>
       </div>
 
@@ -61,7 +61,6 @@
 </template>
 
 <script>
-import { dateTime } from '@/lib/format'
 import GoodsOrderStatusCard from './GoodsOrderStatusCard'
 import AddressCard from './AddressCard'
 import Card from './GoodsOrderCard'
@@ -70,7 +69,16 @@ const ORDER_STATUS = {
   0: '待付款',
   1: '待配送',
   2: '待提货',
-  3: '待评价',
+  50: '待评价',
+  80: '已完成',
+  90: '已取消',
+}
+
+const PAY_STATUS = {
+  '-1': '支付失败',
+  '-2': '订单超时',
+  '-4': '异常关闭',
+  '-5': '已退款',
 }
 export default {
   components: {
@@ -131,13 +139,28 @@ export default {
           }
         })
     },
-  },
-  filters: {
-    statusFilter: function(status) {
-      return ORDER_STATUS[status]
-    },
-    dateFormat: function(value) {
-      return dateTime(value, 'YYYY-MM-DD hh:mm:ss')
+    // 状态显示过滤
+    orderStatusFilter: function(orderStatus, status) {
+      let name = ''
+      // 订单状态
+      switch (orderStatus) {
+        case 50:
+          name = '已完成'
+          break
+        case 1:
+          name = '配货中'
+          break
+        default:
+          name = ORDER_STATUS[orderStatus]
+      }
+      // 支付状态
+      if (parseInt(status) < 0) {
+        const payStatus = PAY_STATUS[status]
+        if (payStatus) {
+          name = payStatus
+        }
+      }
+      return name
     },
   },
 }

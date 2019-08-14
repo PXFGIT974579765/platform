@@ -25,12 +25,17 @@ const ORDER_STATUS = {
     icon: '&#xe757;',
   },
   1: {
-    status: '配货中', // 待配送
-    desc: '宝贝将在24小时内安排派送',
+    status: '拼团中',
+    desc: '拼团正在进行中',
     icon: '&#xe744;',
   },
   2: {
-    status: '待提货',
+    status: '配货中', // 待配送
+    desc: '宝贝将在24小时内安排派送',
+    icon: '&#xe741;',
+  },
+  3: {
+    status: '待提货', // 待提货
     desc: '可以选择找跑腿或上门自提',
     icon: '&#xe741;',
   },
@@ -47,6 +52,11 @@ const ORDER_STATUS = {
   90: {
     status: '已取消',
     desc: '钱款或积分已原路返回',
+    icon: '&#xe744;',
+  },
+  91: {
+    status: '拼团失败',
+    desc: '请选择其他拼团',
     icon: '&#xe744;',
   },
 }

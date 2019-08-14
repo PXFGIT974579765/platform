@@ -1,65 +1,127 @@
 <template>
   <div class="comp-order-active-card" v-wechat-title="$route.meta.title">
-    <router-link :to="'/order/active-detail/' + active.orderId">
-      <div class="header flex">
-        <span class="order-no">活动编号: {{ active.orderId }}</span>
-        <span v-if="showStatus" class="status">{{
-          active.status | statusFilter
-        }}</span>
-      </div>
-      <div class="img">
-        <img :src="active.goodsImg" />
-        <span :class="['tag', active.tag === 'race' ? 'tag-race' : 'tag-pg']">{{
-          active.tag === 'race' ? '比赛' : '公益'
-        }}</span>
-      </div>
+    <div class="header flex" @click="routeDetail(active.orderId)">
+      <span class="order-no">活动编号: {{ active.orderId }}</span>
+      <span v-if="showOrderStatus" class="status">
+        {{ orderStatusFilter(active.orderStatus, active.status) }}
+      </span>
+    </div>
+    <div class="img" @click="routeDetail(active.orderId)">
+      <img :src="active.goodsImg" />
+      <span :class="['tag', active.orderMoney != 0 ? 'tag-race' : 'tag-pg']">
+        {{ active.orderMoney != 0 ? '比赛' : '公益' }}
+      </span>
+    </div>
 
-      <div class="title-area flex">
-        <span class="title">{{ active.goodsName }}</span>
-        <div v-if="showPrice" class="price">￥{{ active.orderMoney }}</div>
-      </div>
-      <div class="time-area">
-        <span>日期</span>
-        <span class="time">{{ active.time | dateFormat }}</span>
-      </div>
-      <div class="address-area flex">
-        <span>地址</span>
-        <span class="address">{{ active.address }}</span>
-      </div>
-      <div class="scan-sign-area flex" v-show="active.signStatus === 0">
-        <span class="iconfont icon">&#xe746;</span>
-        <span>现场扫码签到</span>
-      </div>
-    </router-link>
+    <div class="title-area flex">
+      <span class="title">{{ active.goodsName }}</span>
+      <div v-if="showPrice" class="price">￥{{ active.orderMoney }}</div>
+    </div>
+    <div class="time-area">
+      <span>日期</span>
+      <span class="time">{{ active.time }}</span>
+    </div>
+    <div class="address-area flex">
+      <span>地址</span>
+      <span class="address">{{ active.address }}</span>
+    </div>
+    <div class="scan-sign-area flex" v-show="active.isScanSign == 0">
+      <span class="iconfont icon">&#xe746;</span>
+      <span>现场扫码签到</span>
+    </div>
     <div class="footer">
       <div class="btn-area flex">
         <span
-          v-if="showStatusBtn"
-          :class="['btn', active.status === 2 ? 'btn-gray' : 'btn-yellow']"
-          >取消活动</span
+          v-if="showOrderStatusBtn"
+          :class="['btn', active.orderStatus === 2 ? 'btn-gray' : 'btn-yellow']"
+          >{{ orderStatusFilter(active.orderStatus, active.status) }}</span
         >
         <span v-else></span>
         <div>
-          <span class="btn">
-            {{ active.signStatus === 0 ? '未签到' : '已签到' }}
-          </span>
-          <span class="btn" @touchstart="onShowDialog">未评价</span>
+          <span class="btn">{{
+            active.isScanSign === 0 ? '未签到' : '已签到'
+          }}</span>
+          <!-- 待付款对应的按钮 -->
+          <router-link
+            v-if="active.orderStatus == 0"
+            :to="`/activity/order/?order=${active.orderId}`"
+            class="btn"
+            >付款</router-link
+          >
+          <span
+            v-if="active.orderStatus == 0"
+            class="btn"
+            @click="cancelOrder(active.orderId)"
+            >取消活动</span
+          >
+          <!-- 进行中对应的按钮 -->
+          <span
+            v-if="active.orderStatus == 1"
+            class="btn"
+            @click="cancelOrder(active.orderId)"
+            >取消活动</span
+          >
+
+          <!-- 已结束对应的按钮 -->
+          <span v-if="active.orderStatus == 2" class="btn" @click="onAppraise"
+            >待评价</span
+          >
+
+          <!-- 待评价对应的按钮 -->
+          <span v-if="active.orderStatus == 50" class="btn" @click="onAppraise"
+            >待评价</span
+          >
+          <!-- 已完成对应的按钮 -->
+          <span
+            v-if="active.orderStatus == 80"
+            class="btn"
+            @click="detailAppraise(active.orderId)"
+            >查看评价</span
+          >
+          <span
+            v-if="active.orderStatus == 80"
+            class="btn"
+            @click="routeDetail(active.orderId)"
+            >订单详情</span
+          >
+          <!-- 已取消对应的按钮 -->
+          <span
+            v-if="active.orderStatus == 90"
+            class="btn"
+            @click="routeDetail(active.orderId)"
+            >订单详情</span
+          >
         </div>
       </div>
     </div>
-    <AppraiseDialog :showDialog="showDialog" @cancel="onCancel" />
+
+    <!-- 评价弹框 -->
+    <AppraiseDialog
+      :showDialog="showDialog"
+      @onSubmit="onSubmit"
+      @cancel="onCancel"
+      :info="appraise"
+    />
   </div>
 </template>
 
 <script>
-import { dateTime } from '@/lib/format'
 import AppraiseDialog from '@/components/AppraiseDialog'
 
 const ORDER_STATUS = {
-  0: '进行中',
-  1: '已结束',
-  2: '已取消',
+  0: '待付款',
+  1: '进行中',
+  2: '已结束',
   50: '待评价',
+  80: '已完成',
+  90: '已取消',
+}
+
+const PAY_STATUS = {
+  '-1': '支付失败',
+  '-2': '订单超时',
+  '-4': '异常关闭',
+  '-5': '已退款',
 }
 
 export default {
@@ -67,7 +129,7 @@ export default {
     AppraiseDialog,
   },
   props: {
-    showStatus: {
+    showOrderStatus: {
       type: Boolean,
       default: true,
     },
@@ -75,24 +137,14 @@ export default {
       type: Boolean,
       default: true,
     },
-    showStatusBtn: {
+    showOrderStatusBtn: {
       type: Boolean,
       default: false,
     },
     active: {
       type: Object,
       default: function() {
-        return {
-          activeNo: '557879582',
-          imgUrl: require('../images/active1.jpg'),
-          title: '刀剑2贵州赛区英雄争霸赛',
-          tag: 'race',
-          price: 20,
-          time: 1500000000,
-          address: '贵州大学城师范学院 同心路15号 （创星校园实训中心）',
-          signStatus: 0, // 签到状态  0 未签到 1 已签到
-          status: 0,
-        }
+        return {}
       },
     },
   },
@@ -102,20 +154,79 @@ export default {
     }
   },
   methods: {
-    onLoad() {},
-    onShowDialog() {
+    // 订单详情路由
+    routeDetail(orderNo) {
+      this.$router.push(`/order/active-detail/${orderNo}`)
+    },
+    // 取消订单
+    cancelOrder(orderId) {
+      this.$emit('cancelOrder', orderId)
+    },
+    // 弹出评价窗口
+    onAppraise() {
       this.showDialog = true
     },
+    // 关掉评价弹窗
     onCancel() {
       this.showDialog = false
     },
-  },
-  filters: {
-    statusFilter: function(status) {
-      return ORDER_STATUS[status]
+    // 查看评价
+    detailAppraise(orderId) {
+      this.$http
+        .get('/api-wxmp/cxxz/comment/findComment', {
+          params: {
+            orderId,
+          },
+        })
+        .then(({ data }) => {
+          if (data.resp_code == 0) {
+            this.appraise = data.datas
+            this.appraise.status = 80
+            this.showDialog = true
+          } else {
+            alert(data.resp_msg)
+          }
+        })
     },
-    dateFormat: function(value) {
-      return dateTime(value, 'YYYY-MM-DD hh:mm:ss')
+
+    // 提交评价
+    onSubmit(appraise) {
+      this.$http
+        .post('/api-wxmp/cxxz/comment/save', {
+          ...appraise,
+          orderNo: this.goods.orderId,
+          commentType: 2,
+          // distributionId
+        })
+        .then(({ data }) => {
+          if (data.resp_code == 0) {
+            this.showDialog = false
+            this.goods.orderStatus = 80
+          } else {
+            alert(data.resp_msg)
+          }
+        })
+    },
+
+    // 状态显示过滤
+    orderStatusFilter: function(orderStatus, status) {
+      let name = ''
+      // 订单状态
+      switch (orderStatus) {
+        case 50:
+          name = '已完成'
+          break
+        default:
+          name = ORDER_STATUS[orderStatus]
+      }
+      // 支付状态
+      if (parseInt(status) < 0) {
+        const payStatus = PAY_STATUS[status]
+        if (payStatus) {
+          name = payStatus
+        }
+      }
+      return name
     },
   },
 }

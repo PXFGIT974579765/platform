@@ -4,6 +4,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import local from '@/lib/local'
 // import store from '@/store'
 
 export default {
@@ -13,7 +14,13 @@ export default {
     // store.dispatch('clearUser')
 
     if (this.user.id) {
-      this.$router.push('/index/home')
+      const redirectUrl = local.get('redirectUrl')
+
+      if (redirectUrl) {
+        this.$router.push(`/${redirectUrl}`)
+      } else {
+        this.$router.push('/index/home')
+      }
       return
     }
 

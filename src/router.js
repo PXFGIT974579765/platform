@@ -1,10 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import store from '@/store'
+import local from '@/lib/local'
 
 import Index from './views/Index'
 import Entry from './views/Entry'
-import Accept from './views/Accept'
+import Accept from './views/Accept/index'
+import QrCode from './views/Accept/QrCode'
 import Home from './views/Index/components/Home'
 import App from './views/Index/components/App'
 import News from './views/Index/components/News'
@@ -408,6 +410,11 @@ const router = new Router({
       name: 'accept',
       component: Accept,
     },
+    {
+      path: '/qrcode',
+      name: 'qrcode',
+      component: QrCode,
+    },
     ...home,
     ...errand,
     ...group,
@@ -436,6 +443,7 @@ router.beforeEach((to, from, next) => {
     return
   }
 
+  local.set('redirectUrl', name)
   next('/')
 })
 
