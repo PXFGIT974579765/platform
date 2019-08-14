@@ -15,16 +15,20 @@
           </div>
           <div class="detail">
             <div class="read-count">
-              <span class="iconfont">&#xe73b;</span>189
+              <span class="iconfont">&#xe73b;</span>
+              <span>{{ detail.readCount }}</span>
             </div>
             <div class="share-count">
-              <span class="iconfont">&#xe748;</span>104
+              <span class="iconfont">&#xe748;</span>
+              <span>{{ detail.shareCount || 0 }}</span>
             </div>
             <share-button />
           </div>
           <div class="others">
             <div class="price">¥{{ detail.price }}</div>
-            <div class="points">成功参与可获500积分奖励</div>
+            <div class="points">
+              成功参与可获 {{ detail.sendScore }} 积分奖励
+            </div>
           </div>
         </div>
       </div>
@@ -77,11 +81,11 @@
 
     <div class="submit">
       <button class="sign" @click="onSubmit">立即报名</button>
-      <button class="check">
+      <!-- <button class="check">
         <span class="iconfont">&#xe746;</span>现场扫码签到
       </button>
       <button class="check checked">已扫码签到</button>
-      <button class="end">活动结束，请对本次活动进行评价！</button>
+      <button class="end">活动结束，请对本次活动进行评价！</button>-->
     </div>
   </div>
 </template>
@@ -193,6 +197,15 @@ export default {
   .share-count {
     flex: 1;
     margin-left: 40px;
+  }
+
+  .share-count,
+  .read-count {
+    display: flex;
+    align-items: center;
+    .iconfont {
+      margin-right: 4px;
+    }
   }
 
   .others {
