@@ -39,7 +39,7 @@
 import Search from '@/components/Search'
 import OrderItem from './components/OrderItem'
 
-const pageSize = 2
+const pageSize = 10
 
 export const status = [
   {
