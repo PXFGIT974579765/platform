@@ -25,9 +25,9 @@
       <span>地址</span>
       <span class="address">{{ active.address }}</span>
     </div>
-    <div class="scan-sign-area flex" v-show="active.isScanSign == 0">
+    <div class="scan-sign-area flex">
       <span class="iconfont icon">&#xe746;</span>
-      <span>现场扫码签到</span>
+      <span @click="qrCodeSign">现场扫码签到</span>
     </div>
     <div class="footer">
       <div class="btn-area flex">
@@ -187,6 +187,10 @@ export default {
             alert(data.resp_msg)
           }
         })
+    },
+    // 扫码签到
+    qrCodeSign() {
+      this.$emit('qrCodeSign', this.active)
     },
 
     // 提交评价
