@@ -145,9 +145,9 @@ export default {
     // 点击查看评价
     onShowDialog(id) {
       this.$http
-        .get('/api-wxmp/cxxz/distriButtion/order/findDistriOrderComment', {
+        .get('/api-wxmp/cxxz/comment/findComment', {
           params: {
-            id,
+            orderId: id,
           },
         })
         .then(({ data }) => {

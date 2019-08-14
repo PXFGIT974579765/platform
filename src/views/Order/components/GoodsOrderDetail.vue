@@ -1,20 +1,19 @@
 <template>
   <div class="page-order-goods-detail" v-wechat-title="$route.meta.title">
     <div class="container">
-      <GoodsOrderStatusCard :status="goods.status" />
+      <GoodsOrderStatusCard
+        :status="goods.status"
+        :orderStatus="goods.orderStatus"
+      />
       <AddressCard :contact="goods.contact" />
       <div class="goods-item">
-        <Card :goods="goods" :showStatus="false" />
+        <Card :goods="goods" :showStatus="false" @cancelOrder="cancelOrder" />
       </div>
       <div class="price-group">
         <div class="price-item flex">
           <span>商品总价</span>
           <span>￥{{ goods.goodsSize * goods.oneMoney }}</span>
         </div>
-        <!-- <div class="price-item flex">
-          <span>运费(快递)</span>
-          <span>{{ goods.amount }}</span>
-        </div> -->
         <div class="price-item flex">
           <span>优惠</span>
           <span>-{{ goods.couponMoney }}</span>
@@ -117,6 +116,18 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.goods = data.datas
+          }
+        })
+    },
+    // 取消订单
+    cancelOrder(orderId) {
+      this.$http
+        .post('/api-wxmp/cxxz/order/cancelJFSC', {
+          orderId,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.$router.push('/order/goods')
           }
         })
     },

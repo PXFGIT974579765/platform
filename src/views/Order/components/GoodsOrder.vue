@@ -13,7 +13,11 @@
       :swipe-threshold="5"
       @click="onClick"
     >
-      <van-tab v-for="item in statusList" :key="item.value" :title="item.name">
+      <van-tab
+        v-for="item in orderStatusList"
+        :key="item.value"
+        :title="item.name"
+      >
         <van-list
           v-model="loading"
           :finished="finished"
@@ -21,7 +25,7 @@
           @load="onLoad"
         >
           <div v-for="good in goods" :key="good.id" class="goods-item">
-            <Card :goods="good" />
+            <Card :goods="good" @cancelOrder="cancelOrder" />
           </div>
         </van-list>
       </van-tab>
@@ -46,7 +50,7 @@ export default {
       finished: false,
       loading: true,
       name: '全部',
-      statusList: [
+      orderStatusList: [
         {
           name: '全部',
           value: -1,
@@ -84,13 +88,14 @@ export default {
       this.loading = false
     },
     // 拉去商品信息
-    fetchList({ pageIndex = 1, pageSize = 10, status }) {
+    fetchList({ pageIndex = 1, pageSize = 10, status, orderStatus }) {
       this.startFetch()
       this.$http
         .post('/api-wxmp/cxxz/order/pagePTSC', {
           pageIndex,
           pageSize,
           status,
+          orderStatus,
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
@@ -109,12 +114,17 @@ export default {
         return
       }
       this.name = title
-      const status = this.statusList.find(item => item.name == title).value
-      if (status == -1) {
+      const orderStatus = this.orderStatusList.find(item => item.name == title)
+        .value
+      if (orderStatus == -1) {
         this.fetchList({})
       } else {
-        this.fetchList({ status })
+        this.fetchList({ orderStatus })
       }
+    },
+    // 取消订单
+    cancelOrder(orderId) {
+      this.$router.push(`/order/goods-detail/${orderId}`)
     },
   },
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="comp-appreaise-dialog">
     <van-dialog
-      v-model="showDialog"
+      v-model="show"
       class="dialog"
       closeOnPopstate
       closeOnClickOverlay
@@ -9,13 +9,16 @@
       :showConfirmButton="false"
     >
       <span>请对本次活动评分</span>
-      <van-rate class="rate" v-model="rate" size="35" />
+      <van-rate class="rate" v-model="appraise.rates" size="35" />
       <textarea
         class="advice"
-        v-model="message"
+        @input="onMessageChange"
+        v-model="appraise.commContent"
         placeholder="你的建议（控制在100字以内）"
       ></textarea>
-      <div class="btn-submit">提交评价</div>
+      <div class="btn-submit" v-if="appraise.status == -1" @click="onSubmit">
+        提交评价
+      </div>
     </van-dialog>
   </div>
 </template>
@@ -23,20 +26,41 @@
 <script>
 export default {
   props: {
-    showDialog: {
-      type: Boolean,
-      default: false,
-    },
+    showDialog: Boolean,
+    info: Object,
   },
   data() {
     return {
-      message: '',
-      rate: 5,
+      appraise: this.info,
+      show: false,
     }
   },
   methods: {
     onCancel() {
       this.$emit('cancel')
+    },
+    onSubmit() {
+      this.$emit('onSubmit', {
+        commContent: this.appraise.commContent,
+        rates: this.appraise.rates,
+      })
+    },
+    // 监听评价内容长度
+    onMessageChange(e) {
+      const value = e.target.value
+      this.appraise.commContent = value
+      if (value.length > 100) {
+        this.appraise.commContent = value.slice(0, 100)
+      }
+    },
+  },
+  // 子组件监听获取父组件动态数据
+  watch: {
+    info(newValue) {
+      this.appraise = newValue
+    },
+    showDialog(newValue) {
+      this.show = newValue
     },
   },
 }
