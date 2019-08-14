@@ -27,7 +27,7 @@ export default {
         const redirectUrl = local.get('redirectUrl')
 
         if (redirectUrl) {
-          this.$router.push(`/${redirectUrl}`)
+          this.$router.push(`${redirectUrl}`)
         } else {
           this.$router.push('/index/home')
         }

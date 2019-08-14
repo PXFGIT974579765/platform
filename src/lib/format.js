@@ -1,13 +1,3 @@
-import moment from 'moment'
-
-export function date(mills, formater = 'YYYY.MM.DD') {
-  return moment(mills).format(formater)
-}
-
-export function dateTime(mills, formater = 'YYYY.MM.DD hh:mm:ss') {
-  return moment(mills).format(formater)
-}
-
 // yyyy-MM-dd hh:mm:ss
 export function curDate(formater = 'yyyy-MM-dd') {
   Date.prototype.format = function(fmt) {

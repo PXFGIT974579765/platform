@@ -8,6 +8,7 @@
           :showPrice="false"
           :showStatusBtn="true"
           @cancelOrder="cancelOrder"
+          @qrCodeSign="qrCodeSign"
         />
       </div>
       <div class="price-group">
@@ -110,8 +111,80 @@ export default {
   created() {
     const { id } = this.$route.params
     this.fetchOrderDetail(id)
+    this.configWx()
   },
   methods: {
+    // 微信 jssdk 配置
+    configWx() {
+      this.$http
+        .post('/api-wxmp/cxxz/wx/getMpConfig', {
+          url: window.location.href,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            const that = this
+            wx.config({
+              debug: true,
+              jsApiList: ['scanQRCode', 'chooseWXPay'],
+              appId: data.datas.appId,
+              timestamp: data.datas.timestamp,
+              nonceStr: data.datas.nonceStr,
+              signature: data.datas.signature,
+            })
+            wx.ready(function() {
+              that.isConfiged = true
+            })
+          }
+        })
+    },
+    // 扫码签到
+    qrCodeSign(active) {
+      wx.checkJsApi({
+        jsApiList: ['scanQRCode'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+        success: res => {
+          if (
+            this.isConfiged &&
+            res.errMsg == 'checkJsApi:ok' &&
+            res.checkResult['scanQRCode']
+          ) {
+            wx.scanQRCode({
+              needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+              scanType: ['qrCode', 'barCode'], // 可以指定扫二维码还是一维码，默认二者都有
+              success: res1 => {
+                if (res1 && res1.errMsg == 'scanQRCode:ok') {
+                  const result = res1.resultStr // 当needResult 为 1 时，扫码返回的结果
+                  const curGoodsId = result.split('?')[1].split('=')[1]
+                  this.submitSign(curGoodsId, active)
+                }
+              },
+            })
+          } else {
+            this.$toast('当前版本不支持')
+          }
+        },
+      })
+    },
+    // 提交签到信息
+    submitSign(curGoodsId, active) {
+      if (curGoodsId != active.goodsId) {
+        this.$toast('签到活动不一致')
+        return
+      } else {
+        this.$http
+          .post('/api-wxmp/cxxz/order/scanOrderHD', {
+            goodsId: curGoodsId,
+          })
+          .then(({ data }) => {
+            if (data.resp_code == 0) {
+              this.$toast('签到成功')
+              this.fetchOrderDetail(this.active.orderId)
+              return
+            } else {
+              this.$toast(data.resp_msg)
+            }
+          })
+      }
+    },
     // 拉去详情信息
     fetchOrderDetail(orderId) {
       this.$http
