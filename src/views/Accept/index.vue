@@ -4,6 +4,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import local from '@/lib/local'
 
 export default {
   methods: mapActions(['setUser', 'setAccess']),
@@ -22,7 +23,14 @@ export default {
         const { accessToken, userInfo } = data.datas
         this.setUser(userInfo)
         this.setAccess(accessToken)
-        this.$router.push('/index/home')
+
+        const redirectUrl = local.get('redirectUrl')
+
+        if (redirectUrl) {
+          this.$router.push(`/${redirectUrl}`)
+        } else {
+          this.$router.push('/index/home')
+        }
       })
   },
 }
