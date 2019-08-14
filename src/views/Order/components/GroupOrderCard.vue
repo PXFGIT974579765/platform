@@ -11,7 +11,6 @@
       <div class="content-right flex flex-1">
         <div class="detail flex-col">
           <span class="title">{{ group.goodsName }}</span>
-          <span class="tag">{{ group.tagName }}: {{ group.tagDesc }}</span>
         </div>
         <div class="price">
           <div>￥{{ group.orderMoney }}</div>

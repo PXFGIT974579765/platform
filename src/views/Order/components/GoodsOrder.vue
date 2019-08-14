@@ -22,6 +22,8 @@
           v-model="loading"
           :finished="finished"
           finished-text="没有更多了"
+          :error.sync="error"
+          error-text="请求失败，点击重新加载"
           @load="onLoad"
         >
           <div v-for="good in goods" :key="good.id" class="goods-item">
@@ -47,6 +49,8 @@ export default {
       active: -1,
       keyword: '',
       page: 1,
+      count: 0,
+      error: false,
       finished: false,
       loading: true,
       name: '全部',
@@ -79,17 +83,32 @@ export default {
     this.fetchList({ pageIndex: this.page })
   },
   methods: {
-    startFetch() {
+    init() {
+      this.page = 1
+      this.count = 0
+      this.error = false
       this.finished = false
-      this.loading = true
+      this.goods = []
     },
-    endFetch() {
-      this.finished = true
+    startLoading() {
+      this.loading = true
+      this.error = false
+    },
+
+    stopLoading() {
       this.loading = false
+    },
+
+    finishCheck() {
+      const { count, goods } = this
+      if (goods.length >= count) {
+        this.finished = true
+      }
     },
     // 拉去商品信息
     fetchList({ pageIndex = 1, pageSize = 10, status, orderStatus }) {
-      this.startFetch()
+      this.startLoading()
+
       this.$http
         .post('/api-wxmp/cxxz/order/pageJFSC', {
           pageIndex,
@@ -98,11 +117,23 @@ export default {
           orderStatus,
         })
         .then(({ data }) => {
-          if (data.resp_code === 0) {
-            this.endFetch()
-            this.goods = []
-            this.goods = data.datas.data
+          this.stopLoading()
+
+          if (data.resp_code !== 0) {
+            this.error = true
+            return
           }
+
+          const { pageIndex, count } = data.datas
+          this.page = pageIndex
+          this.count = count
+          this.goods = this.goods.concat(data.datas.data)
+
+          this.finishCheck()
+        })
+        .catch(() => {
+          this.error = true
+          this.stopLoading()
         })
     },
     // 上拉加载更多
@@ -110,12 +141,13 @@ export default {
       this.fetchList({ pageIndex: this.page + 1 })
     },
     onClick(_, title) {
-      if (this.name == title) {
-        return
-      }
+      if (this.name == title) return
+
+      this.init()
       this.name = title
       const orderStatus = this.orderStatusList.find(item => item.name == title)
         .value
+
       if (orderStatus == -1) {
         this.fetchList({})
       } else {

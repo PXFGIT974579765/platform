@@ -151,6 +151,12 @@ export default {
   data() {
     return {
       showDialog: false,
+      appraise: {
+        createTime: '',
+        commContent: '',
+        rates: 0,
+        status: -1,
+      }, // 评价对象
     }
   },
   methods: {

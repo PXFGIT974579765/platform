@@ -49,9 +49,9 @@ export default {
   data() {
     return {
       wallet: {
-        wallet: 564.0,
-        monthInMoney: 129,
-        monthOutMoney: 89,
+        wallet: 0.0,
+        monthInMoney: 0,
+        monthOutMoney: 0,
       },
     }
   },
@@ -62,7 +62,7 @@ export default {
     fetchWallet() {
       this.$http
         .post('/api-wxmp/cxxz/money/getUserMonthMoney ', {
-          searchtime: curDate('yyyy-MM'),
+          searchTime: curDate('yyyy-MM'),
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
