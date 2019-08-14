@@ -1,11 +1,11 @@
 <template>
   <div class="order-item">
     <div class="order-item-header">
-      <div class="no">跑腿编号：557879582</div>
+      <div class="no">跑腿编号：{{ order.id }}</div>
       <div class="status">待取货</div>
     </div>
 
-    <commodity />
+    <commodity :good="order" />
 
     <div class="address">
       <div class="address-item address-get">
@@ -46,6 +46,10 @@ export default {
   components: {
     ErrandComment,
     Commodity,
+  },
+
+  props: {
+    order: Object,
   },
 
   data() {
