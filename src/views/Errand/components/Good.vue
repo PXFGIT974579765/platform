@@ -19,7 +19,7 @@
         <!-- <div class="button">选择</div> -->
       </div>
 
-      <div class="address-item address-put">
+      <div v-if="!detail" class="address-item address-put">
         <div class="type">送</div>
         <div class="detail">
           <div class="name">{{ addressList[0].address }}</div>
@@ -29,6 +29,16 @@
           </div>
         </div>
         <div class="button" @click="onClick">选择</div>
+      </div>
+      <div v-else class="address-item address-put">
+        <div class="type">送</div>
+        <div class="detail">
+          <div class="name">{{ good.sendAddress }}</div>
+          <div class="phone">
+            <span>联系电话</span>
+            {{ good.userPhone }}
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -45,6 +55,10 @@ export default {
   props: {
     good: Object,
     addressList: Array,
+    detail: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   methods: {

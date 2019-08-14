@@ -2,7 +2,7 @@
   <div class="order-item">
     <div class="order-item-header">
       <div class="no">跑腿编号：{{ order.id }}</div>
-      <div class="status">待取货</div>
+      <div class="status">{{ toText(order.status) }}</div>
     </div>
 
     <commodity :good="order" />
@@ -23,8 +23,23 @@
     </div>
 
     <div class="operation">
-      <button class="link" @click="onClick">联系跑腿员</button>
-      <router-link to="/errand/detail" class="link">订单详情</router-link>
+      <a
+        v-if="order.status == 0 || order.status == 1"
+        class="link"
+        :href="`tel:${order.phone}`"
+        >联系跑腿员</a
+      >
+      <button v-if="order.status == 3" class="link" @click="onClick">
+        去评价
+      </button>
+      <button v-if="order.status == 5" class="link" @click="onClick">
+        已经评价
+      </button>
+      <router-link
+        :to="`/errand/detail/${order.id}?good=${order.goodsId}`"
+        class="link"
+        >订单详情</router-link
+      >
     </div>
 
     <van-dialog
@@ -41,6 +56,37 @@
 <script>
 import ErrandComment from '@/components/ErrandComment'
 import Commodity from './Commodity'
+
+const status = {
+  '0': {
+    text: '取货中',
+    value: '0',
+  },
+  '1': {
+    text: '派送中',
+    value: '1',
+  },
+  '2': {
+    text: '已完成',
+    value: '2',
+  },
+  '3': {
+    text: '待评价',
+    value: '3',
+  },
+  '4': {
+    text: '审核',
+    value: '4',
+  },
+  '5': {
+    text: '已评价',
+    value: '5',
+  },
+  '6': {
+    text: '待付款',
+    value: '6',
+  },
+}
 
 export default {
   components: {
@@ -65,6 +111,10 @@ export default {
 
     onClose() {
       this.show = false
+    },
+
+    toText(value) {
+      return status[value].text
     },
   },
 }
