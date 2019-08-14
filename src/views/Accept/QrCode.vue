@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="!show" class="center">签到中.....</div>
-    <div v-else class="center">签到成功</div>
+    <div v-else class="center">{{ message || '签到成功' }}</div>
   </div>
 </template>
 
@@ -10,6 +10,7 @@ export default {
   data() {
     return {
       show: false,
+      message: '',
     }
   },
 
@@ -27,6 +28,8 @@ export default {
         if (data.resp_code == 0) {
           this.show = true
           return
+        } else {
+          this.message = data.datas
         }
       })
   },
