@@ -21,6 +21,8 @@
           v-model="loading"
           :finished="finished"
           finished-text="没有更多了"
+          :error.sync="error"
+          error-text="请求失败，点击重新加载"
           @load="onLoad"
           class="ul"
         >
@@ -30,12 +32,12 @@
               <span class="time">{{ record.createTime }}</span>
             </div>
             <div class="record-item flex-col">
-              <span :class="['amount', amountClass(record.statusName)]">
-                {{ record.money }}
-              </span>
-              <span :class="['status', statusClass(record.statusName)]">
-                {{ record.statusName }}
-              </span>
+              <span :class="['amount', amountClass(record.statusName)]">{{
+                record.money
+              }}</span>
+              <span :class="['status', statusClass(record.statusName)]">{{
+                record.statusName
+              }}</span>
             </div>
           </div>
         </van-list>
@@ -64,6 +66,9 @@ export default {
       curConditionDesc: '全部',
       currentDate: new Date(),
       time: curDate('yyyy-MM'),
+      page: 1,
+      count: 0,
+      error: false,
       finished: false,
       loading: true,
       records: [],
@@ -73,13 +78,20 @@ export default {
     this.fetchList({})
   },
   methods: {
-    startFetch() {
-      this.finished = false
+    startLoading() {
       this.loading = true
+      this.error = false
     },
-    endFetch() {
-      this.finished = true
+
+    stopLoading() {
       this.loading = false
+    },
+
+    finishCheck() {
+      const { count, records } = this
+      if (records.length >= count) {
+        this.finished = true
+      }
     },
     // 拉去订单信息
     fetchList({
@@ -87,21 +99,32 @@ export default {
       pageSize = 10,
       applyTime = curDate('yyyy-MM'),
     }) {
-      this.startFetch()
+      this.startLoading()
+
       this.$http
         .post('/api-wxmp/cxxz/moneyApply/page', {
-          params: {
-            pageIndex,
-            pageSize,
-            applyTime,
-          },
+          pageIndex,
+          pageSize,
+          applyTime,
         })
         .then(({ data }) => {
-          if (data.resp_code === 0) {
-            this.endFetch()
-            this.records = []
-            this.records = data.datas.data
+          this.stopLoading()
+
+          if (data.resp_code !== 0) {
+            this.error = true
+            return
           }
+
+          const { pageIndex, count } = data.datas
+          this.page = pageIndex
+          this.count = count
+          this.records = this.records.concat(data.datas.data)
+
+          this.finishCheck()
+        })
+        .catch(() => {
+          this.error = true
+          this.stopLoading()
         })
     },
     // 上拉加载更多

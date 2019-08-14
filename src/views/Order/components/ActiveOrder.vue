@@ -1,6 +1,5 @@
 <template>
   <div class="page-order-active" v-wechat-title="$route.meta.title">
-    <div>{{ error }}</div>
     <div class="search-block">
       <search placeholder="请输入关键字搜索" v-model="keyword" :light="true" />
     </div>
@@ -23,6 +22,8 @@
           v-model="loading"
           :finished="finished"
           finished-text="没有更多了"
+          :error.sync="error"
+          error-text="请求失败，点击重新加载"
           @load="onLoad"
         >
           <div v-for="obj in active" :key="obj.id" class="active-item">
@@ -52,8 +53,9 @@ export default {
       activeTab: -1,
       isConfiged: false,
       keyword: '',
-      error: '',
       page: 1,
+      count: 0,
+      error: false,
       finished: false,
       loading: true,
       name: '全部',
@@ -87,6 +89,28 @@ export default {
     this.configWx()
   },
   methods: {
+    init() {
+      this.page = 1
+      this.count = 0
+      this.error = false
+      this.finished = false
+      this.active = []
+    },
+    startLoading() {
+      this.loading = true
+      this.error = false
+    },
+
+    stopLoading() {
+      this.loading = false
+    },
+
+    finishCheck() {
+      const { count, active } = this
+      if (active.length >= count) {
+        this.finished = true
+      }
+    },
     // 微信 jssdk 配置
     configWx() {
       this.$http
@@ -158,17 +182,10 @@ export default {
           })
       }
     },
-    startFetch() {
-      this.finished = false
-      this.loading = true
-    },
-    endFetch() {
-      this.finished = true
-      this.loading = false
-    },
     // 拉去活动信息
     fetchList({ pageIndex = 1, pageSize = 10, status, orderStatus }) {
-      this.startFetch()
+      this.startLoading()
+
       this.$http
         .post('/api-wxmp/cxxz/order/pageHD', {
           pageIndex,
@@ -177,11 +194,23 @@ export default {
           orderStatus,
         })
         .then(({ data }) => {
-          if (data && data.resp_code === 0) {
-            this.endFetch()
-            this.active = []
-            this.active = data.datas.data
+          this.stopLoading()
+
+          if (data.resp_code !== 0) {
+            this.error = true
+            return
           }
+
+          const { pageIndex, count } = data.datas
+          this.page = pageIndex
+          this.count = count
+          this.active = this.active.concat(data.datas.data)
+
+          this.finishCheck()
+        })
+        .catch(() => {
+          this.error = true
+          this.stopLoading()
         })
     },
     // 上拉加载更多
@@ -189,12 +218,13 @@ export default {
       this.fetchList({ pageIndex: this.page + 1 })
     },
     onClick(_, title) {
-      if (this.name == title) {
-        return
-      }
+      if (this.name == title) return
+
+      this.init()
       this.name = title
       const orderStatus = this.orderStatusList.find(item => item.name == title)
         .value
+
       if (orderStatus == -1) {
         this.fetchList({})
       } else {
