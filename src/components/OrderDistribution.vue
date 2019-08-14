@@ -7,19 +7,17 @@
       <!-- <div class="link">说明</div> -->
     </div>
 
-    <div v-if="selected" class="detail">
+    <div v-if="address.id" class="detail">
       <div class="item">
         <div class="item-name">自提地点:</div>
-        <div class="item-value">
-          贵阳市花溪大学城贵州师范大学科创园B5栋负一层
-        </div>
+        <div class="item-value">{{ address.address }}</div>
       </div>
       <div class="item">
         <div class="item-name">联系客服:</div>
         <div class="item-value">
-          <div class="name">白小姐</div>
-          <span class="phone">19985501144</span>
-          <a class="call" href="tel:18475555555">
+          <div class="name">{{ address.name }}</div>
+          <span class="phone">{{ address.phone }}</span>
+          <a class="call" :href="`tel:${address.phone}`">
             <span class="iconfont">&#xe747;</span>
           </a>
         </div>
@@ -34,10 +32,16 @@
     >
       <div class="address-select">
         <van-icon name="cross" :size="16" class="close" @click="onClose" />
+
         <div class="addres-list">
-          <van-radio-group v-model="radio">
-            <div v-for="a in addressList" :key="a.id" class="addres-item">
-              <van-radio :name="a.id" checked-color="#07c160" />
+          <van-radio-group v-model="address.id" @change="onChange">
+            <van-radio
+              v-for="a in addressList"
+              :key="a.id"
+              :name="a.id"
+              checked-color="#07c160"
+              class="addres-item"
+            >
               <div class="address-detail">
                 <div class="address-name">{{ a.address }}</div>
                 <div class="contact">
@@ -45,7 +49,7 @@
                   <span class="phone">{{ a.phone }}</span>
                 </div>
               </div>
-            </div>
+            </van-radio>
           </van-radio-group>
         </div>
       </div>
@@ -64,9 +68,8 @@ export default {
 
   data() {
     return {
-      selected: false,
       addressShow: false,
-      radio: '',
+      address: {},
     }
   },
 
@@ -77,6 +80,11 @@ export default {
 
     onClose() {
       this.addressShow = false
+    },
+
+    onChange(value) {
+      this.addressShow = false
+      this.$emit('change', value)
     },
   },
 }
@@ -143,7 +151,7 @@ export default {
 
 .address-select {
   position: relative;
-  padding: 40px 17px;
+  padding: 30px 0;
 
   .close {
     position: absolute;
@@ -161,13 +169,10 @@ export default {
 
 .addres-item {
   display: flex;
-  margin-bottom: 20px;
-  padding-bottom: 20px;
+  padding: 15px;
   border-bottom: solid 1px #e5e5e5;
 
   &:last-child {
-    margin-bottom: 0;
-    padding-bottom: 0;
     border: 0;
   }
 }
@@ -181,5 +186,9 @@ export default {
 
 .address-name {
   margin-bottom: 10px;
+}
+
+/deep/ .van-radio__label {
+  flex: 1;
 }
 </style>

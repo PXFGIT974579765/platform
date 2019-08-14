@@ -73,7 +73,6 @@ export default {
     },
 
     onChange(value) {
-      this.ticket = value
       this.ticketShow = false
       this.$emit('change', value)
     },
@@ -130,6 +129,11 @@ export default {
     color: #adadad;
     cursor: pointer;
   }
+}
+
+.ticket-list {
+  max-height: 60vh;
+  overflow: auto;
 }
 
 .ticket-item {
