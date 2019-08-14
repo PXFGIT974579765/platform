@@ -15,9 +15,10 @@ export default {
 
     if (this.user.id) {
       const redirectUrl = local.get('redirectUrl')
+      local.remove('redirectUrl')
 
       if (redirectUrl) {
-        this.$router.push(`${redirectUrl}`)
+        this.$router.push(redirectUrl)
       } else {
         this.$router.push('/index/home')
       }

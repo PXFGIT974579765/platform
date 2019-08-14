@@ -112,11 +112,6 @@ export default {
   .method {
     margin-right: 8px;
   }
-
-  // .link {
-  //   margin-left: 20px;
-  //   color: #818181;
-  // }
 }
 
 .detail {
@@ -150,7 +145,9 @@ export default {
   font-size: 20px;
   color: #029eff;
 }
+</style>
 
+<style lang="less">
 .address-select {
   position: relative;
   padding: 30px 0;
@@ -161,6 +158,10 @@ export default {
     right: 12px;
     color: #adadad;
     cursor: pointer;
+  }
+
+  /deep/ .van-radio__label {
+    flex: 1;
   }
 }
 
@@ -188,9 +189,5 @@ export default {
 
 .address-name {
   margin-bottom: 10px;
-}
-
-/deep/ .van-radio__label {
-  flex: 1;
 }
 </style>

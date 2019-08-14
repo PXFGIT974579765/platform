@@ -28,19 +28,52 @@
             {{ addressList[0].telephone }}
           </div>
         </div>
-        <div class="button" @click="onClick">选择</div>
+        <div class="button" @click="onSelect">选择</div>
       </div>
       <div v-else class="address-item address-put">
         <div class="type">送</div>
         <div class="detail">
-          <div class="name">{{ good.sendAddress }}</div>
+          <div class="name">
+            {{ addressDetail.address || good.sendAddress }}
+          </div>
           <div class="phone">
             <span>联系电话</span>
-            {{ good.userPhone }}
+            {{ addressDetail.mobile || good.userPhone }}
           </div>
         </div>
       </div>
     </div>
+
+    <van-dialog
+      v-model="addressShow"
+      :showConfirmButton="false"
+      closeOnPopstate
+      closeOnClickOverlay
+    >
+      <div class="address-select">
+        <van-icon name="cross" :size="16" class="close" @click="onClose" />
+
+        <div class="addres-list">
+          <van-radio-group v-model="address" @change="onChange">
+            <van-radio
+              v-for="a in addressList"
+              :key="a.id"
+              :name="a.id"
+              checked-color="#07c160"
+              class="addres-item"
+            >
+              <div class="address-detail">
+                <div class="address-name">{{ a.address }}</div>
+                <div class="contact">
+                  {{ a.trueName }}
+                  <span class="phone">{{ a.mobile }}</span>
+                </div>
+              </div>
+            </van-radio>
+          </van-radio-group>
+        </div>
+      </div>
+    </van-dialog>
   </div>
 </template>
 
@@ -61,9 +94,27 @@ export default {
     },
   },
 
+  data() {
+    return {
+      addressShow: false,
+      address: '',
+      addressDetail: {},
+    }
+  },
+
   methods: {
-    onClick() {
-      this.$emit('selectAddress', this.addressList[0])
+    onSelect() {
+      this.addressShow = true
+    },
+
+    onClose() {
+      this.addressShow = false
+    },
+
+    onChange(value) {
+      this.addressShow = false
+      this.addressDetail = this.addressList.find(({ id }) => id === value)
+      this.$emit('selectAddress', this.addressDetail)
     },
   },
 }
