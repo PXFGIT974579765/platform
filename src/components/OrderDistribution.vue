@@ -7,17 +7,17 @@
       <!-- <div class="link">说明</div> -->
     </div>
 
-    <div v-if="address.id" class="detail">
+    <div v-if="addressDetail.id" class="detail">
       <div class="item">
         <div class="item-name">自提地点:</div>
-        <div class="item-value">{{ address.address }}</div>
+        <div class="item-value">{{ addressDetail.address }}</div>
       </div>
       <div class="item">
         <div class="item-name">联系客服:</div>
         <div class="item-value">
-          <div class="name">{{ address.name }}</div>
-          <span class="phone">{{ address.phone }}</span>
-          <a class="call" :href="`tel:${address.phone}`">
+          <div class="name">{{ addressDetail.name }}</div>
+          <span class="phone">{{ addressDetail.phone }}</span>
+          <a class="call" :href="`tel:${addressDetail.phone}`">
             <span class="iconfont">&#xe747;</span>
           </a>
         </div>
@@ -34,7 +34,7 @@
         <van-icon name="cross" :size="16" class="close" @click="onClose" />
 
         <div class="addres-list">
-          <van-radio-group v-model="address.id" @change="onChange">
+          <van-radio-group v-model="address" @change="onChange">
             <van-radio
               v-for="a in addressList"
               :key="a.id"
@@ -69,7 +69,8 @@ export default {
   data() {
     return {
       addressShow: false,
-      address: {},
+      address: '',
+      addressDetail: {},
     }
   },
 
@@ -84,6 +85,7 @@ export default {
 
     onChange(value) {
       this.addressShow = false
+      this.addressDetail = this.addressList.find(({ id }) => id === value)
       this.$emit('change', value)
     },
   },

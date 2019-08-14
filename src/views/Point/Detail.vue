@@ -5,7 +5,7 @@
 
       <div class="content">
         <div class="point">
-          <div class="price">
+          <div class="point-price">
             <div class="point-num">{{ detail.score }}</div>
             积分
             <div class="tag">爆款推荐</div>
@@ -42,14 +42,12 @@
 import ImgSwipe from '@/components/ImgSwipe'
 import DescComment from '@/components/DescComment'
 import ShareButton from '@/components/ShareButton'
-// import OrderSubmit from '@/components/OrderSubmit'
 
 export default {
   components: {
     DescComment,
     ImgSwipe,
     ShareButton,
-    // OrderSubmit,
   },
 
   data() {
@@ -105,7 +103,7 @@ export default {
   margin: 13px 15px;
 }
 
-.price {
+.point-price {
   flex: 1;
   display: flex;
   align-items: center;
@@ -160,7 +158,9 @@ export default {
 
   .price {
     flex: 1;
-    padding: 21px 0;
+    text-align: center;
+    height: 58px;
+    line-height: 58px;
     color: #565656;
     span {
       color: #06c0b5;
@@ -168,7 +168,9 @@ export default {
   }
 
   button {
-    padding: 21px 30px;
+    padding: 0 30px;
+    height: 58px;
+    line-height: 58px;
     color: #fff;
     background: #06c0b5;
   }
