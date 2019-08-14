@@ -1,7 +1,10 @@
 <template>
   <div class="page-order-goods-detail" v-wechat-title="$route.meta.title">
     <div class="container">
-      <GoodsOrderStatusCard :status="goods.status" />
+      <GoodsOrderStatusCard
+        :status="goods.status"
+        :orderStatus="goods.orderStatus"
+      />
       <AddressCard :contact="goods.contact" />
       <div class="goods-item">
         <Card :goods="goods" :showStatus="false" @cancelOrder="cancelOrder" />

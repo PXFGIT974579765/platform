@@ -2,17 +2,17 @@
   <div
     :class="[
       'comp-order-goods-status-card',
-      status === 5 ? 'yellow-bg' : 'green-bg',
+      status < 0 ? 'yellow-bg' : 'green-bg',
     ]"
     v-wechat-title="$route.meta.title"
   >
     <div class="status">
-      <span>{{ status | statusFilter }}</span>
-      <span>{{ status | descFilter }}</span>
+      <span>{{ statusFilter(orderStatus, status) }}</span>
+      <span>{{ descFilter(orderStatus, status) }}</span>
     </div>
     <span
       class="iconfont icon"
-      v-html="$options.filters.iconFilter(status)"
+      v-html="$options.methods.iconFilter(orderStatus, status)"
     ></span>
   </div>
 </template>
@@ -51,30 +51,76 @@ const ORDER_STATUS = {
   },
 }
 
+const PAY_STATUS = {
+  '-1': {
+    status: '支付失败',
+    desc: '请尽快付款',
+    icon: '&#xe757;',
+  },
+  '-2': {
+    status: '订单超时', // 待配送
+    desc: '订单已超时',
+    icon: '&#xe744;',
+  },
+  '-4': {
+    status: '异常关闭',
+    desc: '订单异常关闭',
+    icon: '&#xe741;',
+  },
+  '-5': {
+    status: '已退款',
+    desc: '钱款或积分已原路返回',
+    icon: '&#xe743;',
+  },
+}
+
 export default {
   props: {
     status: {
-      type: String,
-      default: '0',
+      type: Number,
+      default: 0,
+    },
+    orderStatus: {
+      type: Number,
+      default: 0,
     },
   },
   data() {
     return {}
   },
   methods: {
-    onLoad() {},
+    statusFilter: function(orderStatus, payStatus) {
+      let name = ORDER_STATUS[orderStatus].status
+      if (parseInt(payStatus) < 0) {
+        const payName = PAY_STATUS[payStatus].status
+        if (payName) {
+          name = payName
+        }
+      }
+      return name || '未知状态'
+    },
+    descFilter: function(orderStatus, payStatus) {
+      let name = ORDER_STATUS[orderStatus].desc
+      if (parseInt(payStatus) < 0) {
+        const payName = PAY_STATUS[payStatus].desc
+        if (payName) {
+          name = payName
+        }
+      }
+      return name || '未知状态'
+    },
+    iconFilter: function(orderStatus, payStatus) {
+      let name = ORDER_STATUS[orderStatus].icon
+      if (parseInt(payStatus) < 0) {
+        const payName = PAY_STATUS[payStatus].icon
+        if (payName) {
+          name = payName
+        }
+      }
+      return name || '&#xe757;'
+    },
   },
-  filters: {
-    statusFilter: function(status) {
-      return !ORDER_STATUS[status] ? '未知状态' : ORDER_STATUS[status].status
-    },
-    descFilter: function(status) {
-      return !ORDER_STATUS[status] ? '未知状态' : ORDER_STATUS[status].desc
-    },
-    iconFilter: function(status) {
-      return !ORDER_STATUS[status] ? '&#xe757;' : ORDER_STATUS[status].icon
-    },
-  },
+  filters: {},
 }
 </script>
 

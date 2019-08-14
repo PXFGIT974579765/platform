@@ -2,9 +2,9 @@
   <div class="comp-order-goods-card" v-wechat-title="$route.meta.title">
     <div class="header flex" @click="routeDetail(goods.orderId)">
       <span class="order-no">订单编号: {{ goods.orderId }}</span>
-      <span v-if="showStatus" class="status">{{
-        goods.status | statusFilter
-      }}</span>
+      <span v-if="showOrderStatus" class="status">
+        {{ orderStatusFilter(goods.orderStatus, goods.status) }}
+      </span>
     </div>
     <div class="content flex" @click="routeGoodsPage(goods.goodsId)">
       <img :src="goods.goodsImg" />
@@ -25,63 +25,63 @@
       <div class="btn-area">
         <!-- 待付款对应的按钮 -->
         <router-link
-          v-if="goods.status == 0"
+          v-if="goods.orderStatus == 0"
           :to="`/point/order?order=${goods.orderId}`"
           class="btn"
           >付款</router-link
         >
         <span
-          v-if="goods.status == 0"
+          v-if="goods.orderStatus == 0"
           class="btn"
           @click="cancelOrder(goods.orderId)"
           >取消订单</span
         >
         <!-- 待配送对应的按钮 -->
         <span
-          v-if="goods.status == 1"
+          v-if="goods.orderStatus == 1"
           class="btn"
           @click="routeDetail(goods.orderId)"
           >配货中</span
         >
         <!-- 待提货对应的按钮 -->
         <router-link
-          v-if="goods.status == 2"
+          v-if="goods.orderStatus == 2"
           :to="`/errand/lobby?order=${goods.orderId}`"
           class="btn"
           >找跑腿</router-link
         >
         <span
-          v-if="goods.status == 2"
+          v-if="goods.orderStatus == 2"
           class="btn"
           @click="routeDetail(goods.orderId)"
           >上门自提</span
         >
         <!-- 待评价对应的按钮 -->
-        <span v-if="goods.status == 50" class="btn" @click="onAppraise"
+        <span v-if="goods.orderStatus == 50" class="btn" @click="onAppraise"
           >待评价</span
         >
         <span
-          v-if="goods.status == 50"
+          v-if="goods.orderStatus == 50"
           class="btn"
           @click="routeDetail(goods.orderId)"
           >订单详情</span
         >
         <!-- 已完成对应的按钮 -->
         <span
-          v-if="goods.status == 80"
+          v-if="goods.orderStatus == 80"
           class="btn"
           @click="detailAppraise(goods.orderId)"
           >查看评价</span
         >
         <span
-          v-if="goods.status == 80"
+          v-if="goods.orderStatus == 80"
           class="btn"
           @click="routeDetail(goods.orderId)"
           >订单详情</span
         >
         <!-- 已取消对应的按钮 -->
         <span
-          v-if="goods.status == 90"
+          v-if="goods.orderStatus == 90"
           class="btn"
           @click="routeDetail(goods.orderId)"
           >订单详情</span
@@ -108,6 +108,13 @@ const ORDER_STATUS = {
   90: '已取消',
 }
 
+const PAY_STATUS = {
+  '-1': '支付失败',
+  '-2': '订单超时',
+  '-4': '异常关闭',
+  '-5': '已退款',
+}
+
 import AppraiseDialog from '@/components/AppraiseDialog'
 
 export default {
@@ -115,7 +122,7 @@ export default {
     AppraiseDialog,
   },
   props: {
-    showStatus: {
+    showOrderStatus: {
       type: Boolean,
       default: true,
     },
@@ -190,17 +197,16 @@ export default {
         .then(({ data }) => {
           if (data.resp_code == 0) {
             this.showDialog = false
-            this.goods.status = 80
+            this.goods.orderStatus = 80
           } else {
             alert(data.resp_msg)
           }
         })
     },
-  },
-  filters: {
-    statusFilter: function(status) {
+    orderStatusFilter: function(orderStatus, status) {
       let name = ''
-      switch (status) {
+      // 订单状态
+      switch (orderStatus) {
         case 3:
           name = '已完成'
           break
@@ -208,7 +214,14 @@ export default {
           name = '配货中'
           break
         default:
-          name = ORDER_STATUS[status]
+          name = ORDER_STATUS[orderStatus]
+      }
+      // 支付状态
+      if (parseInt(status) < 0) {
+        const payStatus = PAY_STATUS[status]
+        if (payStatus) {
+          name = payStatus
+        }
       }
       return name
     },
