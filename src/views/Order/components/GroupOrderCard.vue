@@ -2,7 +2,7 @@
   <div class="comp-order-goods-card" v-wechat-title="$route.meta.title">
     <div class="header flex" @click="routeDetail(group.orderId)">
       <span class="order-no">订单编号: {{ group.orderId }}</span>
-      <span v-if="showStatus" class="status">{{
+      <span v-if="showOrderStatus" class="status">{{
         orderStatusFilter(group.orderStatus, group.status)
       }}</span>
     </div>
@@ -139,7 +139,7 @@ export default {
     AppraiseDialog,
   },
   props: {
-    showStatus: {
+    showOrderStatus: {
       type: Boolean,
       default: true,
     },
