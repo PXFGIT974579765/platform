@@ -36,7 +36,16 @@
 
     <div class="hot">
       <div class="title">热门活动</div>
-      <activity-list :list="list" />
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        :error.sync="error"
+        error-text="请求失败，点击重新加载"
+        @load="onLoad"
+      >
+        <activity-item v-for="l in list" :key="l.id" :data="l" />
+      </van-list>
     </div>
   </div>
 </template>
@@ -44,18 +53,23 @@
 <script>
 import Search from '@/components/Search'
 import ActivityNav from './components/ActivityNav'
-import ActivityList from './components/ActivityList'
+import ActivityItem from './components/ActivityItem'
 
 export default {
   components: {
     Search,
     ActivityNav,
-    ActivityList,
+    ActivityItem,
   },
 
   data() {
     return {
       topics: [],
+      page: 1,
+      count: 0,
+      error: false,
+      finished: false,
+      loading: true,
       list: [],
     }
   },
@@ -67,15 +81,59 @@ export default {
       }
     })
 
-    this.$http
-      .get('/api-wxmp/cxxz/topics/pageTopics', {
-        params: { pageIndex: 1, pageSize: 20 },
-      })
-      .then(({ data }) => {
-        if (data.resp_code === 0) {
-          this.list = data.datas.data
-        }
-      })
+    this.fetchList(this.page)
+  },
+
+  methods: {
+    startLoading() {
+      this.loading = true
+      this.error = false
+    },
+
+    stopLoading() {
+      this.loading = false
+    },
+
+    finishCheck() {
+      const { count, list } = this
+      if (list.length >= count) {
+        this.finished = true
+      }
+    },
+
+    fetchList(pageIndex = 1, pageSize = 10) {
+      this.startLoading()
+
+      this.$http
+        .get('/api-wxmp/cxxz/topics/pageTopics', {
+          params: {
+            pageIndex,
+            pageSize,
+          },
+        })
+        .then(({ data }) => {
+          this.stopLoading()
+
+          if (data.resp_code !== 0) {
+            this.error = true
+            return
+          }
+
+          this.page = pageIndex
+          this.count = data.datas.count
+          this.list = this.list.concat(data.datas.data)
+
+          this.finishCheck()
+        })
+        .catch(() => {
+          this.error = true
+          this.stopLoading()
+        })
+    },
+
+    onLoad() {
+      this.fetchList(this.page + 1)
+    },
   },
 }
 </script>
@@ -166,8 +224,7 @@ export default {
 }
 
 .hot {
-  margin-bottom: 8px;
-  padding: 0 15px;
+  padding: 0 15px 10px;
   background: #fff;
 }
 </style>

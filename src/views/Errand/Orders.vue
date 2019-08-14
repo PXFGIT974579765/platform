@@ -100,6 +100,7 @@ export default {
 
     startLoading() {
       this.loading = true
+      this.error = false
     },
 
     stopLoading() {

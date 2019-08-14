@@ -3,12 +3,14 @@
     <div class="status block">
       <div class="date">
         <div class="date-start">
-          <div class="date-value">14:20</div>
+          <div class="date-value">{{ order.startTime.split(' ')[1] }}</div>
           <div class="date-name">开始时间</div>
         </div>
-        <div class="date-detail">2019.06.25</div>
+        <div class="date-detail">{{ order.startTime.split(' ')[0] }}</div>
         <div class="date-end">
-          <div class="date-value">--:--</div>
+          <div class="date-value">
+            {{ order.endTime ? order.endTime.split(' ')[1] : '--:--' }}
+          </div>
           <div class="date-name">结束时间</div>
         </div>
       </div>
@@ -16,27 +18,35 @@
       <div class="contacts">
         <div class="status-detail">
           <div class="status-name">取货中</div>
-          <div class="status-text">跑腿员 王多鱼 将为您上门取货</div>
+          <div class="status-text">
+            跑腿员 {{ order.distributionName }} 将为您上门取货
+          </div>
         </div>
-        <a class="phone" href="tel:18475555555">
+        <a class="phone" :href="`tel:${order.phone}`">
           <span class="iconfont">&#xe747;</span>
         </a>
       </div>
 
       <div class="code">
         收货确认码
-        <span class="code-value">9527</span>
+        <span class="code-value">{{ order.pickUpCode }}</span>
       </div>
     </div>
 
-    <good class="block" />
+    <good class="block" :good="order" detail />
 
     <div class="order block">
       <div class="item">
         <div class="item-name">订单编号</div>
         <div class="item-value">
-          PT2019061901023
-          <span class="sep">|</span>复制
+          {{ order.id }}
+          <span class="sep">|</span>
+          <span
+            @click="onCopy"
+            class="clipboard"
+            :data-clipboard-text="order.id"
+            >复制</span
+          >
         </div>
       </div>
       <div class="item">
@@ -49,22 +59,22 @@
       </div>
       <div class="item">
         <div class="item-name">下单时间</div>
-        <div class="item-value">2019.06.19 12:30:25</div>
+        <div class="item-value">{{ order.startTime }}</div>
       </div>
-      <div class="item">
+      <!-- <div class="item">
         <div class="item-name">物品信息</div>
         <div class="item-value">
           文件
           <span class="sep">|</span>小于1公斤
         </div>
-      </div>
+      </div>-->
       <div class="item">
         <div class="item-name">支付方式</div>
         <div class="item-value">微信支付</div>
       </div>
       <div class="item">
         <div class="item-name">备注备注</div>
-        <div class="item-value">请跑腿小哥哥加快速度哦！</div>
+        <div class="item-value">{{ order.remark }}</div>
       </div>
     </div>
   </div>
@@ -72,10 +82,53 @@
 
 <script>
 import Good from './components/Good'
+import ClipboardJS from 'clipboard'
+import { Toast } from 'vant'
 
 export default {
   components: {
     Good,
+  },
+
+  data() {
+    return {
+      order: {
+        startTime: '',
+        endTime: '',
+      },
+    }
+  },
+
+  created() {
+    this.fetchData()
+    this.clipboard = new ClipboardJS('.clipboard')
+  },
+
+  beforeDestroy() {
+    this.clipboard.destroy()
+  },
+
+  watch: {
+    $route: 'fetchData',
+  },
+
+  methods: {
+    fetchData() {
+      this.$http
+        .post('/api-wxmp/cxxz/runner/findDistritionOrderDetail', {
+          id: this.$route.params.id,
+          orderId: this.$route.query.good,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.order = data.datas.detail
+          }
+        })
+    },
+
+    onCopy() {
+      Toast('复制成功')
+    },
   },
 }
 </script>
