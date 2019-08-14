@@ -3,36 +3,140 @@
     <div class="filter">
       <div class="filter-title">商品筛选</div>
       <div class="methods">
-        <div class="method">食品零食</div>
-        <div class="method">按人气</div>
-        <div class="method">按积分</div>
+        <div
+          v-for="c in category"
+          :key="c.categoryId"
+          class="method"
+          @click="onFilter(c)"
+        >
+          {{ c.name }}
+        </div>
       </div>
     </div>
 
-    <van-grid :gutter="15" :column-num="2" class="list">
-      <van-grid-item
-        v-for="l in list"
-        :key="l.id"
-        :to="`/point/detail/${l.id}`"
-      >
-        <div class="list-item">
-          <img :src="l.picUrl" alt />
-          <div class="name ellipsis-2">{{ l.name }}</div>
-          <div class="point">
-            <span class="count">{{ l.score }}</span
-            >积分
+    <van-list
+      v-model="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      :error.sync="error"
+      error-text="请求失败，点击重新加载"
+      @load="onLoad"
+    >
+      <van-grid :gutter="15" :column-num="2" class="list">
+        <van-grid-item
+          v-for="l in list"
+          :key="l.id"
+          :to="`/point/detail/${l.id}`"
+        >
+          <div class="list-item">
+            <img :src="l.picUrl" alt />
+            <div class="name ellipsis-2">{{ l.name }}</div>
+            <div class="point">
+              <span class="count">{{ l.score }}</span
+              >积分
+            </div>
           </div>
-        </div>
-      </van-grid-item>
-    </van-grid>
+        </van-grid-item>
+      </van-grid>
+    </van-list>
   </div>
 </template>
 
 <script>
+const initFilter = { categoryId: undefined, name: '' }
+
 export default {
-  props: {
-    list: {
-      type: Array,
+  data() {
+    return {
+      category: [],
+      filter: { ...initFilter },
+      page: 1,
+      count: 0,
+      error: false,
+      finished: false,
+      loading: true,
+      list: [],
+    }
+  },
+
+  created() {
+    this.$http.get('/api-wxmp/cxxz/category/types').then(({ data }) => {
+      if (data.resp_code === 0) {
+        this.category = data.datas
+      }
+    })
+
+    this.fetchList(this.page)
+  },
+
+  methods: {
+    onFilter(filter) {
+      this.filter =
+        filter.categoryId !== this.filter.categoryId
+          ? filter
+          : { ...initFilter }
+      this.init()
+      this.fetchList()
+    },
+
+    init() {
+      this.page = 1
+      this.count = 0
+      this.error = false
+      this.finished = false
+      this.list = []
+    },
+
+    startLoading() {
+      this.loading = true
+      this.error = false
+    },
+
+    stopLoading() {
+      this.loading = false
+    },
+
+    finishCheck() {
+      const { count, list } = this
+      if (list.length >= count) {
+        this.finished = true
+      }
+    },
+
+    fetchList(pageIndex = 1, pageSize = 10) {
+      this.startLoading()
+
+      this.$http
+        .get('/api-wxmp/cxxz/goods/score/page', {
+          params: {
+            pageIndex,
+            pageSize,
+            categoryId: this.filter.categoryId,
+          },
+        })
+        .then(({ data }) => {
+          this.stopLoading()
+
+          if (data.resp_code !== 0) {
+            this.error = true
+            return
+          }
+
+          const { pageIndex, count } = data.datas
+          this.page = pageIndex
+          this.count = count
+          this.list = this.list.concat(data.datas.data)
+
+          this.finishCheck()
+        })
+        .catch(() => {
+          this.error = true
+          this.stopLoading()
+        })
+    },
+
+    onLoad() {
+      this.fetchList(this.page + 1)
     },
   },
 }

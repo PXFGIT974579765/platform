@@ -39,8 +39,6 @@
 import Search from '@/components/Search'
 import OrderItem from './components/OrderItem'
 
-const pageSize = 10
-
 export const status = [
   {
     name: '全部',
@@ -114,7 +112,7 @@ export default {
       }
     },
 
-    fetchList(pageIndex = 1) {
+    fetchList(pageIndex = 1, pageSize = 10) {
       this.startLoading()
 
       this.$http

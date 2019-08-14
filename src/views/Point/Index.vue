@@ -13,7 +13,7 @@
       :swipe-threshold="5"
     >
       <van-tab title="积分兑换" name="a">
-        <exchange :list="exchange" />
+        <exchange />
       </van-tab>
 
       <van-tab title="兑换记录" name="b">
@@ -44,27 +44,7 @@ export default {
   data() {
     return {
       active: 'a',
-      exchange: [],
-      category: [],
     }
-  },
-
-  created() {
-    this.$http
-      .get('/api-wxmp/cxxz/goods/score/page', {
-        params: { pageIndex: 1, pageSize: 20 },
-      })
-      .then(({ data }) => {
-        if (data.resp_code === 0) {
-          this.exchange = data.datas.data
-        }
-      })
-
-    this.$http.get('/api-wxmp/cxxz/category/types').then(({ data }) => {
-      if (data.resp_code === 0) {
-        this.category = data.datas
-      }
-    })
   },
 }
 </script>

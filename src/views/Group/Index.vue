@@ -4,8 +4,8 @@
       <search light />
 
       <ul class="clearfix category">
-        <li v-for="c in category" :key="c.categoryId">
-          <img :src="c.iconUrl" alt="" />
+        <li v-for="c in category" :key="c.categoryId" @click="onFilter(c)">
+          <img :src="c.iconUrl" alt />
           <div class="name">{{ c.name }}</div>
         </li>
       </ul>
@@ -25,25 +25,39 @@
 
     <div class="block list">
       <div class="block-header">
-        <div class="block-title">最新拼团</div>
-      </div>
-      <div class="block-content clearfix">
-        <div class="list-item-wrap" v-for="l in list" :key="l.id">
-          <router-link :to="`/group/detail/${l.id}`" class="list-item">
-            <img :src="l.picUrl" alt />
-            <div class="name ellipsis-2">{{ l.name }}</div>
-            <div class="detail">
-              <div class="price">
-                ￥
-                <span>{{ l.price }}</span
-                >.00
-              </div>
-              <div class="count">
-                {{ l.limitMinSize }}-{{ l.limitMaxSize }}人团
-              </div>
-            </div>
-          </router-link>
+        <div class="block-title">
+          {{ filter.categoryId ? filter.name : '最新拼团' }}
         </div>
+      </div>
+
+      <div class="block-content">
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          :error.sync="error"
+          error-text="请求失败，点击重新加载"
+          @load="onLoad"
+        >
+          <div class="van-clearfix">
+            <div class="list-item-wrap" v-for="l in list" :key="l.id">
+              <router-link :to="`/group/detail/${l.id}`" class="list-item">
+                <img :src="l.picUrl" alt />
+                <div class="name ellipsis-2">{{ l.name }}</div>
+                <div class="detail">
+                  <div class="price">
+                    ￥
+                    <span>{{ l.price }}</span
+                    >.00
+                  </div>
+                  <div class="count">
+                    {{ l.limitMinSize }}-{{ l.limitMaxSize }}人团
+                  </div>
+                </div>
+              </router-link>
+            </div>
+          </div>
+        </van-list>
       </div>
     </div>
   </div>
@@ -51,6 +65,8 @@
 
 <script>
 import Search from '@/components/Search'
+
+const initFilter = { categoryId: undefined, name: '' }
 
 export default {
   components: {
@@ -60,6 +76,12 @@ export default {
   data() {
     return {
       category: [],
+      filter: { ...initFilter },
+      page: 1,
+      count: 0,
+      error: false,
+      finished: false,
+      loading: true,
       list: [],
     }
   },
@@ -71,15 +93,80 @@ export default {
       }
     })
 
-    this.$http
-      .get('/api-wxmp/cxxz/assemble/pageList', {
-        params: { pageIndex: 1, pageSize: 20 },
-      })
-      .then(({ data }) => {
-        if (data.resp_code === 0) {
-          this.list = data.datas.data
-        }
-      })
+    this.fetchList(this.page)
+  },
+
+  methods: {
+    onFilter(filter) {
+      this.filter =
+        filter.categoryId !== this.filter.categoryId
+          ? filter
+          : { ...initFilter }
+
+      this.init()
+      this.fetchList()
+    },
+
+    init() {
+      this.page = 1
+      this.count = 0
+      this.error = false
+      this.finished = false
+      this.list = []
+    },
+
+    startLoading() {
+      this.loading = true
+      this.error = false
+    },
+
+    stopLoading() {
+      this.loading = false
+    },
+
+    finishCheck() {
+      const { count, list } = this
+      if (list.length >= count) {
+        this.finished = true
+      }
+      // this.finished = true
+    },
+
+    fetchList(pageIndex = 1, pageSize = 10) {
+      this.startLoading()
+
+      this.$http
+        .get('/api-wxmp/cxxz/assemble/pageList', {
+          params: {
+            pageIndex,
+            pageSize,
+            categoryId: this.filter.categoryId,
+          },
+        })
+        .then(({ data }) => {
+          this.stopLoading()
+
+          if (data.resp_code !== 0) {
+            this.error = true
+            return
+          }
+
+          const { pageIndex, count } = data.datas
+          this.page = pageIndex
+          this.count = count
+          this.list = this.list.concat(data.datas.data)
+
+          this.finishCheck()
+        })
+        .catch(() => {
+          this.error = true
+          this.stopLoading()
+        })
+    },
+
+    onLoad() {
+      this.fetchList(this.page + 1)
+    },
   },
 }
 </script>
@@ -169,7 +256,7 @@ export default {
 }
 
 .list {
-  margin-bottom: 150px;
+  margin-bottom: 10px;
 }
 
 .list-item-wrap {
