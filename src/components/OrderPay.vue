@@ -1,21 +1,31 @@
 <template>
   <div class="pay-methods">
-    <van-radio-group v-model="radio">
+    <van-radio-group :value="method">
       <div class="pay-method weixin">
-        <van-radio :name="1" label-position="left" checked-color="#07c160">
+        <van-radio
+          :name="2"
+          label-position="left"
+          checked-color="#07c160"
+          @click="onClick(2)"
+        >
           <div class="label">
             <span class="iconfont">&#xe758;</span>
             <div class="name">微信支付</div>
           </div>
         </van-radio>
       </div>
-      <div class="pay-method account">
-        <van-radio :name="2" label-position="left" checked-color="#07c160">
+      <div v-if="balance >= price" class="pay-method account">
+        <van-radio
+          :name="0"
+          label-position="left"
+          checked-color="#07c160"
+          @click="onClick(0)"
+        >
           <div class="label">
             <span class="iconfont">&#xe777;</span>
             <div class="name">
               余额
-              <span>可用余额: {{ order.user.wallet }}元</span>
+              <span>可用余额: {{ balance }}元</span>
             </div>
           </div>
         </van-radio>
@@ -27,16 +37,24 @@
 <script>
 export default {
   props: {
-    order: {
-      type: Object,
-      default: () => ({}),
+    balance: {
+      type: Number,
+      default: 0,
+    },
+    method: {
+      type: Number,
+      default: 2,
+    },
+    price: {
+      type: Number,
+      default: 0,
     },
   },
 
-  data() {
-    return {
-      radio: 1,
-    }
+  methods: {
+    onClick(value) {
+      this.$emit('change', value)
+    },
   },
 }
 </script>
@@ -50,9 +68,9 @@ export default {
 
 .pay-method {
   padding: 15px 0;
-  border-bottom: solid 1px #d7d7d7;
+  border-top: solid 1px #d7d7d7;
 
-  &:last-child {
+  &:first-child {
     border: 0;
   }
 

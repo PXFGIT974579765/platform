@@ -2,7 +2,7 @@
   <div :class="['order-submit', `theme-${theme}`]">
     <div class="price">
       实付款:
-      <span>￥{{ order.price }}元</span>
+      <span>￥{{ value }}元</span>
     </div>
     <button @click="onSubmit">立即支付</button>
   </div>
@@ -11,9 +11,9 @@
 <script>
 export default {
   props: {
-    order: {
-      type: Object,
-      default: () => ({}),
+    value: {
+      type: Number,
+      default: 0,
     },
     theme: {
       type: String,
