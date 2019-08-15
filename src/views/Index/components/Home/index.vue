@@ -31,7 +31,9 @@
       <div class="block-content" v-if="activity.length > 0">
         <swiper :options="swiperOption">
           <swiper-slide v-for="a in activity" :key="a.id">
-            <img :src="a.itemPicUrl" alt />
+            <router-link :to="`/activity/detail/${a.id}`">
+              <img :src="a.itemPicUrl" alt />
+            </router-link>
           </swiper-slide>
         </swiper>
         <div class="swiper-pagination" slot="pagination"></div>
@@ -43,15 +45,16 @@
         <div class="block-title">推荐应用</div>
       </div>
       <div class="block-content">
-        <div
+        <a
           class="rec-app-item"
           v-for="app in apps"
+          :href="app.appUrl"
           :key="app.setId"
           :style="{ 'background-image': `url(${app.appImg})` }"
         >
           <div class="app-name">{{ app.appName }}</div>
           <div class="app-desc">{{ app.appDescribe }}</div>
-        </div>
+        </a>
       </div>
     </div>
 
