@@ -61,10 +61,6 @@
 <script>
 export default {
   props: {
-    addressList: {
-      type: Array,
-      default: () => [],
-    },
     value: {
       type: String,
       default: '',
@@ -75,10 +71,23 @@ export default {
     return {
       addressShow: false,
       addres: {},
+      addressList: [],
     }
   },
 
+  created() {
+    this.fetchAddressList()
+  },
+
   methods: {
+    fetchAddressList() {
+      this.$http.get('/api-user/cxxz/branch/list').then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.addressList = data.datas
+        }
+      })
+    },
+
     onSelect() {
       this.addressShow = true
     },
@@ -90,7 +99,7 @@ export default {
     onClick(addres) {
       this.addressShow = false
       this.addres = addres
-      this.$emit('change', addres.id)
+      this.$emit('change', addres)
     },
   },
 }

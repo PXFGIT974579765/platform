@@ -1,15 +1,32 @@
 <template>
   <div>
-    <order-good :order="order" />
-    <order-distribution :addressList="addressList" />
-    <order-price :order="order" />
-    <order-pay :order="order" />
-    <order-submit :order="order" @submit="onSubmit" />
+    <order-good :order="order" :value="buyNum" @change="onNumChange" />
+
+    <order-distribution :value="address.address" @change="onAddressChange" />
+
+    <order-price
+      :price="order.price"
+      :ticket="ticket"
+      @change="onTicketChange"
+    />
+
+    <order-pay
+      :price="Math.max(0, calc(`${order.price}-${ticket}`))"
+      :balance="order.user.wallet"
+      :method="payMethod"
+      @change="onMethodChange"
+    />
+
+    <order-submit
+      :value="Math.max(0, calc(`${order.price}-${ticket}`))"
+      @submit="onSubmit"
+    />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import { calc } from '@/lib/format'
 import OrderGood from '@/components/OrderGood'
 import OrderDistribution from '@/components/OrderDistribution'
 import OrderPrice from '@/components/OrderPrice'
@@ -30,10 +47,20 @@ export default {
   data() {
     return {
       order: {
+        title: '',
         price: 0,
-        user: {},
+        user: {
+          wallet: 0,
+        },
       },
-      addressList: [],
+      buyNum: 1,
+      address: {
+        address: '',
+        id: '',
+      },
+      ticket: 0,
+      ticketId: '',
+      payMethod: 2,
     }
   },
 
@@ -46,6 +73,25 @@ export default {
   },
 
   methods: {
+    calc,
+
+    onTicketChange(ticket) {
+      this.ticket = ticket.value
+      this.ticketId = ticket.id
+    },
+
+    onMethodChange(method) {
+      this.payMethod = method
+    },
+
+    onNumChange(value) {
+      this.buyNum = value
+    },
+
+    onAddressChange(address) {
+      this.address = address
+    },
+
     fetchData() {
       this.$http
         .post('/api-wxmp/cxxz/assemblePay/find', { id: this.$route.params.id })
@@ -54,40 +100,43 @@ export default {
             this.order = data.datas
           }
         })
-
-      this.$http.get('/api-user/cxxz/branch/list').then(({ data }) => {
-        if (data.resp_code === 0) {
-          this.addressList = data.datas
-        }
-      })
     },
 
     onSubmit() {
-      const { id } = this.order
+      const { address, payMethod, ticketId, ticket, buyNum } = this
+
+      if (!address.address || address.address.length === 0) {
+        this.$toast('请选择自提门店')
+        return
+      }
+
+      const { id, price } = this.order
       const { openId } = this.user
+      const hasTicket = !!(ticketId && String(ticketId).length > 0)
+      const totalPrice = calc(`${buyNum} * ${price}`)
 
       this.$http
         .post('/api-wxmp/cxxz/assemblePay/createOrder', {
           mchId: '100000001',
           channelId: 1,
           fromType: 1,
-          payType: 2,
+          payType: payMethod,
           goodsId: id,
           goodsType: 'PT',
-          goodsSize: 1,
-          orderMoney: 0.01,
-          oneMoney: 0.01,
-          money: 0.01,
+          goodsSize: buyNum,
+          orderMoney: totalPrice,
+          oneMoney: price,
+          money: Math.max(0, calc(`${price}-${this.ticket}`)),
           isUseScore: 0,
           score: 0,
           scoreMoney: 0,
-          isUseCoupon: 0,
-          couponNo: null,
-          couponMoney: 0,
+          isUseCoupon: ~~hasTicket,
+          couponNo: hasTicket ? ticketId : null,
+          couponMoney: ticket,
           payCode: '',
           openId,
-          address: '花溪大学城贵州大学创新学子空间',
-          addressId: '073c556eb3ea4075becfe645a1f6a914',
+          address: address.address,
+          addressId: address.id,
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {

@@ -16,12 +16,14 @@
       :ticket="ticket"
       @change="onTicketChange"
     />
+
     <order-pay
       :price="Math.max(0, calc(`${order.price}-${ticket}`))"
       :balance="order.user.wallet"
       :method="payMethod"
       @change="onMethodChange"
     />
+
     <order-submit
       theme="green"
       :value="Math.max(0, calc(`${order.price}-${ticket}`))"

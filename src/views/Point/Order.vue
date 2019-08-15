@@ -1,11 +1,8 @@
 <template>
   <div class="order">
     <order-good :order="order" :value="buyNum" @change="onNumChange" point />
-    <order-distribution
-      :addressList="addressList"
-      :value="address"
-      @change="onAddressChange"
-    />
+
+    <order-distribution :value="address.address" @change="onAddressChange" />
 
     <div class="pay">
       <div class="pay-header">
@@ -75,8 +72,10 @@ export default {
           wallet: 0,
         },
       },
-      address: '',
-      addressList: [],
+      address: {
+        address: '',
+        id: '',
+      },
       buyNum: 1,
     }
   },
@@ -96,8 +95,8 @@ export default {
       this.buyNum = value
     },
 
-    onAddressChange(value) {
-      this.address = value
+    onAddressChange(address) {
+      this.address = address
     },
 
     fetchData() {
@@ -108,19 +107,13 @@ export default {
             this.order = data.datas
           }
         })
-
-      this.$http.get('/api-user/cxxz/branch/list').then(({ data }) => {
-        if (data.resp_code === 0) {
-          this.addressList = data.datas
-        }
-      })
     },
 
     onSubmit() {
-      const { buyNum, order, user } = this
+      const { buyNum, order, user, address } = this
       const { id, price, score } = order
 
-      if (!this.address || this.address.length === 0) {
+      if (!address.address || address.address.length === 0) {
         this.$toast('请选择自提门店')
         return
       }
@@ -153,8 +146,8 @@ export default {
           couponMoney: 0,
           payCode: '',
           openId,
-          address: '花溪大学城贵州大学创新学子空间',
-          addressId: '073c556eb3ea4075becfe645a1f6a914',
+          address: address.address,
+          addressId: address.id,
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
