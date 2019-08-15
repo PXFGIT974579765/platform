@@ -1,6 +1,6 @@
 <template>
   <div class="order-good">
-    <div class="title">拼团订单</div>
+    <div class="title">{{ point ? '积分兑换' : '拼团订单' }}</div>
 
     <div class="good">
       <img :src="order.picUrl" alt />
@@ -14,7 +14,13 @@
         </div>-->
 
         <div class="buy">
-          <div class="price">￥{{ order.price * value }}</div>
+          <div v-if="!point" class="price">￥{{ order.price * value }}</div>
+          <div v-else class="price price-point">
+            <span>{{ order.score * value }}积分</span>
+            <span class="money"
+              >+￥{{ calc(`${value} * ${order.price}`) }}</span
+            >
+          </div>
           <div class="count">X{{ value }}</div>
         </div>
       </div>
@@ -22,15 +28,13 @@
 
     <div class="num">
       <div class="name">购买数量</div>
-      <van-stepper v-model="value" />
+      <van-stepper :value="value" @change="onChange" />
     </div>
   </div>
 </template>
 
 <script>
-// import {
-//   atan2, chain, derivative, e, evaluate, log, pi, pow, round, sqrt
-// } from 'mathjs'
+import { calc } from '@/lib/format'
 
 export default {
   props: {
@@ -38,12 +42,22 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    point: {
+      type: Boolean,
+      default: false,
+    },
+    value: {
+      type: Number,
+      default: 1,
+    },
   },
 
-  data() {
-    return {
-      value: 1,
-    }
+  methods: {
+    calc,
+
+    onChange(value) {
+      this.$emit('change', value)
+    },
   },
 }
 </script>
@@ -96,6 +110,21 @@ export default {
     flex: 1;
     font-size: 16px;
     color: #232323;
+  }
+
+  .price-point {
+    display: flex;
+    align-items: center;
+    color: #ff4b4b;
+
+    .money {
+      margin-left: 12px;
+      padding: 1px 3px;
+      border-radius: 3px;
+      font-size: 14px;
+      color: #fff;
+      background: #ff4b4b;
+    }
   }
 
   .count {

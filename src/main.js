@@ -10,6 +10,7 @@ import router from './router'
 import store from './store'
 import VueWechatTitle from 'vue-wechat-title'
 import http from '@/lib/http'
+import filter from '@/lib/filter'
 
 Vue.use(Vant)
 Vue.use(VueWechatTitle)
@@ -17,6 +18,8 @@ Vue.use(VueAwesomeSwiper)
 
 Vue.prototype.$http = http
 Vue.config.productionTip = false
+// 设置全局 filter
+Object.keys(filter).forEach(name => Vue.filter(name, filter[name]))
 
 new Vue({
   router,

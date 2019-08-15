@@ -1,7 +1,11 @@
 <template>
   <div class="order">
-    <order-good :order="order" />
-    <order-distribution :addressList="addressList" />
+    <order-good :order="order" :value="buyNum" @change="onNumChange" point />
+    <order-distribution
+      :addressList="addressList"
+      :value="address"
+      @change="onAddressChange"
+    />
 
     <div class="pay">
       <div class="pay-header">
@@ -12,7 +16,7 @@
         <div class="method">
           <div class="price">
             <span class="name">积分抵扣：</span>
-            <span class="value">5000 积分</span>
+            <span class="value">{{ buyNum * order.score }} 积分</span>
           </div>
           <div class="balance">
             <span class="name">可用积分：</span>
@@ -20,14 +24,23 @@
           </div>
         </div>
 
-        <div class="method">
+        <div
+          class="method"
+          v-if="calc(`${buyNum}*${order.price}`) <= order.user.wallet"
+        >
           <div class="price">
             <span class="name">余额支付：</span>
-            <span class="value">1.00元</span>
+            <span class="value">{{ calc(`${buyNum}*${order.price}`) }}元</span>
           </div>
           <div class="balance">
             <span class="name">账户余额：</span>
-            <span class="value">58.00元</span>
+            <span class="value">{{ order.user.wallet }}元</span>
+          </div>
+        </div>
+        <div class="method" v-else>
+          <div class="price">
+            <span class="name">微信支付：</span>
+            <span class="value">{{ calc(`${buyNum}*${order.price}`) }}元</span>
           </div>
         </div>
       </div>
@@ -41,6 +54,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { calc } from '@/lib/format'
 import OrderGood from '@/components/OrderGood'
 import OrderDistribution from '@/components/OrderDistribution'
 
@@ -56,9 +70,14 @@ export default {
     return {
       order: {
         price: 0,
-        user: {},
+        score: 1,
+        user: {
+          wallet: 0,
+        },
       },
+      address: '',
       addressList: [],
+      buyNum: 1,
     }
   },
 
@@ -71,6 +90,16 @@ export default {
   },
 
   methods: {
+    calc,
+
+    onNumChange(value) {
+      this.buyNum = value
+    },
+
+    onAddressChange(value) {
+      this.address = value
+    },
+
     fetchData() {
       this.$http
         .post('/api-wxmp/cxxz/scorePay/find', { id: this.$route.params.id })
@@ -88,9 +117,11 @@ export default {
     },
 
     onSubmit() {
-      const { id } = this.order
-      const { openId } = this.user
-      console.log(id)
+      const { buyNum, order, user } = this
+      const { id, price, score } = order
+      const { openId } = user
+
+      const totalPrice = calc(`${buyNum} * ${price}`)
 
       this.$http
         .post('/api-wxmp/cxxz/scorePay//createOrder', {
@@ -100,12 +131,12 @@ export default {
           payType: 2,
           goodsId: id,
           goodsType: 'JFSC',
-          goodsSize: 1,
-          orderMoney: 0.01,
-          oneMoney: 0.01,
-          money: 0.01,
-          isUseScore: 0,
-          score: 0,
+          goodsSize: buyNum,
+          orderMoney: totalPrice,
+          oneMoney: price,
+          money: totalPrice,
+          isUseScore: 1,
+          score,
           scoreMoney: 0,
           isUseCoupon: 0,
           couponNo: null,

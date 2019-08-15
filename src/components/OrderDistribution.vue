@@ -34,7 +34,7 @@
         <van-icon name="cross" :size="16" class="close" @click="onClose" />
 
         <div class="addres-list">
-          <van-radio-group v-model="address" @change="onChange">
+          <van-radio-group :value="value" @change="onChange">
             <van-radio
               v-for="a in addressList"
               :key="a.id"
@@ -64,12 +64,15 @@ export default {
       type: Array,
       default: () => [],
     },
+    value: {
+      type: String,
+      default: '',
+    },
   },
 
   data() {
     return {
       addressShow: false,
-      address: '',
       addressDetail: {},
     }
   },
