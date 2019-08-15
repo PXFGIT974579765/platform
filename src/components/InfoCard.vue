@@ -69,24 +69,69 @@ export default {
     }
   },
 
+  created() {
+    this.$http
+      .post('/api-wxmp/cxxz/wx/getMpConfig', {
+        url: window.location.href,
+      })
+      .then(({ data }) => {
+        if (data.resp_code === 0) {
+          wx.config({
+            debug: true,
+            jsApiList: ['scanQRCode', 'chooseWXPay'],
+            appId: data.datas.appId,
+            timestamp: data.datas.timestamp,
+            nonceStr: data.datas.nonceStr,
+            signature: data.datas.signature,
+          })
+
+          wx.ready(() => {
+            this.configed = true
+          })
+        }
+      })
+  },
+
   methods: {
     onSearch() {
       //
     },
 
     onScan() {
-      console.log('onScan')
-      // wx.scanQRCode({
-      //   needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-      //   scanType: ['qrCode', 'barCode'], // 可以指定扫二维码还是一维码，默认二者都有
-      //   success(res) {
-      //     console.log(res)
-      //     var result = res.resultStr // 当needResult 为 1 时，扫码返回的结果
-      //   },
-      //   fail(err) {
-      //     console.log(err)
-      //   },
-      // })
+      if (!this.configed) {
+        this.$toast('请稍后重试')
+        return
+      }
+
+      wx.checkJsApi({
+        jsApiList: ['scanQRCode'],
+        success: res => {
+          if (res.errMsg == 'checkJsApi:ok' && res.checkResult['scanQRCode']) {
+            this.scan()
+            return
+          }
+          this.$toast('当前版本不支持')
+        },
+      })
+    },
+
+    scan() {
+      wx.scanQRCode({
+        needResult: 1,
+        scanType: ['qrCode', 'barCode'],
+        success: res1 => {
+          if (res1 && res1.errMsg == 'scanQRCode:ok') {
+            const result = res1.resultStr
+            const curGoodsId = result.split('?')[1].split('=')[1]
+            this.submitSign(curGoodsId)
+          }
+        },
+      })
+    },
+
+    submitSign(curGoodsId) {
+      // TODO: submit
+      console.log(curGoodsId)
     },
 
     signRoute() {
