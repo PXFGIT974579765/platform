@@ -11,7 +11,11 @@
       </div>
     </div>
 
-    <order-price :order="order" />
+    <order-price
+      :price="order.price"
+      :ticket="ticket"
+      @change="onTicketChange"
+    />
     <order-pay :order="order" />
     <order-submit theme="green" :order="order" @submit="onSubmit" />
   </div>
@@ -37,6 +41,8 @@ export default {
       order: {
         user: {},
       },
+      ticket: 0,
+      ticketId: '',
     }
   },
 
@@ -49,6 +55,11 @@ export default {
   },
 
   methods: {
+    onTicketChange(ticket) {
+      this.ticket = ticket.value
+      this.ticketId = ticket.id
+    },
+
     fetchData() {
       this.$http
         .post('/api-wxmp/cxxz/topicPay/find', { id: this.$route.params.id })
