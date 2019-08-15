@@ -20,7 +20,7 @@
           </div>
           <div class="balance">
             <span class="name">可用积分：</span>
-            <span class="value">8796分</span>
+            <span class="value">{{ order.user.integral }}分</span>
           </div>
         </div>
 
@@ -119,8 +119,18 @@ export default {
     onSubmit() {
       const { buyNum, order, user } = this
       const { id, price, score } = order
-      const { openId } = user
 
+      if (!this.address || this.address.length === 0) {
+        this.$toast('请选择自提门店')
+        return
+      }
+
+      if (score > user.integral) {
+        this.$toast('积分不足')
+        return
+      }
+
+      const { openId } = user
       const totalPrice = calc(`${buyNum} * ${price}`)
 
       this.$http
