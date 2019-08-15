@@ -19,7 +19,7 @@
     <div class="cost block">
       <div class="block-header">
         <div class="title">费用</div>
-        <router-link to="/news" class="block-header-link">收费标准</router-link>
+        <div class="block-header-link">收费标准</div>
       </div>
       <div class="prices">
         <button class="active">{{ price }}元</button>
@@ -28,17 +28,17 @@
     </div>
 
     <div class="pay-methods">
-      <van-radio-group v-model="radio">
+      <van-radio-group v-model="payMethod">
         <div class="pay-method weixin">
-          <van-radio :name="1" label-position="left" checked-color="#07c160">
+          <van-radio :name="2" label-position="left" checked-color="#07c160">
             <div class="label">
               <span class="iconfont">&#xe758;</span>
               <div class="name">微信支付</div>
             </div>
           </van-radio>
         </div>
-        <div class="pay-method account">
-          <van-radio :name="2" label-position="left" checked-color="#07c160">
+        <div v-if="wallet >= price" class="pay-method account">
+          <van-radio :name="0" label-position="left" checked-color="#07c160">
             <div class="label">
               <span class="iconfont">&#xe777;</span>
               <div class="name">
@@ -56,7 +56,7 @@
         支付
         <span>￥{{ price }}元</span>
       </div>
-      <button @click="onSubmit">提交订单</button>
+      <button :disabled="disabled" @click="onSubmit">提交订单</button>
     </div>
   </div>
 </template>
@@ -77,13 +77,14 @@ export default {
   data() {
     return {
       comment: '',
-      radio: 1,
+      payMethod: 2,
       userDetail: {},
       good: {},
       addressList: [{}],
       price: 0,
       wallet: 0,
       send: {},
+      disabled: false,
     }
   },
 
@@ -123,6 +124,7 @@ export default {
 
     fetchPrice(send) {
       this.send = send
+      this.disabled = true
 
       this.$http
         .post('/api-wxmp/cxxz/runner/choice/fee', {
@@ -130,14 +132,26 @@ export default {
           schoolbId: send.id,
         })
         .then(({ data }) => {
+          this.disabled = false
+
           if (data.resp_code === 0) {
             this.price = data.datas.fee
             this.wallet = data.datas.wallet
           }
         })
+        .catch(() => {
+          this.disabled = true
+        })
     },
 
     onSubmit() {
+      const { send, price, payMethod, comment } = this
+
+      if (!send.address || send.address.length === 0) {
+        this.$toast('请选择送货地址')
+        return
+      }
+
       const { user } = this.$route.query
       const { openId } = this.user
       const { pickUpAddress, pickUpAddressId, goodsId, orderId } = this.good
@@ -147,13 +161,13 @@ export default {
           mchId: '100000001',
           channelId: 1,
           fromType: 1,
-          payType: 2,
+          payType: payMethod,
           goodsId: goodsId,
           goodsType: 'RT',
           goodsSize: 1,
-          orderMoney: 0.01,
-          oneMoney: 0.01,
-          money: 0.01,
+          orderMoney: price,
+          oneMoney: price,
+          money: price,
           isUseScore: 0,
           score: 0,
           scoreMoney: 0,
@@ -166,11 +180,11 @@ export default {
           distributionId: user,
           pickUpAddress,
           pickUpAddressId,
-          sendAddress: this.send.address,
-          sendAddressId: this.send.id,
-          userName: this.send.trueName,
-          userPhone: this.send.mobile,
-          remark: this.comment,
+          sendAddress: send.address,
+          sendAddressId: send.id,
+          userName: send.trueName,
+          userPhone: send.mobile,
+          remark: comment,
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
