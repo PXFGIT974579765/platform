@@ -32,10 +32,11 @@
       <div class="form-item">
         <span class="key">手机号码</span>
         <span class="value">
-          <input
-            type="text"
+          <van-field
             v-model="address.mobile"
-            placeholder="请输入电话"
+            placeholder="请输入手机号"
+            :error-message="err.phone"
+            @input="onPhoneHandler"
           />
         </span>
       </div>
@@ -77,6 +78,9 @@
 
 <script>
 const DEFAULT_GENDER = 1
+const ERR = {
+  PHONE: '手机格式错误',
+}
 
 export default {
   data() {
@@ -86,6 +90,9 @@ export default {
       countyList: [],
       colnums: [],
       areaShow: false,
+      err: {
+        phone: '',
+      },
       address: {
         gender: DEFAULT_GENDER,
       },
@@ -104,22 +111,39 @@ export default {
       this.$http.get('/api-wxmp/cxxz/address/findAreaAll').then(({ data }) => {
         if (data.resp_code === 0) {
           this.areaList = { ...this.createAreaList(data.datas) }
+        } else {
+          this.$toast.fail('系统出错')
         }
       })
     },
 
+    // 电话校验
+    onPhoneHandler(value) {
+      if (value !== '') {
+        var reg = /^1[3456789]\d{9}$/
+        if (!reg.test(value)) {
+          this.err.phone = ERR.PHONE
+        } else {
+          this.err.phone = ''
+        }
+      }
+    },
+
     // 提交保存
     onSubmit() {
+      if (!this.err.phone) {
+        return
+      }
       this.$http
         .post('/api-wxmp/cxxz/address/saveAddress', {
           ...this.address,
         })
         .then(({ data }) => {
           if (data.resp_code == 0) {
-            alert('保存成功')
+            this.$toast.success('保存成功')
             this.$router.push('/my/address-list')
           } else {
-            alert(data.resp_msg)
+            this.$toast.fail(data.resp_msg)
           }
         })
     },
@@ -224,7 +248,7 @@ export default {
     background-color: #fff;
 
     .form-item {
-      height: 53px;
+      height: 65px;
       display: flex;
       font-size: 15px;
       align-items: center;

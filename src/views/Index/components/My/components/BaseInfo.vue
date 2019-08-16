@@ -282,6 +282,8 @@ export default {
       this.$http.get('/api-wxmp/cxxz/school/findSchools').then(({ data }) => {
         if (data.resp_code === 0) {
           this.school = data.datas
+        } else {
+          this.$toast.fail('系统出错')
         }
       })
     },
@@ -297,12 +299,17 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.departmentList = data.datas
+          } else {
+            this.$toast.fail('系统出错')
           }
         })
     },
 
     // 提交修改
     onSubmit() {
+      if (!this.err.phone || !this.err.email) {
+        return
+      }
       this.$http
         .post('/api-wxmp/cxxz/registerUser/registerUserInfo', {
           ...this.user,
@@ -310,8 +317,10 @@ export default {
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
-            this.$toast('信息修改成功')
+            this.$toast.success('保存成功')
             this.setUser(this.user)
+          } else {
+            this.$toast.fail('系统出错')
           }
         })
     },
