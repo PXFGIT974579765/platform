@@ -283,7 +283,7 @@ export default {
         if (data.resp_code === 0) {
           this.school = data.datas
         } else {
-          this.$toast.fail('系统出错')
+          this.$toast.fail('系统繁忙')
         }
       })
     },
@@ -300,7 +300,7 @@ export default {
           if (data.resp_code === 0) {
             this.departmentList = data.datas
           } else {
-            this.$toast.fail('系统出错')
+            this.$toast.fail('系统繁忙')
           }
         })
     },
@@ -320,7 +320,7 @@ export default {
             this.$toast.success('保存成功')
             this.setUser(this.user)
           } else {
-            this.$toast.fail('系统出错')
+            this.$toast.fail('系统繁忙')
           }
         })
     },

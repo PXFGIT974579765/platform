@@ -112,7 +112,7 @@ export default {
         if (data.resp_code === 0) {
           this.areaList = { ...this.createAreaList(data.datas) }
         } else {
-          this.$toast.fail('系统出错')
+          this.$toast.fail('系统繁忙')
         }
       })
     },
