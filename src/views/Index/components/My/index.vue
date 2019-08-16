@@ -31,11 +31,6 @@
           >&#xe778;</span
         >
       </van-cell>
-      <van-cell class="cell" title="成长记录" is-link>
-        <span slot="icon" style="color:#3889ff" class="iconfont icon"
-          >&#xe775;</span
-        >
-      </van-cell>
     </van-cell-group>
 
     <van-cell-group class="cell-group">

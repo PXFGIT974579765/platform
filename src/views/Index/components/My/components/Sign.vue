@@ -91,6 +91,8 @@ export default {
             const keys = Object.keys(scoreSetting).sort()
             this.sign.scoreSetting = scoreSetting
             this.sign.keys = keys
+          } else {
+            this.$toast.fail(data.resp_msg)
           }
         })
     },
@@ -98,6 +100,8 @@ export default {
       this.$http.get('/api-media/share/task/list').then(({ data }) => {
         if (data.resp_code === 0) {
           this.links = data.datas
+        } else {
+          this.$toast.fail(data.resp_msg)
         }
       })
     },
@@ -151,10 +155,15 @@ export default {
         .then(({ data }) => {
           if (data.resp_code == 0) {
             this.user.isSign = 1
+            if (data.datas.score) {
+              this.user.integral += data.datas.score
+            }
+            this.user.signDays += 1
             this.setUser(this.user)
-            alert('签到成功')
+            this.$toast.success('签到成功')
+            this.fetchInfo()
           } else {
-            alert(data.resp_msg)
+            this.$toast.fail(data.resp_msg)
           }
         })
     },

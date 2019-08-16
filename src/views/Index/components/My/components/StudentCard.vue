@@ -43,6 +43,11 @@ export default {
       status: -1, // -1 无状态 0 成功 1 失败
     }
   },
+  created() {
+    if (this.user.cardImg) {
+      this.imgs.push(this.user.cardImg)
+    }
+  },
   methods: {
     ...mapActions(['setUser']),
 
@@ -64,13 +69,12 @@ export default {
     // 读取base64展现图片
     renderImage(localFile) {
       let reader = new FileReader()
-      let _self = this
-      reader.onload = function(event) {
+      reader.onload = event => {
         //获取图片base64代码
-        _self.imgs = []
-        _self.imgs.push(event.target.result)
+        this.imgs = []
+        this.imgs.push(event.target.result)
       }
-      reader.onerror = function() {
+      reader.onerror = () => {
         this.$toast.fail('图片上传失败，请重新选择上传')
       }
       reader.readAsDataURL(localFile, 'UTF-8')
@@ -106,6 +110,7 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.status = -1
+            this.user.cardImg = this.resultUrl
             this.setUser(this.user)
             this.$toast.success('信息保存成功')
           }
