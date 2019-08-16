@@ -74,12 +74,22 @@
       />
 
       <van-cell
-        title="专业"
+        title="学院"
         class="cell"
-        :value="user.majors"
+        :value="user.department"
         is-link
-        @click="selectMajors"
+        @click="selectDepartment"
       />
+
+      <van-cell title="专业" class="cell" value="计算机相关专业" is-link>
+        <van-field
+          v-model="user.majors"
+          class="input"
+          clearable
+          input-align="right"
+          placeholder="请输入专业"
+        />
+      </van-cell>
 
       <van-cell title="班级" class="cell" value="18级2班" is-link>
         <van-field
@@ -90,6 +100,14 @@
           placeholder="请输入班级"
         />
       </van-cell>
+
+      <van-cell
+        title="入学时间"
+        class="cell"
+        :value="`${user.admission || admission}年`"
+        is-link
+        @click="selectAdmission"
+      ></van-cell>
 
       <van-cell title="身份认证" class="cell" is-link>
         <span v-if="!user.isReviewed" @click="routeStudentCard"
@@ -125,26 +143,41 @@
 
     <!-- 学院弹框 -->
     <van-action-sheet
-      v-model="showMajors"
+      v-model="showDepartment"
       title="请选择学院"
-      @closed="closeMajors"
+      @closed="closeDepartment"
     >
       <div class="selection">
         <p
-          :class="['item', user.majors === item.departmentName && 'light']"
-          v-for="item in majorsList"
+          :class="['item', user.department === item.departmentName && 'light']"
+          v-for="item in departmentList"
           :key="item.departmentName"
-          @click="onMajorsItemSelect(item.departmentName)"
+          @click="onDepartmentItemSelect(item.departmentName)"
         >
           {{ item.departmentName }}
         </p>
       </div>
+    </van-action-sheet>
+
+    <!-- 入学时间弹窗 -->
+    <van-action-sheet
+      v-model="showAdmission"
+      title="请选择入学时间"
+      @closed="closeAdmission"
+    >
+      <van-datetime-picker
+        v-model="currentDate"
+        :show-toolbar="false"
+        type="year-month"
+        @change="onAdmissionChange"
+      />
     </van-action-sheet>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import { curDate } from '@/lib/format'
 
 const ERR = {
   EMAIL: '邮箱格式错误',
@@ -156,9 +189,12 @@ export default {
   data() {
     return {
       showSchool: false,
-      showMajors: false,
+      showDepartment: false,
+      showAdmission: false,
+      admission: curDate('yyyy'),
       school: [],
-      majorsList: [],
+      departmentList: [],
+      currentDate: new Date(),
       err: {
         phone: '',
         email: '',
@@ -182,21 +218,34 @@ export default {
       this.showSchool = false
     },
 
+    // 时间选择
+    selectAdmission() {
+      this.showAdmission = true
+    },
+    closeAdmission() {
+      this.showAdmission = false
+    },
+    onAdmissionChange(picker) {
+      const values = picker.getValues()
+      const year = `${values[0]}`
+      this.admission = year
+    },
+
     // 学院选择
-    selectMajors() {
+    selectDepartment() {
       const school = this.school.find(
         item => item.schoolName === this.user.school
       )
       const schoolId = school && school.schoolId
-      this.fetchMajorsList(schoolId)
-      this.showMajors = true
+      this.fetchDepartmentList(schoolId)
+      this.showDepartment = true
     },
-    closeMajors() {
-      this.showMajors = false
+    closeDepartment() {
+      this.showDepartment = false
     },
-    onMajorsItemSelect(value) {
-      this.user.majors = value
-      this.showMajors = false
+    onDepartmentItemSelect(value) {
+      this.user.department = value
+      this.showDepartment = false
     },
 
     // 学生证路由
@@ -238,7 +287,7 @@ export default {
     },
 
     // 请求学院数据
-    fetchMajorsList(schoolId) {
+    fetchDepartmentList(schoolId) {
       this.$http
         .get('/api-wxmp/cxxz/school/findDepartments', {
           params: {
@@ -247,7 +296,7 @@ export default {
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
-            this.majorsList = data.datas
+            this.departmentList = data.datas
           }
         })
     },
@@ -257,9 +306,11 @@ export default {
       this.$http
         .post('/api-wxmp/cxxz/registerUser/registerUserInfo', {
           ...this.user,
+          admission: this.admission,
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
+            this.$toast('信息修改成功')
             this.setUser(this.user)
           }
         })

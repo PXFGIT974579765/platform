@@ -177,7 +177,6 @@ export default {
   .ad {
     position: relative;
     padding: 18px 12px;
-    height: 96px;
     background-color: #fff;
 
     img {
