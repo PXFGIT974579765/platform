@@ -25,7 +25,7 @@
       <span>地址</span>
       <span class="address">{{ active.address }}</span>
     </div>
-    <div class="scan-sign-area flex">
+    <div class="scan-sign-area flex" v-if="active.isScanSign == 0">
       <span class="iconfont icon">&#xe746;</span>
       <span @click="qrCodeSign">现场扫码签到</span>
     </div>

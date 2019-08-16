@@ -32,7 +32,7 @@ const TYPE_HASH = {
     color: '#ff766e',
     to: '/order/group',
   },
-  PTSC: {
+  JFSC: {
     icon: '&#xe76b;',
     name: '商品订单',
     color: '#55c2ff',

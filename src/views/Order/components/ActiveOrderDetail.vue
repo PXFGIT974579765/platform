@@ -14,7 +14,7 @@
       <div class="price-group">
         <div class="price-item flex">
           <span>活动收费</span>
-          <span>￥{{ active.price }}</span>
+          <span>￥{{ active.orderMoney }}</span>
         </div>
         <div class="price-item flex">
           <span>优惠</span>
@@ -50,11 +50,11 @@
         </div>
         <div class="order-item">
           <span>创建时间 :</span>
-          <span>{{ active.createTime }}</span>
+          <span>{{ active.beginTime }}</span>
         </div>
         <div class="order-item">
           <span>付款时间 :</span>
-          <span>{{ active.payTime }}</span>
+          <span>{{ active.endTime }}</span>
         </div>
       </div>
 
