@@ -154,7 +154,6 @@ export default {
       if (list.length >= count) {
         this.finished = true
       }
-      // this.finished = true
     },
 
     fetchList(pageIndex = 1, pageSize = 10) {

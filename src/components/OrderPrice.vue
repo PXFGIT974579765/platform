@@ -3,7 +3,9 @@
     <div class="order-price">
       <div class="item" @click="onSelect">
         <div class="item-name">优惠券</div>
-        <div v-if="ticket" class="tag">下单立减{{ ticket }}元</div>
+        <div v-if="ticket" class="tag">
+          {{ ticketDetail.name }}{{ ticket }}元
+        </div>
         <div class="item-value ticket">
           <span>{{ ticket ? `￥${ticket}` : '选择优惠券' }}</span>
           <span class="iconfont">&#xe76e;</span>
@@ -35,7 +37,7 @@
               class="ticket-item"
               @click="onClick(t)"
             >
-              <div class="ticket-name">下单立减 {{ t.value }} 元</div>
+              <div class="ticket-name">{{ t.name }}{{ t.value }}元</div>
             </van-radio>
           </van-radio-group>
         </div>
@@ -59,16 +61,8 @@ export default {
 
   data() {
     return {
-      tickets: [
-        {
-          value: 10,
-          id: 1,
-        },
-        {
-          value: 5,
-          id: 2,
-        },
-      ],
+      tickets: [],
+      ticketDetail: {},
       ticketShow: false,
     }
   },
@@ -79,7 +73,21 @@ export default {
 
   methods: {
     fetchTickets() {
-      //
+      this.$http
+        .get('/api-wxmp/cxxz/coupon/findCoupons', {
+          params: {
+            // TODO:
+            // status: 1,
+          },
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.tickets = data.datas.couponList.map(x => ({
+              ...x,
+              value: x.typeMoney,
+            }))
+          }
+        })
     },
 
     onSelect() {
@@ -92,6 +100,7 @@ export default {
 
     onClick(ticket) {
       this.ticketShow = false
+      this.ticketDetail = ticket
       this.$emit('change', ticket)
     },
   },
