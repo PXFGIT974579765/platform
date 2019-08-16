@@ -1,7 +1,8 @@
 <template>
   <div class="order">
-    <order-good :order="order" />
-    <order-distribution :addressList="addressList" />
+    <order-good :order="order" :value="buyNum" @change="onNumChange" point />
+
+    <order-distribution :value="address.address" @change="onAddressChange" />
 
     <div class="pay">
       <div class="pay-header">
@@ -12,22 +13,31 @@
         <div class="method">
           <div class="price">
             <span class="name">积分抵扣：</span>
-            <span class="value">5000 积分</span>
+            <span class="value">{{ buyNum * order.score }} 积分</span>
           </div>
           <div class="balance">
             <span class="name">可用积分：</span>
-            <span class="value">8796分</span>
+            <span class="value">{{ order.user.integral }}分</span>
           </div>
         </div>
 
-        <div class="method">
+        <div
+          class="method"
+          v-if="calc(`${buyNum}*${order.price}`) <= order.user.wallet"
+        >
           <div class="price">
             <span class="name">余额支付：</span>
-            <span class="value">1.00元</span>
+            <span class="value">{{ calc(`${buyNum}*${order.price}`) }}元</span>
           </div>
           <div class="balance">
             <span class="name">账户余额：</span>
-            <span class="value">58.00元</span>
+            <span class="value">{{ order.user.wallet }}元</span>
+          </div>
+        </div>
+        <div class="method" v-else>
+          <div class="price">
+            <span class="name">微信支付：</span>
+            <span class="value">{{ calc(`${buyNum}*${order.price}`) }}元</span>
           </div>
         </div>
       </div>
@@ -41,6 +51,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { calc } from '@/lib/format'
 import OrderGood from '@/components/OrderGood'
 import OrderDistribution from '@/components/OrderDistribution'
 
@@ -56,9 +67,16 @@ export default {
     return {
       order: {
         price: 0,
-        user: {},
+        score: 1,
+        user: {
+          wallet: 0,
+        },
       },
-      addressList: [],
+      address: {
+        address: '',
+        id: '',
+      },
+      buyNum: 1,
     }
   },
 
@@ -71,6 +89,16 @@ export default {
   },
 
   methods: {
+    calc,
+
+    onNumChange(value) {
+      this.buyNum = value
+    },
+
+    onAddressChange(address) {
+      this.address = address
+    },
+
     fetchData() {
       this.$http
         .post('/api-wxmp/cxxz/scorePay/find', { id: this.$route.params.id })
@@ -79,18 +107,24 @@ export default {
             this.order = data.datas
           }
         })
-
-      this.$http.get('/api-user/cxxz/branch/list').then(({ data }) => {
-        if (data.resp_code === 0) {
-          this.addressList = data.datas
-        }
-      })
     },
 
     onSubmit() {
-      const { id } = this.order
-      const { openId } = this.user
-      console.log(id)
+      const { buyNum, order, user, address } = this
+      const { id, price, score } = order
+
+      if (!address.address || address.address.length === 0) {
+        this.$toast('请选择自提门店')
+        return
+      }
+
+      if (score > user.integral) {
+        this.$toast('积分不足')
+        return
+      }
+
+      const { openId } = user
+      const totalPrice = calc(`${buyNum} * ${price}`)
 
       this.$http
         .post('/api-wxmp/cxxz/scorePay//createOrder', {
@@ -100,20 +134,20 @@ export default {
           payType: 2,
           goodsId: id,
           goodsType: 'JFSC',
-          goodsSize: 1,
-          orderMoney: 0.01,
-          oneMoney: 0.01,
-          money: 0.01,
-          isUseScore: 0,
-          score: 0,
+          goodsSize: buyNum,
+          orderMoney: totalPrice,
+          oneMoney: price,
+          money: totalPrice,
+          isUseScore: 1,
+          score,
           scoreMoney: 0,
           isUseCoupon: 0,
           couponNo: null,
           couponMoney: 0,
           payCode: '',
           openId,
-          address: '花溪大学城贵州大学创新学子空间',
-          addressId: '073c556eb3ea4075becfe645a1f6a914',
+          address: address.address,
+          addressId: address.id,
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {

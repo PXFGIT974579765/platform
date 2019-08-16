@@ -38,8 +38,6 @@
 </template>
 
 <script>
-import { dateTime } from '@/lib/format'
-
 export default {
   data() {
     return {
@@ -79,9 +77,6 @@ export default {
       //   }
       // }, 500);
     },
-  },
-  filters: {
-    formatDate: dateTime,
   },
 }
 </script>

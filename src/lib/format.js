@@ -1,3 +1,5 @@
+import { evaluate } from 'mathjs'
+
 // yyyy-MM-dd hh:mm:ss
 export function curDate(formater = 'yyyy-MM-dd') {
   Date.prototype.format = function(fmt) {
@@ -29,4 +31,8 @@ export function curDate(formater = 'yyyy-MM-dd') {
     return fmt
   }
   return new Date().format(formater)
+}
+
+export function calc(express) {
+  return evaluate(express)
 }

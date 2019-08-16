@@ -11,14 +11,30 @@
       </div>
     </div>
 
-    <order-price :order="order" />
-    <order-pay :order="order" />
-    <order-submit theme="green" :order="order" @submit="onSubmit" />
+    <order-price
+      :price="order.price"
+      :ticket="ticket"
+      @change="onTicketChange"
+    />
+
+    <order-pay
+      :price="Math.max(0, calc(`${order.price}-${ticket}`))"
+      :balance="order.user.wallet"
+      :method="payMethod"
+      @change="onMethodChange"
+    />
+
+    <order-submit
+      theme="green"
+      :value="Math.max(0, calc(`${order.price}-${ticket}`))"
+      @submit="onSubmit"
+    />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import { calc } from '@/lib/format'
 import OrderPrice from '@/components/OrderPrice'
 import OrderPay from '@/components/OrderPay'
 import OrderSubmit from '@/components/OrderSubmit'
@@ -35,8 +51,15 @@ export default {
   data() {
     return {
       order: {
-        user: {},
+        title: '',
+        price: 0,
+        user: {
+          wallet: 0,
+        },
       },
+      ticket: 0,
+      ticketId: '',
+      payMethod: 2,
     }
   },
 
@@ -49,6 +72,17 @@ export default {
   },
 
   methods: {
+    calc,
+
+    onTicketChange(ticket) {
+      this.ticket = ticket.value
+      this.ticketId = ticket.id
+    },
+
+    onMethodChange(method) {
+      this.payMethod = method
+    },
+
     fetchData() {
       this.$http
         .post('/api-wxmp/cxxz/topicPay/find', { id: this.$route.params.id })
@@ -60,27 +94,30 @@ export default {
     },
 
     onSubmit() {
-      const { id } = this.order
+      const { payMethod, ticketId, ticket } = this
+      const { id, price } = this.order
       const { openId } = this.user
+
+      const hasTicket = !!(ticketId && String(ticketId).length > 0)
 
       this.$http
         .post('/api-wxmp/cxxz/topicPay/createOrder', {
           mchId: '100000001',
           channelId: 1,
           fromType: 1,
-          payType: 2,
+          payType: payMethod,
           goodsId: id,
           goodsType: 'HD',
           goodsSize: 1,
-          orderMoney: 0.01,
-          oneMoney: 0.01,
-          money: 0.01,
+          orderMoney: price,
+          oneMoney: price,
+          money: Math.max(0, calc(`${price}-${this.ticket}`)),
           isUseScore: 0,
           score: 0,
           scoreMoney: 0,
-          isUseCoupon: 0,
-          couponNo: null,
-          couponMoney: 0,
+          isUseCoupon: ~~hasTicket,
+          couponNo: hasTicket ? ticketId : null,
+          couponMoney: ticket,
           payCode: '',
           openId,
         })

@@ -10,8 +10,9 @@
 
       <div class="block-content">
         <div v-for="app in myApps" :key="app.id" class="app-item-wrap">
-          <div
+          <a
             class="app-item"
+            :href="app.appUrl"
             :style="{ 'background-image': `url(${app.appImg})` }"
           >
             <div class="app-name">共享打印</div>
@@ -19,7 +20,7 @@
             <button v-if="editable" class="editing" @click="onRemove(app.id)">
               <span class="iconfont">&#xe72b;</span>
             </button>
-          </div>
+          </a>
         </div>
       </div>
     </div>
@@ -31,8 +32,9 @@
 
       <div class="block-content">
         <div v-for="app in allApps" :key="app.id" class="app-item-wrap">
-          <div
+          <a
             class="app-item"
+            :href="app.appUrl"
             :style="{ 'background-image': `url(${app.appImg})` }"
           >
             <div class="app-name">{{ app.appName }}</div>
@@ -40,7 +42,7 @@
             <button v-if="editable" class="editing" @click="onAdd(app.id)">
               <span class="iconfont">&#xe72a;</span>
             </button>
-          </div>
+          </a>
         </div>
       </div>
     </div>
@@ -165,6 +167,7 @@ export default {
     }
   }
   .app-item {
+    display: block;
     position: relative;
     height: 34vw;
     padding: 15px;
