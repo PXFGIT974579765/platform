@@ -33,12 +33,15 @@
                   <span
                     :class="[
                       'amount',
-                      coinLog.operateType === 0 ? 'in' : 'out',
+                      coinLog.operateType === 1 && coinLog.money > 0
+                        ? 'out'
+                        : 'in',
                     ]"
                   >
-                    {{ coinLog.operateType === 1 ? '-' : '' }} ￥{{
-                      coinLog.money | numFilter
-                    }}
+                    ￥
+                    {{
+                      coinLog.operateType === 1 && coinLog.money > 0 ? '-' : ''
+                    }}{{ coinLog.money | numFilter }}
                   </span>
                   <span class="status">余额：￥{{ coinLog.afterMoney }}</span>
                 </div>
@@ -89,7 +92,7 @@ export default {
       this.count = 0
       this.error = false
       this.finished = false
-      this.goods = []
+      this.coinLogs = []
     },
     startLoading() {
       this.loading = true
@@ -112,11 +115,9 @@ export default {
 
       this.$http
         .post('/api-wxmp/cxxz/money/page', {
-          params: {
-            pageIndex,
-            pageSize,
-            operateType,
-          },
+          pageIndex,
+          pageSize,
+          operateType,
         })
         .then(({ data }) => {
           this.stopLoading()
@@ -143,12 +144,12 @@ export default {
 
       this.init()
       this.name = title
-      const status = this.typeList.find(item => item.name == title).value
+      const operateType = this.typeList.find(item => item.name == title).value
 
-      if (status == -1) {
+      if (operateType == -1) {
         this.fetchList({})
       } else {
-        this.fetchList({ status })
+        this.fetchList({ operateType })
       }
     },
   },
