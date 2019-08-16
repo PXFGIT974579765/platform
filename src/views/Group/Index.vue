@@ -14,12 +14,12 @@
     <div class="ticket">
       <img src="~@/assets/images/group_ad.png" alt />
       <div class="ticket-info">
-        <div class="ticket-name">打印专用抵扣券</div>
+        <div class="ticket-name">{{ ticket.name }}</div>
         <div class="ticket-value">
           ￥
-          <span>10</span>
+          <span>{{ ticket.typeMoney }}</span>
         </div>
-        <button>立即领取</button>
+        <button @click="getTicket(ticket.id)">立即领取</button>
       </div>
     </div>
 
@@ -83,20 +83,45 @@ export default {
       finished: false,
       loading: true,
       list: [],
+      ticket: {},
     }
   },
 
   created() {
-    this.$http.get('/api-wxmp/cxxz/category/ptTypes').then(({ data }) => {
-      if (data.resp_code === 0) {
-        this.category = data.datas
-      }
-    })
-
+    this.fetchCategory()
     this.fetchList(this.page)
+    this.fetchTicket()
   },
 
   methods: {
+    fetchCategory() {
+      this.$http.get('/api-wxmp/cxxz/category/ptTypes').then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.category = data.datas
+        }
+      })
+    },
+
+    fetchTicket() {
+      this.$http.get('/api-wxmp/cxxz/coupon/findCoupon').then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.ticket = data.datas
+        }
+      })
+    },
+
+    getTicket(id) {
+      this.$http
+        .post('/api-wxmp/cxxz/coupon/gainCoupon', { id })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.$toast('领取成功')
+          } else {
+            this.$toast(data.resp_msg)
+          }
+        })
+    },
+
     onFilter(filter) {
       this.filter =
         filter.categoryId !== this.filter.categoryId
@@ -231,8 +256,8 @@ export default {
 
   button {
     width: 62px;
-    height: 20px;
-    line-height: 20px;
+    height: 22px;
+    line-height: 22px;
     font-size: 12px;
     border-radius: 10px;
     background-color: #c70300;
