@@ -28,8 +28,8 @@
           >最新活动</router-link
         >
       </div>
-      <div class="block-content" v-if="activity.length > 0">
-        <swiper :options="swiperOption">
+      <div class="block-content">
+        <swiper v-if="activity.length > 0" :options="swiperOption">
           <swiper-slide v-for="a in activity" :key="a.id">
             <router-link :to="`/activity/detail/${a.id}`">
               <img :src="a.itemPicUrl" alt />

@@ -6,29 +6,41 @@
 
     <div class="rec">
       <div class="title">推荐活动</div>
+
       <div class="activities">
-        <img src="~@/assets/images/activity_rec.jpg" alt />
-        <div class="content">
-          <div class="name">
-            <div class="tag">比赛</div>
-            刀剑2贵州赛区英雄争霸赛
-          </div>
-          <div class="detail">
-            <div class="date">
-              <span>6月13日</span>
-              <span>星期六</span>
-              <span>09:00 - 12:00</span>
-            </div>
-            <div class="address">贵州师范大学</div>
-          </div>
-          <div class="others">
-            <div class="price">免费参加</div>
-            <div class="count">
-              <span>274人报名</span>
-              <span>限额300人</span>
-            </div>
-          </div>
-        </div>
+        <swiper v-if="activity.length > 0" :options="swiperOption">
+          <swiper-slide v-for="a in activity" :key="a.id">
+            <router-link :to="`/activity/detail/${a.id}`">
+              <img :src="a.itemPicUrl" alt />
+
+              <div class="content">
+                <div class="name">
+                  <div class="tag">比赛</div>
+                  刀剑2贵州赛区英雄争霸赛
+                </div>
+
+                <div class="detail">
+                  <div class="date">
+                    <span>6月13日</span>
+                    <span>星期六</span>
+                    <span>09:00 - 12:00</span>
+                  </div>
+                  <div class="address">贵州师范大学</div>
+                </div>
+
+                <div class="others">
+                  <div class="price">免费参加</div>
+                  <div class="count">
+                    <span>274人报名</span>
+                    <span>限额300人</span>
+                  </div>
+                </div>
+              </div>
+            </router-link>
+          </swiper-slide>
+        </swiper>
+
+        <div class="swiper-pagination" slot="pagination"></div>
       </div>
     </div>
 
@@ -36,6 +48,7 @@
 
     <div class="hot">
       <div class="title">热门活动</div>
+
       <van-list
         v-model="loading"
         :finished="finished"
@@ -71,20 +84,47 @@ export default {
       finished: false,
       loading: true,
       list: [],
+      activity: [],
+      swiperOption: {
+        initialSlide: 0,
+        slidesPerView: 'auto',
+        centeredSlides: true,
+        spaceBetween: 11,
+        loop: true,
+        loopFillGroupWithBlank: true,
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true,
+        },
+      },
     }
   },
 
   created() {
-    this.$http.get('/api-wxmp/cxxz/topics/banners').then(({ data }) => {
-      if (data.resp_code === 0) {
-        this.topics = data.datas
-      }
-    })
-
+    this.fetchCategory()
+    this.fetchRec()
     this.fetchList(this.page)
   },
 
   methods: {
+    fetchCategory() {
+      this.$http.get('/api-wxmp/cxxz/topics/banners').then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.topics = data.datas
+        }
+      })
+    },
+
+    fetchRec() {
+      this.$http
+        .get('/api-wxmp/cxxz/topics/findRecommendTopic')
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.activity = data.datas
+          }
+        })
+    },
+
     startLoading() {
       this.loading = true
       this.error = false
@@ -151,7 +191,7 @@ export default {
 
 .rec {
   margin-bottom: 8px;
-  padding: 13px 15px 15px;
+  padding: 13px 15px 40px;
   background: #fff;
 
   img {
@@ -163,9 +203,14 @@ export default {
   }
 
   .activities {
+    position: relative;
     background-color: #ffffff;
     box-shadow: 0px 0px 4px 0px rgba(136, 136, 136, 0.3);
     border-radius: 0px 0px 3px 3px;
+  }
+
+  .swiper-pagination {
+    bottom: -25px;
   }
 
   .content {
@@ -177,6 +222,7 @@ export default {
     align-items: center;
     margin-bottom: 16px;
     font-size: 16px;
+    color: #2d2d2d;
   }
 
   .tag {
