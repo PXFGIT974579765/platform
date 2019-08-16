@@ -6,7 +6,7 @@
         <span>{{ user.integral }}</span>
         <span>{{ sign.scoreTime }} 签到 积分+{{ sign.score }}</span>
       </div>
-      <span class="btn_score_detail">积分明细</span>
+      <span class="btn_score_detail" @click="routeDetail">积分明细</span>
     </div>
     <div class="sign-calendar card-item flex">
       <div class="flex">
@@ -45,7 +45,7 @@
         </div>
         <div class="btn_go" @click="routePage(link.extUrl)">GO</div>
       </div>
-      <div class="btn-more">查看更多</div>
+      <!-- <div class="btn-more">查看更多</div> -->
     </div>
   </div>
 </template>
@@ -81,6 +81,9 @@ export default {
   },
   methods: {
     ...mapActions(['setUser']),
+    routeDetail() {
+      this.$router.push('/my/score')
+    },
     fetchInfo() {
       this.$http
         .get('/api-wxmp/cxxz/registerUser/sign/getSetting')
