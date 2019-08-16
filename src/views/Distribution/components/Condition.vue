@@ -165,7 +165,7 @@ export default {
             local.set('runner', this.condition)
             this.$router.push('/my/distribution')
           } else {
-            alert(data.resp_msg)
+            this.$toast.fail('系统繁忙')
           }
         })
     },

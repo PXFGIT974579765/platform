@@ -163,7 +163,7 @@ export default {
         //获取图片base64代码
       }
       reader.onerror = function() {
-        alert('图片上传失败')
+        this.$toast.success('图片上传失败')
       }
       reader.readAsDataURL(localFile, 'UTF-8')
     },
@@ -175,7 +175,7 @@ export default {
         if (data.resp_code == 0) {
           this.imgs.push(data.datas)
         } else {
-          alert('上传图片失败')
+          this.$toast.success('上传图片失败')
         }
       })
     },
@@ -214,11 +214,11 @@ export default {
         })
         .then(({ data }) => {
           if (data.resp_code == 0) {
-            alert('保存成功')
+            this.$toast.success('保存成功')
             this.activeTab = '1'
             this.fetchComplain({})
           } else {
-            alert(data.resp_msg)
+            this.$toast.fail('系统繁忙')
           }
         })
     },

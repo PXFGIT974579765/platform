@@ -111,7 +111,7 @@ export default {
               this.user.onlineStatus = 0
               this.setUser(this.user)
             } else {
-              alert(data.resp_msg)
+              this.$toast.fail('系统繁忙')
             }
           })
       }

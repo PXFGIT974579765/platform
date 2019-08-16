@@ -123,10 +123,10 @@ export default {
         })
         .then(({ data }) => {
           if (data.resp_code == 0) {
-            alert('订单已完成配送')
+            this.$toast.success('订单已完成配送')
             this.info.status = 1
           } else {
-            alert(data.resp_msg)
+            this.$toast.fail('系统繁忙')
           }
         })
     },

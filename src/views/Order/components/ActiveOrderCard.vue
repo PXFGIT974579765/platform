@@ -190,7 +190,7 @@ export default {
             this.appraise.status = 80
             this.showDialog = true
           } else {
-            alert(data.resp_msg)
+            this.$toast.fail('系统繁忙')
           }
         })
     },
@@ -213,7 +213,7 @@ export default {
             this.showDialog = false
             this.goods.orderStatus = 80
           } else {
-            alert(data.resp_msg)
+            this.$toast.fail('系统繁忙')
           }
         })
     },

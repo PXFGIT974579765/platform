@@ -155,7 +155,7 @@ export default {
             this.appraise = data.datas
             this.showDialog = true
           } else {
-            alert(data.resp_msg)
+            this.$toast.fail('系统繁忙')
           }
         })
     },

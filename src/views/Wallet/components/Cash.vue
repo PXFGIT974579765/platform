@@ -73,12 +73,12 @@ export default {
         })
         .then(({ data }) => {
           if (data.resp_code == 0) {
-            alert('提现申请成功')
+            this.$toast.success('提现申请成功')
             this.user.wallet -= this.money
             this.setUser(this.user)
             this.$router.push('/my/wallet')
           } else {
-            alert(data.resp_msg)
+            this.$toast.fail('系统繁忙')
           }
         })
     },
