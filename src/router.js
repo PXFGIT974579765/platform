@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from '@/store'
 import local from '@/lib/local'
+import { isIos } from '@/lib/agent'
 
 import Index from './views/Index'
 import Entry from './views/Entry'
@@ -431,8 +432,20 @@ const router = new Router({
   ],
 })
 
+// 获取真实有效微信签名URL
+function getWechatSignUrl(to) {
+  if (isIos()) {
+    return window.location.href
+  } else {
+    return process.env.VUE_APP_HOST + to.name
+  }
+}
+
 router.beforeEach((to, from, next) => {
   const { name } = to
+
+  store.dispatch('setWechatSignUrl', getWechatSignUrl(to))
+
   if (name === 'entry' || name === 'accept') {
     next()
     return

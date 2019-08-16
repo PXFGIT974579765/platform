@@ -5,13 +5,13 @@
 <script>
 import { mapGetters } from 'vuex'
 import local from '@/lib/local'
-// import store from '@/store'
+import store from '@/store'
 
 export default {
   computed: mapGetters(['user']),
 
   created() {
-    // store.dispatch('clearUser')
+    store.dispatch('clearUser')
 
     if (this.user.id) {
       const redirectUrl = local.get('redirectUrl')
@@ -27,7 +27,7 @@ export default {
 
     this.$http
       .post('/api-wxmp/wxmp-anon/client/wxUrl', {
-        url: process.env.VUE_APP_REDIRECT,
+        url: `${process.env.VUE_APP_HOST}/accept`,
       })
       .then(({ data }) => {
         if (data.resp_code !== 0) {

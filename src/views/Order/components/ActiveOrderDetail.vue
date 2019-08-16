@@ -68,6 +68,7 @@
 
 <script>
 import Card from './ActiveOrderCard'
+import { mapGetters } from 'vuex'
 
 const ORDER_STATUS = {
   0: '待付款',
@@ -85,6 +86,8 @@ const PAY_STATUS = {
   '-5': '已退款',
 }
 export default {
+  computed: mapGetters(['wechatSignUrl']),
+
   components: {
     Card,
   },

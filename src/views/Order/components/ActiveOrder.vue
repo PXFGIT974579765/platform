@@ -42,8 +42,10 @@
 <script>
 import Search from '@/components/Search'
 import Card from './ActiveOrderCard'
+import { mapGetters } from 'vuex'
 
 export default {
+  computed: mapGetters(['wechatSignUrl']),
   components: {
     Search,
     Card,
@@ -115,7 +117,7 @@ export default {
     configWx() {
       this.$http
         .post('/api-wxmp/cxxz/wx/getMpConfig', {
-          url: window.location.href,
+          url: this.wechatSignUrl,
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {

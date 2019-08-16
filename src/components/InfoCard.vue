@@ -44,7 +44,7 @@ import PersonDesc from '@/components/PersonDesc'
 import { mapGetters } from 'vuex'
 
 export default {
-  computed: mapGetters(['user']),
+  computed: mapGetters(['user', 'wechatSignUrl']),
 
   components: {
     Search,
@@ -72,7 +72,7 @@ export default {
   created() {
     this.$http
       .post('/api-wxmp/cxxz/wx/getMpConfig', {
-        url: window.location.href,
+        url: this.wechatSignUrl,
       })
       .then(({ data }) => {
         if (data.resp_code === 0) {
