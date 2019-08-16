@@ -24,7 +24,7 @@
         v-on:change="readLocalFile()"
       />
     </div>
-    <div class="btn-submit" @click="onSubmit">提交认证</div>
+    <div class="btn-submit" @click="onSubmit">{{ btnName }}</div>
   </div>
 </template>
 
@@ -39,6 +39,7 @@ export default {
     return {
       imgs: [],
       resultUrl: '',
+      btnName: '提交认证',
       status: -1, // -1 无状态 0 成功 1 失败
     }
   },
@@ -70,20 +71,23 @@ export default {
         _self.imgs.push(event.target.result)
       }
       reader.onerror = function() {
-        alert('图片上传失败')
+        this.$toast.fail('图片上传失败，请重新选择上传')
       }
       reader.readAsDataURL(localFile, 'UTF-8')
     },
     // 上传图片
     uploadImage(localFile) {
+      this.btnName = '图片上传中'
       let param = new FormData()
       param.append('file', localFile)
       httpUpload.post('/api-file/foreign/files', param).then(({ data }) => {
         if (data.resp_code == 0) {
           this.resultUrl = data.datas
           this.status = 0
+          this.btnName = '提交认证'
         } else {
           this.status = 1
+          this.btnName = '长传失败'
         }
       })
     },
@@ -91,6 +95,7 @@ export default {
     // 提交保存
     onSubmit() {
       if (this.status != 0) {
+        this.$toast.fail('图片上传失败，请重新选择上传')
         return
       }
       this.$http
@@ -102,7 +107,7 @@ export default {
           if (data.resp_code === 0) {
             this.status = -1
             this.setUser(this.user)
-            alert('信息保存成功')
+            this.$toast.success('信息保存成功')
           }
         })
     },
