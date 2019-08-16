@@ -2,17 +2,24 @@
   <div class="page-my-score" v-wechat-title="$route.meta.title">
     <div class="page-header">
       <div class="score-box flex-col">
-        <span>1500</span>
+        <span>{{ user.integral }}</span>
         <span>可用积分</span>
       </div>
-      <span class="btn_exchange">去兑换礼品</span>
+      <span class="btn_exchange" @click="routeScoreSC">去兑换礼品</span>
     </div>
     <div class="page-list">
       <div class="title flex">
         <span>积分明细</span>
         <span>积分规则</span>
       </div>
-      <van-list v-model="loading" :finished="finished" @load="onLoad">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        :error.sync="error"
+        error-text="请求失败，点击重新加载"
+        @load="onLoad"
+      >
         <div v-for="(item, index) in list" :key="index" class="list-item">
           <div>
             <div class="name">{{ item.scoreSettingName }}</div>
@@ -38,44 +45,74 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
+  computed: mapGetters(['user']),
   data() {
     return {
       list: [],
-      loading: false,
-      finished: true,
+      page: 1,
+      count: 0,
+      error: false,
+      finished: false,
+      loading: true,
     }
   },
   created() {
     this.fetchInfo({})
   },
   methods: {
+    startLoading() {
+      this.loading = true
+      this.error = false
+    },
+
+    stopLoading() {
+      this.loading = false
+    },
+
+    finishCheck() {
+      const { count, list } = this
+      if (list.length >= count) {
+        this.finished = true
+      }
+    },
+    // 路由到积分商城
+    routeScoreSC() {
+      this.$router.push('/point')
+    },
     // 拉去活动信息
     fetchInfo({ pageIndex = 1, pageSize = 10 }) {
+      this.startLoading()
+
       this.$http
         .post('/api-wxmp/cxxz/score/page', {
           pageIndex,
           pageSize,
         })
         .then(({ data }) => {
-          if (data.resp_code === 0) {
-            this.list = data.datas.data
+          this.stopLoading()
+
+          if (data.resp_code !== 0) {
+            this.error = true
+            return
           }
+
+          const { pageIndex, count } = data.datas
+          this.page = pageIndex
+          this.count = count
+          this.list = this.list.concat(data.datas.data)
+
+          this.finishCheck()
+        })
+        .catch(() => {
+          this.error = true
+          this.stopLoading()
         })
     },
     onLoad() {
-      // 异步更新数据
-      // setTimeout(() => {
-      //   for (let i = 0; i < 10; i++) {
-      //     this.list.push(this.list.length + 1);
-      //   }
-      //   // 加载状态结束
-      //   this.loading = false;
-      //   // 数据全部加载完成
-      //   if (this.list.length >= 40) {
-      //     this.finished = true;
-      //   }
-      // }, 500);
+      this.fetchList({ pageIndex: this.page + 1 })
     },
   },
 }
@@ -115,6 +152,7 @@ export default {
           width: 100%;
           height: 50px;
           line-height: 50px;
+          text-align: center;
           font-size: 67px;
         }
 
