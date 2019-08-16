@@ -8,7 +8,9 @@
     </div>
 
     <div class="btn-wrap">
-      <button class="btn">去做任务，赚积分</button>
+      <router-link to="/my/sign">
+        <button class="btn">去做任务，赚积分</button>
+      </router-link>
     </div>
   </div>
 </template>
