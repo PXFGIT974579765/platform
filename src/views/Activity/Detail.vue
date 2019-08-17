@@ -51,17 +51,17 @@
 
     <div class="people">
       <div class="people-header">
-        <span>限额 80 人</span>
-        <span class="registration">已有 60 人报名</span>
+        <!-- <span>限额 80 人</span> -->
+        <span class="registration">已有 {{ people.length }} 人报名</span>
       </div>
       <div class="peoples">
-        <img class="people-item" src="~@/assets/images/errand_avatar.png" alt />
-        <img class="people-item" src="~@/assets/images/errand_avatar.png" alt />
-        <img class="people-item" src="~@/assets/images/errand_avatar.png" alt />
-        <img class="people-item" src="~@/assets/images/errand_avatar.png" alt />
-        <img class="people-item" src="~@/assets/images/errand_avatar.png" alt />
-        <img class="people-item" src="~@/assets/images/errand_avatar.png" alt />
-        <img class="people-item" src="~@/assets/images/errand_avatar.png" alt />
+        <img
+          v-for="p in people.slice(0, 6)"
+          :key="p.orderId"
+          :src="p.headImgUrl"
+          class="people-item"
+          alt
+        />
       </div>
     </div>
 
@@ -130,7 +130,9 @@ export default {
         })
 
       this.$http
-        .post('/cxxz/order/getHDUser', { goodsId: this.$route.params.id })
+        .post('/api-wxmp/cxxz/order/getHDUser', {
+          goodsId: this.$route.params.id,
+        })
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.people = data.datas
@@ -268,7 +270,6 @@ export default {
   padding: 0;
 
   .registration {
-    margin-left: 15px;
     color: #ff9000;
   }
 }

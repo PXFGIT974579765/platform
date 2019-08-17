@@ -5,29 +5,34 @@
     <div class="status">
       <div class="count">
         <span>已有</span>
-        <span class="value">4</span>
-        <span>人，离最低人数只差</span>
-        <span class="value">1</span>
-        <span>人啦</span>
+        <span class="value">{{ people.length }}</span>
+        <span>人</span>
+        <template v-if="good.limitMinSize - people.length > 0">
+          <span>，离最低人数只差</span>
+          <span class="value">{{ good.limitMinSize - people.length }}</span>
+          <span>人啦</span>
+        </template>
+        <span v-else>，已经达到最低人数了</span>
       </div>
 
-      <div class="date">
+      <div v-if="during != null" class="date">
         <span class="name">剩余</span>
-        <span class="value">05</span>
+        <span class="value">{{ during | day | padding }}</span>
         <span class="sep">:</span>
-        <span class="value">10</span>
+        <span class="value">{{ during | hour | padding }}</span>
         <span class="sep">:</span>
-        <span class="value">23</span>
+        <span class="value">{{ during | minute | padding }}</span>
         <span class="sep">:</span>
-        <span class="value">02</span>
+        <span class="value">{{ during | second | padding }}</span>
       </div>
 
       <div class="people">
-        <img src="~@/assets/images/errand_avatar.png" alt />
-        <img src="~@/assets/images/errand_avatar.png" alt />
-        <img src="~@/assets/images/errand_avatar.png" alt />
-        <img src="~@/assets/images/errand_avatar.png" alt />
-        <img src="~@/assets/images/errand_avatar.png" alt />
+        <img
+          v-for="p in people.slice(0, 5)"
+          :key="p.orderId"
+          :src="p.headImgUrl"
+          alt
+        />
       </div>
 
       <button v-if="!complete" class="group-btn" @click="onClick">
@@ -64,6 +69,7 @@ import Manual from './components/Manual'
 import Invitation from './components/Invitation'
 import DescComment from '@/components/DescComment'
 import Share from '@/components/Share'
+import { setInterval } from 'timers'
 
 export default {
   components: {
@@ -81,11 +87,18 @@ export default {
       shareShow: false,
       good: {},
       people: [],
+      lastDate: null,
+      during: null,
     }
   },
 
   created() {
     this.fetchData()
+    this.timer = setInterval(this.updateDate, 1000)
+  },
+
+  beforeDestroy() {
+    window.clearInterval(this.timer)
   },
 
   watch: {
@@ -101,16 +114,27 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.good = data.datas
+            this.lastDate = new Date(
+              data.datas.limitBeginDate.replace(' ', 'T')
+            )
           }
         })
 
       this.$http
-        .post('/cxxz/order/getPTUser', { goodsId: this.$route.params.id })
+        .post('/api-wxmp/cxxz/order/getPTUser', {
+          goodsId: this.$route.params.id,
+        })
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.people = data.datas
           }
         })
+    },
+
+    updateDate() {
+      if (this.lastDate) {
+        this.during = Math.max(this.lastDate - Date.now(), 0)
+      }
     },
 
     onChange(type) {
