@@ -276,14 +276,19 @@ export default {
 
 .peoples {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 20px;
 }
 
 .people-item {
   width: 40px;
   height: 40px;
+  margin-right: 10px;
   border-radius: 100%;
+
+  &:last-child {
+    margin-right: 0;
+  }
 }
 
 .intro {
