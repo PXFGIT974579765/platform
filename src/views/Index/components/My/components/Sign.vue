@@ -95,7 +95,7 @@ export default {
             this.sign.scoreSetting = scoreSetting
             this.sign.keys = keys
           } else {
-            this.$toast.fail(data.resp_msg)
+            this.$toast.fail('系统繁忙')
           }
         })
     },
@@ -104,7 +104,7 @@ export default {
         if (data.resp_code === 0) {
           this.links = data.datas
         } else {
-          this.$toast.fail(data.resp_msg)
+          this.$toast.fail('系统繁忙')
         }
       })
     },
@@ -166,7 +166,7 @@ export default {
             this.$toast.success('签到成功')
             this.fetchInfo()
           } else {
-            this.$toast.fail(data.resp_msg)
+            this.$toast.fail('系统繁忙')
           }
         })
     },

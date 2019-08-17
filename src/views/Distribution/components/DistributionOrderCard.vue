@@ -1,6 +1,6 @@
 <template>
   <div class="comp-order-distribution-card" v-wechat-title="$route.meta.title">
-    <router-link :to="'/order/goods-detail/' + order.id">
+    <router-link :to="`/my/distribution-detail/${order.id}`">
       <div class="header flex">
         <span class="order-no">跑腿编号: {{ order.orderId }}</span>
         <span v-if="showStatus" class="status">
@@ -27,7 +27,7 @@
         <span v-else class="btn" @click="onShowDialog(order.orderId)"
           >已评价</span
         >
-        <router-link :to="'/my/distribution-detail/' + order.id" class="btn"
+        <router-link :to="`/my/distribution-detail/${order.id}`" class="btn"
           >查看详情</router-link
         >
       </div>
