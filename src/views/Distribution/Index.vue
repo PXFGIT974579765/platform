@@ -141,7 +141,8 @@ export default {
 
   .info-card {
     position: relative;
-    padding-bottom: 80px;
+    display: inline-block;
+    width: 100%;
     margin-top: 50px;
     text-align: center;
     background-color: #fff;
@@ -167,7 +168,7 @@ export default {
     }
 
     .btn-online {
-      margin: 74px 80px 0;
+      margin: 74px 80px;
       height: 40px;
       line-height: 40px;
       text-align: center;

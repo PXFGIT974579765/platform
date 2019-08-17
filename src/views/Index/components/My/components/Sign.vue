@@ -159,7 +159,7 @@ export default {
           if (data.resp_code == 0) {
             this.user.isSign = 1
             if (data.datas.score) {
-              this.user.integral += data.datas.score
+              this.user.integral = data.datas.afterScore
             }
             this.user.signDays += 1
             this.setUser(this.user)
