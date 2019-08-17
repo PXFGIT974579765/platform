@@ -138,11 +138,10 @@ export default {
 <style lang="less" scoped>
 .page-my-distribution {
   padding: 0 15px;
-  display: flow-root;
 
   .info-card {
     position: relative;
-    display: flow-root;
+    padding-bottom: 80px;
     margin-top: 50px;
     text-align: center;
     background-color: #fff;
@@ -168,7 +167,7 @@ export default {
     }
 
     .btn-online {
-      margin: 74px 80px;
+      margin: 74px 80px 0;
       height: 40px;
       line-height: 40px;
       text-align: center;

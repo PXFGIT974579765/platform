@@ -437,7 +437,7 @@ function getWechatSignUrl(to) {
   if (isIos()) {
     return window.location.href
   } else {
-    return process.env.VUE_APP_HOST + to.name
+    return `${process.env.VUE_APP_HOST}/${to.name}`
   }
 }
 

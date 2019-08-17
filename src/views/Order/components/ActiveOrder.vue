@@ -44,6 +44,8 @@ import Search from '@/components/Search'
 import Card from './ActiveOrderCard'
 import { mapGetters } from 'vuex'
 
+const DEBUG = process.env.VUE_APP_WX_DEBUG === 'true' ? true : false
+
 export default {
   computed: mapGetters(['wechatSignUrl']),
   components: {
@@ -123,7 +125,7 @@ export default {
           if (data.resp_code === 0) {
             const that = this
             wx.config({
-              debug: true,
+              debug: DEBUG,
               jsApiList: ['scanQRCode', 'chooseWXPay'],
               appId: data.datas.appId,
               timestamp: data.datas.timestamp,

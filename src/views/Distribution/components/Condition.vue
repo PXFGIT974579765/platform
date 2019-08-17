@@ -176,7 +176,6 @@ export default {
 <style lang="less" scoped>
 .page-my-distribution-condition {
   padding: 5px 15px;
-  display: flow-root;
 
   .title {
     font-size: 15px;

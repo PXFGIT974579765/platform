@@ -118,7 +118,6 @@ export default {
 
     .input-box {
       padding: 34px 27px;
-      display: flow-root;
 
       .title {
         font-size: 15px;
