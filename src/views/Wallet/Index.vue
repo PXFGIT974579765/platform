@@ -84,14 +84,12 @@ export default {
 <style lang="less" scoped>
 .page-my-wallet {
   .bg-card {
-    display: flow-root;
+    padding: 45px 0 26px;
     width: 100%;
     background-image: url('./images/wallet_bg.jpg');
     background-size: 100% 100%;
 
     .data {
-      margin-top: 45px;
-      margin-bottom: 26px;
       padding: 0 15px;
       color: #fff;
 

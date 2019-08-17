@@ -91,7 +91,7 @@ export default {
           this.btnName = '提交认证'
         } else {
           this.status = 1
-          this.btnName = '长传失败'
+          this.btnName = '上传失败'
         }
       })
     },

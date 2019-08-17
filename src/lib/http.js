@@ -48,14 +48,18 @@ http.interceptors.request.use(
 
 http.interceptors.response.use(
   response => {
+    if (!response.data) {
+      throw '网络开小差了'
+    }
     return response
   },
   function(error) {
-    if (error.response.status === 401) {
-      // TODO: remove comment
-      // store.dispatch('clearUser')
-      // router.push('/')
-    }
+    console.log(error)
+    // if (error.response.status === 401) {
+    //   // TODO: remove comment
+    //   // store.dispatch('clearUser')
+    //   // router.push('/')
+    // }
   }
 )
 

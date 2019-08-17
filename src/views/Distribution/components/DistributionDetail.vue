@@ -137,7 +137,6 @@ export default {
 <style lang="less" scoped>
 .page-my-distribution-detail {
   padding: 5px 15px;
-  display: flow-root;
 
   .area {
     margin-top: 9px;
