@@ -34,6 +34,7 @@
             <div class="point">
               <span class="count">{{ l.score }}</span
               >积分
+              <div v-if="l.price > 0" class="money">+￥{{ l.price }}元</div>
             </div>
           </div>
         </van-grid-item>
@@ -188,6 +189,8 @@ export default {
   }
 
   .point {
+    display: flex;
+    align-items: center;
     margin-bottom: 15px;
     padding: 0 8px;
     color: #646464;
@@ -197,6 +200,15 @@ export default {
     margin-right: 6px;
     font-size: 15px;
     color: #ff6c00;
+  }
+
+  .money {
+    margin-left: 5px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 14px;
+    color: #fff;
+    background: #ff4b4b;
   }
 }
 </style>

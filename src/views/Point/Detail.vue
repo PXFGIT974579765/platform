@@ -8,6 +8,9 @@
           <div class="point-price">
             <div class="point-num">{{ detail.score }}</div>
             积分
+            <div v-if="detail.price > 0" class="money">
+              +￥{{ detail.price }}元
+            </div>
             <div class="tag">爆款推荐</div>
           </div>
           <div class="count">已兑 {{ detail.sellVolume }} 件</div>
@@ -30,10 +33,13 @@
 
     <div class="submit">
       <div class="price">
-        支付:
-        <span>￥{{ detail.score }}积分</span>
+        <div class="price-point">
+          支付:
+          <span>{{ detail.score }}积分</span>
+        </div>
+        <div v-if="detail.price > 0" class="money">+￥{{ detail.price }}元</div>
       </div>
-      <button @click="onClick">立即支付</button>
+      <button class="submit-btn" @click="onClick">立即支付</button>
     </div>
   </div>
 </template>
@@ -111,6 +117,17 @@ export default {
   color: #646464;
 }
 
+.money {
+  height: 24px;
+  line-height: 24px;
+  margin-left: 6px;
+  padding: 0 4px;
+  border-radius: 3px;
+  font-size: 14px;
+  color: #fff;
+  background: #ff4b4b;
+}
+
 .point-num {
   margin-right: 3px;
   color: #ff6c00;
@@ -158,7 +175,12 @@ export default {
 
   .price {
     flex: 1;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .price-point {
     height: 58px;
     line-height: 58px;
     color: #565656;
@@ -167,7 +189,7 @@ export default {
     }
   }
 
-  button {
+  .submit-btn {
     padding: 0 30px;
     height: 58px;
     line-height: 58px;

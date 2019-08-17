@@ -10,7 +10,7 @@
       </div>
 
       <div class="methods">
-        <div class="method">
+        <div v-if="order.score > 0" class="method">
           <div class="price">
             <span class="name">积分抵扣：</span>
             <span class="value">{{ buyNum * order.score }} 积分</span>
@@ -23,7 +23,10 @@
 
         <div
           class="method"
-          v-if="calc(`${buyNum}*${order.price}`) <= order.user.wallet"
+          v-if="
+            order.price > 0 &&
+              calc(`${buyNum}*${order.price}`) <= order.user.wallet
+          "
         >
           <div class="price">
             <span class="name">余额支付：</span>
@@ -34,7 +37,7 @@
             <span class="value">{{ order.user.wallet }}元</span>
           </div>
         </div>
-        <div class="method" v-else>
+        <div class="method" v-else-if="order.price > 0">
           <div class="price">
             <span class="name">微信支付：</span>
             <span class="value">{{ calc(`${buyNum}*${order.price}`) }}元</span>
@@ -111,7 +114,7 @@ export default {
 
     onSubmit() {
       const { buyNum, order, user, address } = this
-      const { id, price, score } = order
+      const { id, price, score, sellType } = order
 
       if (!address.address || address.address.length === 0) {
         this.$toast('请选择自提门店')
@@ -125,13 +128,15 @@ export default {
 
       const { openId } = user
       const totalPrice = calc(`${buyNum} * ${price}`)
+      const balancePay = calc(`${buyNum}*${order.price}`) <= order.user.wallet
+      const payType = sellType === 0 ? 1 : balancePay ? 0 : 2
 
       this.$http
         .post('/api-wxmp/cxxz/scorePay//createOrder', {
           mchId: '100000001',
           channelId: 1,
           fromType: 1,
-          payType: 2,
+          payType,
           goodsId: id,
           goodsType: 'JFSC',
           goodsSize: buyNum,

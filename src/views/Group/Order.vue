@@ -21,6 +21,15 @@
       :value="Math.max(0, calc(`${order.price}-${ticket}`))"
       @submit="onSubmit"
     />
+
+    <van-dialog
+      v-model="verificationCodeShow"
+      :showConfirmButton="false"
+      closeOnPopstate
+      closeOnClickOverlay
+    >
+      <verification-code />
+    </van-dialog>
   </div>
 </template>
 
@@ -32,6 +41,7 @@ import OrderDistribution from '@/components/OrderDistribution'
 import OrderPrice from '@/components/OrderPrice'
 import OrderPay from '@/components/OrderPay'
 import OrderSubmit from '@/components/OrderSubmit'
+import VerificationCode from '@/components/VerificationCode'
 
 export default {
   components: {
@@ -40,6 +50,7 @@ export default {
     OrderPrice,
     OrderPay,
     OrderSubmit,
+    VerificationCode,
   },
 
   computed: mapGetters(['user']),
@@ -61,6 +72,7 @@ export default {
       ticket: 0,
       ticketId: '',
       payMethod: 2,
+      verificationCodeShow: false,
     }
   },
 
@@ -103,12 +115,21 @@ export default {
     },
 
     onSubmit() {
-      const { address, payMethod, ticketId, ticket, buyNum } = this
-
-      if (!address.address || address.address.length === 0) {
-        this.$toast('请选择自提门店')
+      if (this.payMethod !== 0) {
+        this.submit()
         return
       }
+      this.verificationCodeShow = true
+    },
+
+    submit() {
+      const { address, payMethod, ticketId, ticket, buyNum } = this
+
+      if (payMethod === 0)
+        if (!address.address || address.address.length === 0) {
+          this.$toast('请选择自提门店')
+          return
+        }
 
       const { id, price } = this.order
       const { openId } = this.user

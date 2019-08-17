@@ -17,7 +17,7 @@
           <div v-if="!point" class="price">￥{{ order.price * value }}</div>
           <div v-else class="price price-point">
             <span>{{ order.score * value }}积分</span>
-            <span class="money"
+            <span v-if="order.price > 0" class="money"
               >+￥{{ calc(`${value} * ${order.price}`) }}</span
             >
           </div>
