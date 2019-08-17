@@ -11,7 +11,6 @@ export default {
 
   created() {
     const { code } = this.$route.query
-    console.log(code)
     this.$http
       .post('/api-wxmp/wxmp-anon/client/credentials', {
         code: code,
