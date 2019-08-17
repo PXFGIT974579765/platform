@@ -78,7 +78,6 @@
 <script>
 import { curDate } from '@/lib/format'
 import { mapGetters, mapActions } from 'vuex'
-import local from '@/lib/local'
 
 export default {
   computed: mapGetters(['user']),
@@ -151,9 +150,13 @@ export default {
       if (endTime.length != 19) {
         this.condition.endTime = `${curDate()} ${endTime}:00`
       }
+      const school = this.condition.schools.find(
+        item => item.schoolId == this.condition.schoolId
+      )
       this.$http
         .post('/api-wxmp/cxxz/distriButtion/receivingOrder', {
           userId: this.user.userId,
+          address: school.schoolName || '',
           schoolId: this.condition.schoolId,
           startTime: this.condition.startTime,
           endTime: this.condition.endTime,
@@ -162,7 +165,6 @@ export default {
         .then(({ data }) => {
           if (data.resp_code == 0) {
             this.setUser(data.datas.user)
-            local.set('runner', this.condition)
             this.$router.push('/my/distribution')
           } else {
             this.$toast.fail('系统繁忙')

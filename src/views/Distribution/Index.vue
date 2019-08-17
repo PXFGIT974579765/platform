@@ -16,15 +16,15 @@
           <div class="condition flex">
             <div>
               <span class="iconfont">&#xe74f;</span>
-              <span>{{ schoolFilter(runner.schoolId) }}</span>
+              <span>{{ onduty.address }}</span>
             </div>
           </div>
           <div class="condition flex">
             <div>
               <span class="iconfont">&#xe74c;</span>
               <span>
-                今天 {{ runner.startTime.slice(10, 16) }} -
-                {{ runner.endTime.slice(10, 16) }}
+                今天 {{ onduty.startTime.slice(10, 16) }} -
+                {{ onduty.endTime.slice(10, 16) }}
               </span>
             </div>
             <div class="btn-switch-block flex">
@@ -56,7 +56,6 @@
 <script>
 import NewOrderNotifyCard from './components/NewOrderNotifyCard'
 import { mapGetters, mapActions } from 'vuex'
-import local from '@/lib/local'
 
 export default {
   computed: mapGetters(['user']),
@@ -70,19 +69,31 @@ export default {
       runner: {},
       hasMsg: false,
       distriOrderId: '',
+      onduty: {},
     }
   },
   created() {
     if (this.user.onlineStatus == 1) {
       this.checked = false
       this.fetchOrder()
+      this.checkOnline()
     } else {
       this.checked = false
     }
-    this.runner = local.get('runner')
   },
   methods: {
     ...mapActions(['setUser']),
+    checkOnline() {
+      this.$http.get('/api-wxmp/cxxz/distriButtion/check').then(({ data }) => {
+        if (data.resp_code == 0) {
+          const { onduty, user } = data.datas
+          this.onduty = onduty
+          this.setUser(user)
+        } else {
+          this.$toast.fail('系统繁忙')
+        }
+      })
+    },
     routeCondition() {
       this.$router.push('/my/distribution/condition')
     },
@@ -115,10 +126,6 @@ export default {
             }
           })
       }
-    },
-    schoolFilter(schoolId) {
-      const school = this.runner.schools.find(item => item.schoolId == schoolId)
-      return school && school.schoolName
     },
     // 查看是否有新订单
     fetchOrder() {

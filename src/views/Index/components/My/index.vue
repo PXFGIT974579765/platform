@@ -2,7 +2,12 @@
   <div class="page-my">
     <info-card :hasSearch="false" />
 
-    <van-notice-bar :text="notice" left-icon="volume-o" mode="closeable" />
+    <van-notice-bar
+      :text="notice"
+      v-if="notice"
+      left-icon="volume-o"
+      mode="closeable"
+    />
 
     <van-cell class="cell" title="我的订单" is-link to="/my/order-first">
       <span slot="icon" style="color:#07bfb7" class="iconfont icon"
