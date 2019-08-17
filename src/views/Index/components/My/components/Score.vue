@@ -32,7 +32,7 @@
                 'score',
               ]"
             >
-              {{ item.operateType === 0 ? `+${item.score}` : `-${item.score}` }}
+              {{ item.score > 0 ? `+${item.score}` : `${item.score}` }}
             </div>
             <div class="status">
               {{ item.operateType === 0 ? '收入' : '支出' }}
