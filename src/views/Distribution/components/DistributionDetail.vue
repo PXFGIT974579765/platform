@@ -88,8 +88,8 @@ export default {
       curSendNo: '', // 收货码
       id: '',
       info: {
-        startTime: '1500000000',
-        endTime: '1500000000',
+        startTime: '',
+        endTime: '',
         status: 0, // status 0 取货中 1已完成 2待评价 3已评价 4审核
       },
     }
@@ -124,7 +124,7 @@ export default {
         .then(({ data }) => {
           if (data.resp_code == 0) {
             this.$toast.success('订单已完成配送')
-            this.info.status = 1
+            this.fetchOrderDetail(this.id)
           } else {
             this.$toast.fail('系统繁忙')
           }
@@ -206,7 +206,7 @@ export default {
     }
 
     .getNo {
-      line-height: 30px;
+      padding: 30px;
       text-align: center;
       font-size: 18px;
       color: #0294fe;
