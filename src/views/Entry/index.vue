@@ -5,13 +5,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import local from '@/lib/local'
-// import store from '@/store'
 
 export default {
   computed: mapGetters(['user']),
 
   created() {
-    // store.dispatch('clearUser')
+    // localStorage.clear()
 
     if (this.user.id) {
       const redirectUrl = local.get('redirectUrl')
