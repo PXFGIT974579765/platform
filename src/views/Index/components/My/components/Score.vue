@@ -112,7 +112,7 @@ export default {
         })
     },
     onLoad() {
-      this.fetchList({ pageIndex: this.page + 1 })
+      this.fetchInfo({ pageIndex: this.page + 1 })
     },
   },
 }
