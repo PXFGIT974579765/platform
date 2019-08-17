@@ -38,12 +38,12 @@
         />
       </div>
 
-      <button v-if="!complete" class="group-btn" @click="onClick">
-        我要参团
-      </button>
-      <div v-else class="complete">
+      <div v-if="good.order && good.orderStatus == 1" class="complete">
         <span class="iconfont">&#xe75e;</span>已参团，等待满员
       </div>
+      <button v-if="!good.order" class="group-btn" @click="onClick">
+        我要参团
+      </button>
 
       <invitation wireframe @click="onShowShare">邀请好友参团</invitation>
     </div>
@@ -54,11 +54,14 @@
         <span>拼团成功，商品太受欢迎了</span>
       </p>
 
-      <div class="people">
-        <img class="people-item" src="~@/assets/images/errand_avatar.png" alt />
-        <img class="people-item" src="~@/assets/images/errand_avatar.png" alt />
-        <img class="people-item" src="~@/assets/images/errand_avatar.png" alt />
-        <img class="people-item" src="~@/assets/images/errand_avatar.png" alt />
+      <div v-if="people.length > 0" class="people">
+        <img
+          v-for="p in people.slice(0, 5)"
+          :key="p.orderId"
+          :src="p.headImgUrl"
+          class="people-item"
+          alt
+        />
         <div
           class="people-item people-stat"
           src="~@/assets/images/errand_avatar.png"
@@ -77,16 +80,19 @@
       </p>
       <p class="desc">退款金额已原路退回</p>
 
-      <div class="people">
-        <img class="people-item" src="~@/assets/images/errand_avatar.png" alt />
-        <img class="people-item" src="~@/assets/images/errand_avatar.png" alt />
-        <img class="people-item" src="~@/assets/images/errand_avatar.png" alt />
-        <img class="people-item" src="~@/assets/images/errand_avatar.png" alt />
+      <div v-if="people.length > 0" class="people">
+        <img
+          v-for="p in people.slice(0, 5)"
+          :key="p.orderId"
+          :src="p.headImgUrl"
+          class="people-item"
+          alt
+        />
         <div
           class="people-item people-stat"
           src="~@/assets/images/errand_avatar.png"
         >
-          4人
+          {{ people.length }}人
         </div>
       </div>
 

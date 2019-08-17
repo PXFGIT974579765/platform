@@ -28,7 +28,7 @@
       closeOnPopstate
       closeOnClickOverlay
     >
-      <verification-code />
+      <verification-code @close="onCloseCode" />
     </van-dialog>
   </div>
 </template>
@@ -87,6 +87,10 @@ export default {
   methods: {
     calc,
 
+    onCloseCode() {
+      this.verificationCodeShow = false
+    },
+
     onTicketChange(ticket) {
       this.ticket = ticket.value
       this.ticketId = ticket.id
@@ -115,21 +119,21 @@ export default {
     },
 
     onSubmit() {
-      if (this.payMethod !== 0) {
-        this.submit()
-        return
-      }
-      this.verificationCodeShow = true
+      this.submit()
+      // if (this.payMethod !== 0) {
+      //   this.submit()
+      //   return
+      // }
+      // this.verificationCodeShow = true
     },
 
     submit() {
       const { address, payMethod, ticketId, ticket, buyNum } = this
 
-      if (payMethod === 0)
-        if (!address.address || address.address.length === 0) {
-          this.$toast('请选择自提门店')
-          return
-        }
+      if (!address.address || address.address.length === 0) {
+        this.$toast('请选择自提门店')
+        return
+      }
 
       const { id, price } = this.order
       const { openId } = this.user
@@ -154,7 +158,8 @@ export default {
           isUseCoupon: ~~hasTicket,
           couponNo: hasTicket ? ticketId : null,
           couponMoney: ticket,
-          payCode: '',
+          // TODO: code
+          payCode: '123456',
           openId,
           address: address.address,
           addressId: address.id,
