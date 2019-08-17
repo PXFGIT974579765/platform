@@ -105,6 +105,7 @@ export default {
   data() {
     return {
       detail: {},
+      people: [],
     }
   },
 
@@ -125,6 +126,14 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.detail = data.datas
+          }
+        })
+
+      this.$http
+        .post('/cxxz/order/getHDUser', { goodsId: this.$route.params.id })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.people = data.datas
           }
         })
     },

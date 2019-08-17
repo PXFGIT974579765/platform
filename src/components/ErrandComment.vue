@@ -11,43 +11,55 @@
     <div class="result">满意</div>
 
     <div class="detail clearfix">
-      <div class="item-wrap">
-        <div class="item">服务态度好</div>
-      </div>
-      <div class="item-wrap">
-        <div class="item active">配送及时</div>
-      </div>
-      <div class="item-wrap">
-        <div class="item">配送及时</div>
-      </div>
-      <div class="item-wrap">
-        <div class="item">服务态度好</div>
-      </div>
-      <div class="item-wrap">
-        <div class="item">配送及时</div>
-      </div>
-      <div class="item-wrap">
-        <div class="item">配送及时</div>
+      <div v-for="(t, i) in tags" :key="t.tag" class="item-wrap">
+        <div :class="['item', { active: t.selected }]" @click="onClick(i)">
+          {{ t.tag }}
+        </div>
       </div>
     </div>
 
     <div class="submit">
-      <button>提交评价</button>
+      <button @click="onSubmit">提交评价</button>
     </div>
   </div>
 </template>
 
 <script>
 export default {
+  props: {
+    user: {
+      type: Object,
+    },
+  },
+
   data() {
     return {
       ratings: 0,
+      tags: [],
     }
+  },
+
+  created() {
+    this.$http.get('/api-wxmp/cxxz/comment/tag/list').then(({ data }) => {
+      if (data.resp_code === 0) {
+        this.tags = data.datas.tags.map(t => ({ tag: t, selected: false }))
+      }
+    })
   },
 
   methods: {
     onClose() {
       this.$emit('close')
+    },
+
+    onClick(index) {
+      const value = this.tags[index]
+      this.$set(this.tags, index, { ...value, selected: !value.selected })
+    },
+
+    onSubmit() {
+      const { ratings, tags } = this
+      this.$emit('comment', { ratings, tags: tags.filter(t => t.selected) })
     },
   },
 }

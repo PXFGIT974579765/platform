@@ -48,7 +48,7 @@
       closeOnPopstate
       closeOnClickOverlay
     >
-      <errand-comment @close="onClose" />
+      <errand-comment :user="order" @close="onClose" @comment="onComment" />
     </van-dialog>
   </div>
 </template>
@@ -115,6 +115,21 @@ export default {
 
     toText(value) {
       return status[value].text
+    },
+
+    onComment({ ratings, tags }) {
+      this.$http
+        .post('/api-wxmp/cxxz/comment/save', {
+          rates: ratings,
+          commContent: JSON.stringify(tags),
+          distributionId: this.order.distributionNo,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.$toast('评论成功')
+            this.show = false
+          }
+        })
     },
   },
 }

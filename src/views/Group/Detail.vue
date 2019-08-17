@@ -80,6 +80,7 @@ export default {
       complete: false,
       shareShow: false,
       good: {},
+      people: [],
     }
   },
 
@@ -100,6 +101,14 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.good = data.datas
+          }
+        })
+
+      this.$http
+        .post('/cxxz/order/getPTUser', { goodsId: this.$route.params.id })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.people = data.datas
           }
         })
     },
