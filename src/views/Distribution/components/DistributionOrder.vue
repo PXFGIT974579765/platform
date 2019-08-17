@@ -23,6 +23,8 @@
           v-model="loading"
           :finished="finished"
           finished-text="没有更多了"
+          :error.sync="error"
+          error-text="请求失败，点击重新加载"
           @load="onLoad"
         >
           <div
@@ -38,6 +40,7 @@
 
     <AppraiseDialog
       :showDialog="showDialog"
+      :tags="tags"
       :info="appraise"
       @onCancel="onCancel"
     />
@@ -60,9 +63,10 @@ export default {
       active: -1,
       showDialog: false,
       page: 1,
+      count: 0,
+      error: false,
       finished: false,
       loading: true,
-      keyword: '',
       name: '全部',
       statusList: [
         {
@@ -86,6 +90,7 @@ export default {
           value: 3,
         },
       ],
+      tags: [],
       distributions: [],
       appraise: {
         createTime: '',
@@ -96,33 +101,66 @@ export default {
   },
   created() {
     this.fetchList({ pageIndex: this.page })
+    this.fetchTags()
   },
   methods: {
-    startFetch() {
+    init() {
+      this.page = 1
+      this.count = 0
+      this.error = false
       this.finished = false
-      this.loading = true
+      this.distributions = []
     },
-    endFetch() {
-      this.finished = true
+    startLoading() {
+      this.loading = true
+      this.error = false
+    },
+
+    stopLoading() {
       this.loading = false
     },
+
+    finishCheck() {
+      const { count, distributions } = this
+      if (distributions.length >= count) {
+        this.finished = true
+      }
+    },
+    fetchTags() {
+      this.$http.get('/api-wxmp/cxxz/comment/tag/list').then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.tags = data.datas.tags.map(t => ({ tag: t, selected: false }))
+        }
+      })
+    },
     // 拉去订单信息
-    fetchList({ pageIndex = 1, pageSize = 10, status = -1 }) {
-      this.startFetch()
+    fetchList({ pageIndex = 1, pageSize = 10, status }) {
+      this.startLoading()
+
       this.$http
         .post('/api-wxmp/cxxz/distriButtion/order/findMyDistriOrderPage', {
-          params: {
-            pageIndex,
-            pageSize,
-            status,
-          },
+          pageIndex,
+          pageSize,
+          status,
         })
         .then(({ data }) => {
-          if (data.resp_code === 0) {
-            this.endFetch()
-            this.distributions = []
-            this.distributions = data.datas.data
+          this.stopLoading()
+
+          if (data.resp_code !== 0) {
+            this.error = true
+            return
           }
+
+          const { pageIndex, count } = data.datas
+          this.page = pageIndex
+          this.count = count
+          this.distributions = this.distributions.concat(data.datas.data)
+
+          this.finishCheck()
+        })
+        .catch(() => {
+          this.error = true
+          this.stopLoading()
         })
     },
     // 上拉加载更多
@@ -130,12 +168,17 @@ export default {
       this.fetchList({ pageIndex: this.page + 1 })
     },
     onClick(_, title) {
-      if (this.name == title) {
-        return
-      }
+      if (this.name == title) return
+
+      this.init()
       this.name = title
       const status = this.statusList.find(item => item.name == title).value
-      this.fetchList({ status })
+
+      if (status == -1) {
+        this.fetchList({})
+      } else {
+        this.fetchList({ status })
+      }
     },
 
     // 关掉评价窗口

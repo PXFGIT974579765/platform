@@ -82,18 +82,11 @@ export default {
         }
       },
     },
+    tags: Array,
   },
   data() {
     return {
       appraise: this.info,
-      rateList: [
-        '服务态度好',
-        '配送及时',
-        '外貌整洁',
-        '说话文明',
-        '服务态度好1',
-        '服务态度好2',
-      ],
     }
   },
   methods: {
@@ -104,13 +97,13 @@ export default {
       return this.appraise.commContent.includes(value)
     },
     index0() {
-      return this.rateList.filter((item, index) => index % 3 === 0)
+      return this.tags.filter((item, index) => index % 3 === 0)
     },
     index1() {
-      return this.rateList.filter((item, index) => index % 3 === 1)
+      return this.tags.filter((item, index) => index % 3 === 1)
     },
     index2() {
-      return this.rateList.filter((item, index) => index % 3 === 2)
+      return this.tags.filter((item, index) => index % 3 === 2)
     },
   },
   filters: {

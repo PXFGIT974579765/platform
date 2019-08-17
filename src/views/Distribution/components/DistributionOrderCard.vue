@@ -1,15 +1,15 @@
 <template>
   <div class="comp-order-distribution-card" v-wechat-title="$route.meta.title">
-    <router-link :to="'/order/goods-detail/' + order.orderNo">
+    <router-link :to="'/order/goods-detail/' + order.id">
       <div class="header flex">
-        <span class="order-no">跑腿编号: {{ order.distributionNo }}</span>
-        <span v-if="showStatus" class="status">{{
-          order.status | statusFilter
-        }}</span>
+        <span class="order-no">跑腿编号: {{ order.orderId }}</span>
+        <span v-if="showStatus" class="status">
+          {{ order.status | statusFilter }}
+        </span>
       </div>
       <div class="content flex">
         <img :src="order.goodsImg" />
-        <div class="content-right flex">
+        <div class="content-right flex flex-1">
           <div class="detail flex-col">
             <span class="title">{{ order.goodsName }}</span>
           </div>
@@ -23,8 +23,10 @@
     <div class="footer">
       <div class="total">共 1 件商品 合计: ￥{{ order.distributionPrice }}</div>
       <div class="btn-area">
-        <span v-if="order.status == 5" class="btn">待评价</span>
-        <span v-else class="btn" @click="onShowDialog(order.id)">已评价</span>
+        <span v-if="order.status !== 5" class="btn">用户未评价</span>
+        <span v-else class="btn" @click="onShowDialog(order.orderId)"
+          >已评价</span
+        >
         <router-link :to="'/my/distribution-detail/' + order.id" class="btn"
           >查看详情</router-link
         >
@@ -39,6 +41,7 @@ const ORDER_STATUS = {
   1: '派送中',
   2: '已完成',
   3: '已完成',
+  5: '已评价',
 }
 
 // const APPRAISE_STATUS = 5
@@ -52,17 +55,7 @@ export default {
     order: {
       type: Object,
       default: function() {
-        return {
-          orderNo: '',
-          imgUrl: '',
-          title: '',
-          tagName: '',
-          tagDesc: '',
-          num: 1, // 数量
-          price: 0, // 单价
-          amount: 0, // 总金额 = 单价*数量
-          status: 0,
-        }
+        return {}
       },
     },
   },
@@ -107,6 +100,7 @@ export default {
 
     .content-right {
       margin-left: 11px;
+      justify-content: space-between;
 
       .detail {
         margin-right: 15px;
@@ -156,8 +150,7 @@ export default {
       .btn {
         display: inline-block;
         margin-left: 12px;
-        width: 75px;
-        height: 30px;
+        padding: 1px 9px;
         line-height: 30px;
         border-radius: 15px;
         text-align: center;
