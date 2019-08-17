@@ -84,7 +84,11 @@ export default {
   },
 
   created() {
-    this.fetchData()
+    if (this.$route.query.order) {
+      this.fetchDataByOrderId()
+    } else {
+      this.fetchData()
+    }
   },
 
   watch: {
@@ -112,8 +116,20 @@ export default {
         })
     },
 
+    fetchDataByOrderId() {
+      this.$http
+        .post('/api-wxmp/cxxz/order/getPTSC', {
+          orderId: this.$route.query.order,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            // this.goods = data.datas
+          }
+        })
+    },
+
     onSubmit() {
-      const { buyNum, order, user, address } = this
+      const { buyNum, order, address, user } = this
       const { id, price, score, sellType } = order
 
       if (!address.address || address.address.length === 0) {
@@ -121,7 +137,7 @@ export default {
         return
       }
 
-      if (score > user.integral) {
+      if (score > order.user.integral) {
         this.$toast('积分不足')
         return
       }
@@ -149,16 +165,23 @@ export default {
           isUseCoupon: 0,
           couponNo: null,
           couponMoney: 0,
-          payCode: '',
+          // TODO: code
+          payCode: '123456',
           openId,
           address: address.address,
           addressId: address.id,
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
-            this.pay(data.datas)
+            if (payType === 1 || payType === 0) {
+              this.$toast(payType === 1 ? '兑换成功' : '支付成功')
+              this.$router.push('/order/goods')
+            } else {
+              this.pay(data.datas)
+            }
             return
           }
+          this.$toast(data.resp_msg)
         })
     },
 
