@@ -188,9 +188,15 @@ export default {
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
-            this.pay(data.datas)
+            if (payMethod === 0) {
+              this.$toast('支付成功')
+              this.$router.push('/errand/orders')
+            } else {
+              this.pay(data.datas)
+            }
             return
           }
+          this.$toast(data.resp_msg)
         })
     },
 
