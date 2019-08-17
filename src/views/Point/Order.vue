@@ -2,7 +2,7 @@
   <div class="order">
     <order-good :order="order" :value="buyNum" @change="onNumChange" point />
 
-    <order-distribution :value="address.address" @change="onAddressChange" />
+    <order-distribution :value="address.id" @change="onAddressChange" />
 
     <div class="pay">
       <div class="pay-header">

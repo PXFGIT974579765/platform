@@ -171,6 +171,7 @@ export default {
   margin: 15px 0;
 
   &-item {
+    text-align: center;
     background-color: #ffffff;
     border-radius: 4px;
   }
