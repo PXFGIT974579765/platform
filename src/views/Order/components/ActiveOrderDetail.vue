@@ -186,7 +186,7 @@ export default {
               this.fetchOrderDetail(this.active.orderId)
               return
             } else {
-              this.$toast(data.resp_msg)
+              this.$toast('系统繁忙')
             }
           })
       }

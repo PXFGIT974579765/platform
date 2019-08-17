@@ -143,7 +143,7 @@ export default {
             this.$toast.success('保存成功')
             this.$router.push('/my/address-list')
           } else {
-            this.$toast.fail(data.resp_msg)
+            this.$toast.fail('系统繁忙')
           }
         })
     },

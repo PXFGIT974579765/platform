@@ -111,7 +111,7 @@ export default {
             this.fetchMyApps()
             return
           }
-          Toast.fail(data.resp_msg)
+          Toast.fail('系统繁忙')
         })
     },
   },
