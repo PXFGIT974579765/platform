@@ -80,12 +80,21 @@
     </div>
 
     <div class="submit">
-      <button class="sign" @click="onSubmit">立即报名</button>
-      <!-- <button class="check">
+      <button v-if="!detail.order" class="sign" @click="onSubmit">
+        立即报名
+      </button>
+      <button v-if="detail.order && detail.order.isScanSign == 0" class="check">
         <span class="iconfont">&#xe746;</span>现场扫码签到
       </button>
-      <button class="check checked">已扫码签到</button>
-      <button class="end">活动结束，请对本次活动进行评价！</button>-->
+      <button
+        v-if="detail.order && detail.order.isScanSign == 1"
+        class="check checked"
+      >
+        已扫码签到
+      </button>
+      <button v-if="detail.status == 2" class="end">
+        活动结束，请对本次活动进行评价！
+      </button>
     </div>
   </div>
 </template>
@@ -276,14 +285,19 @@ export default {
 
 .peoples {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 20px;
 }
 
 .people-item {
   width: 40px;
   height: 40px;
+  margin-right: 10px;
   border-radius: 100%;
+
+  &:last-child {
+    margin-right: 0;
+  }
 }
 
 .intro {

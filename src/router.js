@@ -35,8 +35,6 @@ import ErrandOrders from './views/Errand/Orders'
 // 拼团
 import GroupIndex from './views/Group/Index'
 import GroupDetail from './views/Group/Detail'
-import GroupSuccess from './views/Group/GroupSuccess'
-import GroupFailure from './views/Group/GroupFailure'
 import GroupOrder from './views/Group/Order'
 
 // 订单
@@ -238,16 +236,6 @@ const group = [
     path: '/group/detail/:id',
     name: 'group/detail/:id',
     component: GroupDetail,
-  },
-  {
-    path: '/group/order_success',
-    name: 'group/order_success',
-    component: GroupSuccess,
-  },
-  {
-    path: '/group/order_failure',
-    name: 'group/order_failure',
-    component: GroupFailure,
   },
   {
     path: '/group/order/:id',

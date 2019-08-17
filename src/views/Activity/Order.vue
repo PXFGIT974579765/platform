@@ -118,7 +118,8 @@ export default {
           isUseCoupon: ~~hasTicket,
           couponNo: hasTicket ? ticketId : null,
           couponMoney: ticket,
-          payCode: '',
+          // TODO: code
+          payCode: '111222',
           openId,
         })
         .then(({ data }) => {
