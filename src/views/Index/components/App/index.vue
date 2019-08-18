@@ -15,9 +15,13 @@
             :href="app.appUrl"
             :style="{ 'background-image': `url(${app.appImg})` }"
           >
-            <div class="app-name">共享打印</div>
-            <div class="app-desc">一键发送 送货上门</div>
-            <button v-if="editable" class="editing" @click="onRemove(app.id)">
+            <div class="app-name">{{ app.appName }}</div>
+            <div class="app-desc">{{ app.appDescribe }}</div>
+            <button
+              v-if="editable"
+              class="editing"
+              @click.stop.prevent="onRemove(app.setId)"
+            >
               <span class="iconfont">&#xe72b;</span>
             </button>
           </a>
@@ -108,10 +112,11 @@ export default {
       return this.$http
         .post('/api-wxmp/cxxz/app/subOrUnSubscribeApp', {
           setId,
-          isSub,
+          isSub, // 0 取消 1 订阅
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
+            Toast.success('操作成功')
             this.fetchMyApps()
             return
           }

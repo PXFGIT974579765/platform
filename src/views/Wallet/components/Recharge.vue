@@ -24,7 +24,7 @@
         </div>
       </div>
       <div class="btn-area">
-        <div class="btn" @click="onSubmit">确认充值</div>
+        <div class="btn" @click="onSubmit">{{ btnName }}</div>
       </div>
     </div>
     <div class="footer" @click="routeRecord">查看我的充值记录</div>
@@ -38,6 +38,7 @@ export default {
   data() {
     return {
       money: null,
+      btnName: '确认充值',
       wallet: {
         coin: 564.0,
         curMonIn: 129,
@@ -59,6 +60,10 @@ export default {
       if (!this.money || parseFloat(this.money) == 0) {
         return
       }
+      if (this.btnName == 'loading...') {
+        return
+      }
+      this.btnName = 'loading...'
       this.$http
         .post('/api-wxmp/cxxz/depositPay/createOrder', {
           mchId: '100000001',
@@ -71,6 +76,10 @@ export default {
           if (data.resp_code === 0) {
             this.pay(data.datas)
             return
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
+          } else {
+            this.$toast.fail('系统繁忙')
           }
         })
     },
@@ -82,10 +91,15 @@ export default {
           if (data.resp_code === 0) {
             const { userInfo } = data.datas
             this.setUser(userInfo)
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
+            this.btnName = '确认充值'
           } else {
             this.$toast.fail('系统繁忙')
+            this.btnName = '确认充值'
           }
           this.$router.push('/my/wallet')
+          this.btnName = '确认充值'
         })
     },
 

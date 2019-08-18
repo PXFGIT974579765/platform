@@ -94,6 +94,8 @@ export default {
             const keys = Object.keys(scoreSetting).sort()
             this.sign.scoreSetting = scoreSetting
             this.sign.keys = keys
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
           } else {
             this.$toast.fail('系统繁忙')
           }
@@ -165,6 +167,8 @@ export default {
             this.setUser(this.user)
             this.$toast.success('签到成功')
             this.fetchInfo()
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
           } else {
             this.$toast.fail('系统繁忙')
           }

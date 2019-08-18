@@ -189,6 +189,8 @@ export default {
             this.appraise = data.datas
             this.appraise.status = 80
             this.showDialog = true
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
           } else {
             this.$toast.fail('系统繁忙')
           }
@@ -212,6 +214,8 @@ export default {
           if (data.resp_code == 0) {
             this.showDialog = false
             this.goods.orderStatus = 80
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
           } else {
             this.$toast.fail('系统繁忙')
           }

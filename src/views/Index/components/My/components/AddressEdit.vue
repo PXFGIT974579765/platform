@@ -142,6 +142,8 @@ export default {
           if (data.resp_code == 0) {
             this.$toast.success('保存成功')
             this.$router.push('/my/address-list')
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
           } else {
             this.$toast.fail('系统繁忙')
           }

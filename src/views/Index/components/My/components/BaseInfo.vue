@@ -299,6 +299,8 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.departmentList = data.datas
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
           } else {
             this.$toast.fail('系统繁忙')
           }
@@ -319,6 +321,8 @@ export default {
           if (data.resp_code === 0) {
             this.$toast.success('保存成功')
             this.setUser(this.user)
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
           } else {
             this.$toast.fail('系统繁忙')
           }

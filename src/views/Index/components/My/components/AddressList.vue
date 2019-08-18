@@ -57,6 +57,8 @@ export default {
               item => item.defultStatus == 1
             )
             this.defaultAddressId = defualtAddr.id
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
           } else {
             this.$toast.fail('系统繁忙')
           }
@@ -94,6 +96,8 @@ export default {
         .then(({ data }) => {
           if (data.resp_code == 0) {
             this.$toast.success('设置成功')
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
           } else {
             this.$toast.fail('系统繁忙')
           }
@@ -111,6 +115,8 @@ export default {
             this.$toast.success('删除成功')
             const addresses = this.addressList.filter(item => item.id != id)
             this.addressList = addresses
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
           } else {
             this.$toast.fail('系统繁忙')
           }

@@ -217,6 +217,8 @@ export default {
             this.$toast.success('保存成功')
             this.activeTab = '1'
             this.fetchComplain({})
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
           } else {
             this.$toast.fail('系统繁忙')
           }

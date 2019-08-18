@@ -62,6 +62,7 @@ export default {
     return {
       active: -1,
       showDialog: false,
+      keyword: '',
       page: 1,
       count: 0,
       error: false,
@@ -197,6 +198,8 @@ export default {
           if (data.resp_code == 0) {
             this.appraise = data.datas
             this.showDialog = true
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
           } else {
             this.$toast.fail('系统繁忙')
           }
