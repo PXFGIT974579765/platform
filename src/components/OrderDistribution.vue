@@ -2,22 +2,22 @@
   <div class="distribution">
     <div class="header">
       <div class="title">配送方式</div>
-      <div class="method" @click="onSelect">选择自提门店</div>
-      <van-icon name="arrow" color="#a8a8a8" />
+      <div v-if="!repay" class="method" @click="onSelect">选择自提门店</div>
+      <van-icon v-if="!repay" name="arrow" color="#a8a8a8" />
       <!-- <div class="link">说明</div> -->
     </div>
 
-    <div v-if="addres.id" class="detail">
+    <div v-if="address.id" class="detail">
       <div class="item">
         <div class="item-name">自提地点:</div>
-        <div class="item-value">{{ addres.address }}</div>
+        <div class="item-value">{{ address.address }}</div>
       </div>
       <div class="item">
         <div class="item-name">联系客服:</div>
         <div class="item-value">
-          <div class="name">{{ addres.name }}</div>
-          <span class="phone">{{ addres.phone }}</span>
-          <a class="call" :href="`tel:${addres.phone}`">
+          <div class="name">{{ address.name }}</div>
+          <span class="phone">{{ address.phone }}</span>
+          <a class="call" :href="`tel:${address.phone}`">
             <span class="iconfont">&#xe747;</span>
           </a>
         </div>
@@ -34,7 +34,7 @@
         <van-icon name="cross" :size="16" class="close" @click="onClose" />
 
         <div class="addres-list">
-          <van-radio-group :value="value">
+          <van-radio-group :value="address.id">
             <van-radio
               v-for="a in addressList"
               :key="a.id"
@@ -61,16 +61,18 @@
 <script>
 export default {
   props: {
-    value: {
-      type: String,
-      default: '',
+    repay: {
+      type: Boolean,
+      default: false,
+    },
+    address: {
+      type: Object,
     },
   },
 
   data() {
     return {
       addressShow: false,
-      addres: {},
       addressList: [],
     }
   },
@@ -96,10 +98,9 @@ export default {
       this.addressShow = false
     },
 
-    onClick(addres) {
+    onClick(address) {
       this.addressShow = false
-      this.addres = addres
-      this.$emit('change', addres)
+      this.$emit('change', address)
     },
   },
 }

@@ -58,18 +58,33 @@
       </div>
       <button :disabled="disabled" @click="onSubmit">提交订单</button>
     </div>
+
+    <van-dialog
+      v-model="verificationCodeShow"
+      :showConfirmButton="false"
+      closeOnPopstate
+      closeOnClickOverlay
+    >
+      <verification-code
+        :user="order.user"
+        @close="onCloseCode"
+        @submit="onGetCode"
+      />
+    </van-dialog>
   </div>
 </template>
 
 <script>
 import PersonCard from './components/PersonCard'
 import Good from './components/Good'
+import VerificationCode from '@/components/VerificationCode'
 import { mapGetters } from 'vuex'
 
 export default {
   components: {
     PersonCard,
     Good,
+    VerificationCode,
   },
 
   computed: mapGetters(['user']),
@@ -85,6 +100,7 @@ export default {
       wallet: 0,
       send: {},
       disabled: false,
+      verificationCodeShow: false,
     }
   },
 
@@ -145,13 +161,39 @@ export default {
     },
 
     onSubmit() {
-      const { send, price, payMethod, comment } = this
+      const { send, payMethod } = this
+
+      // if (order.user.isPerfect != 1) {
+      //   this.$toast('请先完善个人信息')
+      //   window.setTimeout(() => {
+      //     this.$router.push('/my/base-info')
+      //   }, 3000)
+      //   return
+      // }
 
       if (!send.address || send.address.length === 0) {
         this.$toast('请选择送货地址')
         return
       }
 
+      if (payMethod == 0) {
+        this.verificationCodeShow = true
+      } else {
+        this.submit()
+      }
+    },
+
+    onCloseCode() {
+      this.verificationCodeShow = false
+    },
+
+    onGetCode(payCode) {
+      this.verificationCodeShow = false
+      this.submit(payCode)
+    },
+
+    submit(payCode = '') {
+      const { send, price, payMethod, comment } = this
       const { user } = this.$route.query
       const { openId } = this.user
       const { pickUpAddress, pickUpAddressId, goodsId, orderId } = this.good
@@ -174,7 +216,7 @@ export default {
           isUseCoupon: 0,
           couponNo: null,
           couponMoney: 0,
-          payCode: '',
+          payCode,
           openId,
           spOrderId: orderId,
           distributionId: user,

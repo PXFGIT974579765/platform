@@ -101,7 +101,10 @@ export default {
     onClick(ticket) {
       this.ticketShow = false
       this.ticketDetail = ticket
-      this.$emit('change', ticket)
+      this.$emit(
+        'change',
+        ticket.value != this.ticket ? ticket : { id: '', value: 0 }
+      )
     },
   },
 }

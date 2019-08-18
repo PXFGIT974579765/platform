@@ -23,6 +23,14 @@
     </div>
 
     <div class="operation">
+      <router-link
+        v-if="order.status == 6"
+        class="link"
+        :to="
+          `/errand/order?user=${order.distributionNo}&order=${order.orderId}`
+        "
+        >付款</router-link
+      >
       <a
         v-if="order.status == 0 || order.status == 1"
         class="link"

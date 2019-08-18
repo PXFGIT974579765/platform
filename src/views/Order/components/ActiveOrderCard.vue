@@ -44,7 +44,7 @@
           <!-- 待付款对应的按钮 -->
           <router-link
             v-if="active.orderStatus == 0"
-            :to="`/activity/order/?order=${active.orderId}`"
+            :to="`/activity/order/${active.goodsId}?order=${active.orderId}`"
             class="btn"
             >付款</router-link
           >
