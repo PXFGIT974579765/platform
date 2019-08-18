@@ -26,7 +26,7 @@
         <!-- 待付款对应的按钮 -->
         <router-link
           v-if="group.orderStatus == 0"
-          :to="`/group/order?order=${group.orderId}`"
+          :to="`/group/order/${group.goodsId}?order=${group.orderId}`"
           class="btn"
           >付款</router-link
         >

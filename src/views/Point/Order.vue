@@ -49,6 +49,19 @@
     <div class="submit-wrap">
       <button @click="onSubmit" class="submit">立即兑换</button>
     </div>
+
+    <van-dialog
+      v-model="verificationCodeShow"
+      :showConfirmButton="false"
+      closeOnPopstate
+      closeOnClickOverlay
+    >
+      <verification-code
+        :user="order.user"
+        @close="onCloseCode"
+        @submit="onGetCode"
+      />
+    </van-dialog>
   </div>
 </template>
 
@@ -57,17 +70,20 @@ import { mapGetters } from 'vuex'
 import { calc } from '@/lib/format'
 import OrderGood from '@/components/OrderGood'
 import OrderDistribution from '@/components/OrderDistribution'
+import VerificationCode from '@/components/VerificationCode'
 
 export default {
   components: {
     OrderGood,
     OrderDistribution,
+    VerificationCode,
   },
 
   computed: mapGetters(['user']),
 
   data() {
     return {
+      orderId: null,
       order: {
         price: 0,
         score: 1,
@@ -80,12 +96,15 @@ export default {
         id: '',
       },
       buyNum: 1,
+      verificationCodeShow: false,
     }
   },
 
   created() {
-    if (this.$route.query.order) {
-      this.fetchDataByOrderId()
+    const orderId = this.$route.query.order
+    if (orderId) {
+      this.orderId = orderId
+      this.fetchDataByOrderId(orderId)
     } else {
       this.fetchData()
     }
@@ -116,10 +135,10 @@ export default {
         })
     },
 
-    fetchDataByOrderId() {
+    fetchDataByOrderId(orderId) {
       this.$http
         .post('/api-wxmp/cxxz/order/getPTSC', {
-          orderId: this.$route.query.order,
+          orderId,
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
@@ -129,8 +148,16 @@ export default {
     },
 
     onSubmit() {
-      const { buyNum, order, address, user } = this
-      const { id, price, score, sellType } = order
+      const { address, order, buyNum } = this
+      const { score, price } = order
+
+      // if (order.user.isPerfect != 1) {
+      //   this.$toast('请先完善个人信息')
+      //   window.setTimeout(() => {
+      //     this.$router.push('/my/base-info')
+      //   }, 3000)
+      //   return
+      // }
 
       if (!address.address || address.address.length === 0) {
         this.$toast('请选择自提门店')
@@ -142,6 +169,27 @@ export default {
         return
       }
 
+      const balancePay = calc(`${buyNum}*${order.price}`) <= order.user.wallet
+
+      if (price > 0 && balancePay) {
+        this.verificationCodeShow = true
+      } else {
+        this.submit()
+      }
+    },
+
+    onCloseCode() {
+      this.verificationCodeShow = false
+    },
+
+    onGetCode(payCode) {
+      this.verificationCodeShow = false
+      this.submit(payCode)
+    },
+
+    submit(payCode = '') {
+      const { buyNum, order, address, user } = this
+      const { id, price, score, sellType } = order
       const { openId } = user
       const totalPrice = calc(`${buyNum} * ${price}`)
       const balancePay = calc(`${buyNum}*${order.price}`) <= order.user.wallet
@@ -165,8 +213,7 @@ export default {
           isUseCoupon: 0,
           couponNo: null,
           couponMoney: 0,
-          // TODO: code
-          payCode: '123456',
+          payCode,
           openId,
           address: address.address,
           addressId: address.id,

@@ -1,8 +1,18 @@
 <template>
   <div>
-    <order-good :order="order" :value="buyNum" @change="onNumChange" />
+    <order-good
+      :order="order"
+      :value="buyNum"
+      @change="onNumChange"
+      :repay="!!orderId"
+      group
+    />
 
-    <order-distribution :value="address.address" @change="onAddressChange" />
+    <order-distribution
+      :address="address"
+      @change="onAddressChange"
+      :repay="!!orderId"
+    />
 
     <order-price
       :price="order.price"
@@ -61,6 +71,7 @@ export default {
 
   data() {
     return {
+      orderId: null,
       order: {
         title: '',
         price: 0,
@@ -71,8 +82,10 @@ export default {
       },
       buyNum: 1,
       address: {
-        address: '',
         id: '',
+        phone: '',
+        name: '',
+        address: '',
       },
       ticket: 0,
       ticketId: '',
@@ -82,7 +95,13 @@ export default {
   },
 
   created() {
-    this.fetchData()
+    const orderId = this.$route.query.order
+    if (orderId) {
+      this.orderId = orderId
+      this.fetchDataByOrderId(orderId)
+    } else {
+      this.fetchData()
+    }
   },
 
   watch: {
@@ -91,10 +110,6 @@ export default {
 
   methods: {
     calc,
-
-    onCloseCode() {
-      this.verificationCodeShow = false
-    },
 
     onTicketChange(ticket) {
       this.ticket = ticket.value
@@ -123,6 +138,34 @@ export default {
         })
     },
 
+    fetchDataByOrderId(orderId) {
+      this.$http
+        .post('/api-wxmp/cxxz/order/getPT', {
+          orderId,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            const d = data.datas
+            this.buyNum = d.goodsSize
+
+            this.order = {
+              ...d,
+              price: d.oneMoney,
+              name: d.goodsName,
+              score: d.score,
+              picUrl: d.goodsImg,
+            }
+
+            this.address = {
+              phone: '',
+              name: '',
+              address: d.address,
+              id: d.addressId,
+            }
+          }
+        })
+    },
+
     onSubmit() {
       const { address, payMethod } = this
 
@@ -139,23 +182,31 @@ export default {
         return
       }
 
-      if (payMethod !== 0) {
-        this.submit()
-        return
+      if (payMethod == 0) {
+        this.verificationCodeShow = true
+      } else {
+        this.orderId ? this.reSubmit() : this.submit()
       }
-      this.verificationCodeShow = true
+    },
+
+    onCloseCode() {
+      this.verificationCodeShow = false
     },
 
     onGetCode(payCode) {
       this.verificationCodeShow = false
-      this.submit(payCode)
+      this.orderId ? this.reSubmit(payCode) : this.submit(payCode)
     },
 
     submit(payCode = '') {
       const { address, payMethod, ticketId, ticket, buyNum } = this
       const { id, price } = this.order
       const { openId } = this.user
-      const hasTicket = !!(ticketId && String(ticketId).length > 0)
+      const hasTicket = !!(
+        ticket > 0 &&
+        ticketId &&
+        String(ticketId).length > 0
+      )
       const totalPrice = calc(`${buyNum} * ${price}`)
 
       this.$http
@@ -193,6 +244,55 @@ export default {
           }
           this.$toast(data.resp_msg)
         })
+    },
+
+    reSubmit() {
+      // reSubmit(payCode = '') {
+      // const { address, payMethod, ticketId, ticket, buyNum, orderId } = this
+      // const { id, price } = this.order
+      // const { openId } = this.user
+      // const hasTicket = !!(
+      //   ticket > 0 &&
+      //   ticketId &&
+      //   String(ticketId).length > 0
+      // )
+      // const totalPrice = calc(`${buyNum} * ${price}`)
+      // this.$http
+      //   .post('/api-wxmp/cxxz/pay/createPay', {
+      //     mchId: '100000001',
+      //     channelId: 1,
+      //     fromType: 1,
+      //     payType: payMethod,
+      //     orderId,
+      //     goodsId: id,
+      //     goodsType: 'PT',
+      //     goodsSize: buyNum,
+      //     orderMoney: totalPrice,
+      //     oneMoney: price,
+      //     money: Math.max(0, calc(`${price}-${this.ticket}`)),
+      //     isUseScore: 0,
+      //     score: 0,
+      //     scoreMoney: 0,
+      //     isUseCoupon: ~~hasTicket,
+      //     couponNo: hasTicket ? ticketId : null,
+      //     couponMoney: ticket,
+      //     payCode,
+      //     openId,
+      //     address: address.address,
+      //     addressId: address.id,
+      //   })
+      //   .then(({ data }) => {
+      //     if (data.resp_code === 0) {
+      //       if (payMethod === 0) {
+      //         this.$toast('支付成功')
+      //         this.$router.push('/order/group')
+      //       } else {
+      //         this.pay(data.datas)
+      //       }
+      //       return
+      //     }
+      //     this.$toast(data.resp_msg)
+      //   })
     },
 
     pay(opts) {

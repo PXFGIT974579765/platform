@@ -29,6 +29,19 @@
       :value="Math.max(0, calc(`${order.price}-${ticket}`))"
       @submit="onSubmit"
     />
+
+    <van-dialog
+      v-model="verificationCodeShow"
+      :showConfirmButton="false"
+      closeOnPopstate
+      closeOnClickOverlay
+    >
+      <verification-code
+        :user="order.user"
+        @close="onCloseCode"
+        @submit="onGetCode"
+      />
+    </van-dialog>
   </div>
 </template>
 
@@ -38,18 +51,21 @@ import { calc } from '@/lib/format'
 import OrderPrice from '@/components/OrderPrice'
 import OrderPay from '@/components/OrderPay'
 import OrderSubmit from '@/components/OrderSubmit'
+import VerificationCode from '@/components/VerificationCode'
 
 export default {
   components: {
     OrderPrice,
     OrderPay,
     OrderSubmit,
+    VerificationCode,
   },
 
   computed: mapGetters(['user']),
 
   data() {
     return {
+      orderId: null,
       order: {
         title: '',
         price: 0,
@@ -60,11 +76,18 @@ export default {
       ticket: 0,
       ticketId: '',
       payMethod: 2,
+      verificationCodeShow: false,
     }
   },
 
   created() {
-    this.fetchData()
+    const orderId = this.$route.query.order
+    if (orderId) {
+      this.orderId = orderId
+      this.fetchDataByOrderId(orderId)
+    } else {
+      this.fetchData()
+    }
   },
 
   watch: {
@@ -93,7 +116,46 @@ export default {
         })
     },
 
+    fetchDataByOrderId(orderId) {
+      this.$http
+        .post('/api-wxmp/cxxz/order/getHD', {
+          orderId,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.order = data.datas
+          }
+        })
+    },
+
     onSubmit() {
+      const { payMethod } = this
+
+      // if (order.user.isPerfect != 1) {
+      //   this.$toast('请先完善个人信息')
+      //   window.setTimeout(() => {
+      //     this.$router.push('/my/base-info')
+      //   }, 3000)
+      //   return
+      // }
+
+      if (payMethod == 0) {
+        this.verificationCodeShow = true
+      } else {
+        this.submit()
+      }
+    },
+
+    onCloseCode() {
+      this.verificationCodeShow = false
+    },
+
+    onGetCode(payCode) {
+      this.verificationCodeShow = false
+      this.submit(payCode)
+    },
+
+    submit(payCode = '') {
       const { payMethod, ticketId, ticket } = this
       const { id, price } = this.order
       const { openId } = this.user
@@ -118,8 +180,7 @@ export default {
           isUseCoupon: ~~hasTicket,
           couponNo: hasTicket ? ticketId : null,
           couponMoney: ticket,
-          // TODO: code
-          payCode: '111222',
+          payCode,
           openId,
         })
         .then(({ data }) => {

@@ -26,9 +26,9 @@
       </div>
     </div>
 
-    <div class="num">
+    <div v-if="!group" class="num">
       <div class="name">购买数量</div>
-      <van-stepper :value="value" @change="onChange" />
+      <van-stepper :disabled="repay" :value="value" @change="onChange" />
     </div>
   </div>
 </template>
@@ -38,6 +38,14 @@ import { calc } from '@/lib/format'
 
 export default {
   props: {
+    repay: {
+      type: Boolean,
+      default: false,
+    },
+    group: {
+      type: Boolean,
+      default: false,
+    },
     order: {
       type: Object,
       default: () => ({}),
