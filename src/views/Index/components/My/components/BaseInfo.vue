@@ -309,7 +309,7 @@ export default {
 
     // 提交修改
     onSubmit() {
-      if (!this.err.phone || !this.err.email) {
+      if (this.err.phone || this.err.email) {
         return
       }
       this.$http

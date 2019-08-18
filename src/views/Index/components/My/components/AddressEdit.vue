@@ -131,7 +131,7 @@ export default {
 
     // 提交保存
     onSubmit() {
-      if (!this.err.phone) {
+      if (this.err.phone) {
         return
       }
       this.$http

@@ -67,7 +67,7 @@ export default {
     routeAdd() {
       this.$router.push({
         path: '/my/address-edit',
-        name: 'index/my/address-add',
+        name: '/my/address-add',
         params: {},
       })
     },
@@ -75,7 +75,7 @@ export default {
       const address = this.addressList.find(item => item.id == id)
       this.$router.push({
         path: `/my/address-edit/${id}`,
-        name: 'index/my/address-edit',
+        name: '/my/address-edit',
         params: {
           address,
         },
