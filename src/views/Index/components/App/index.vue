@@ -39,7 +39,11 @@
           >
             <div class="app-name">{{ app.appName }}</div>
             <div class="app-desc">{{ app.appDescribe }}</div>
-            <button v-if="editable" class="editing" @click="onAdd(app.id)">
+            <button
+              v-if="editable"
+              class="editing"
+              @click.stop.prevent="onAdd(app.id)"
+            >
               <span class="iconfont">&#xe72a;</span>
             </button>
           </a>
