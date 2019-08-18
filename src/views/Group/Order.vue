@@ -28,7 +28,11 @@
       closeOnPopstate
       closeOnClickOverlay
     >
-      <verification-code @close="onCloseCode" />
+      <verification-code
+        :user="order.user"
+        @close="onCloseCode"
+        @submit="onGetCode"
+      />
     </van-dialog>
   </div>
 </template>
@@ -62,6 +66,7 @@ export default {
         price: 0,
         user: {
           wallet: 0,
+          phone: '',
         },
       },
       buyNum: 1,
@@ -119,22 +124,35 @@ export default {
     },
 
     onSubmit() {
-      this.submit()
-      // if (this.payMethod !== 0) {
-      //   this.submit()
+      const { address, payMethod } = this
+
+      // if (order.user.isPerfect != 1) {
+      //   this.$toast('请先完善个人信息')
+      //   window.setTimeout(() => {
+      //     this.$router.push('/my/base-info')
+      //   }, 3000)
       //   return
       // }
-      // this.verificationCodeShow = true
-    },
-
-    submit() {
-      const { address, payMethod, ticketId, ticket, buyNum } = this
 
       if (!address.address || address.address.length === 0) {
         this.$toast('请选择自提门店')
         return
       }
 
+      if (payMethod !== 0) {
+        this.submit()
+        return
+      }
+      this.verificationCodeShow = true
+    },
+
+    onGetCode(payCode) {
+      this.verificationCodeShow = false
+      this.submit(payCode)
+    },
+
+    submit(payCode = '') {
+      const { address, payMethod, ticketId, ticket, buyNum } = this
       const { id, price } = this.order
       const { openId } = this.user
       const hasTicket = !!(ticketId && String(ticketId).length > 0)
@@ -158,8 +176,7 @@ export default {
           isUseCoupon: ~~hasTicket,
           couponNo: hasTicket ? ticketId : null,
           couponMoney: ticket,
-          // TODO: code
-          payCode: '123456',
+          payCode,
           openId,
           address: address.address,
           addressId: address.id,

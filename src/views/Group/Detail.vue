@@ -123,7 +123,6 @@ import Manual from './components/Manual'
 import Invitation from './components/Invitation'
 import DescComment from '@/components/DescComment'
 import Share from '@/components/Share'
-import { setInterval } from 'timers'
 
 export default {
   components: {
