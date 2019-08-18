@@ -44,9 +44,13 @@ export default {
   },
 
   methods: {
+    reset() {
+      this.time = 0
+      window.clearInterval(this.timer)
+    },
+
     onClose() {
       this.$emit('close')
-      window.clearInterval(this.timer)
     },
 
     setTimer() {
@@ -55,7 +59,7 @@ export default {
       this.timer = setInterval(() => {
         this.time--
         if (this.time <= 0) {
-          window.clearInterval(this.timer)
+          this.reset()
         }
       }, 1000)
     },
@@ -65,13 +69,11 @@ export default {
       this.$set(this.values, index, value)
 
       if (index < this.values.length - 1) {
-        const refs = this.$refs[`input${index + 1}`]
-        if (refs && refs[0]) {
-          refs[0].focus()
-        }
+        this.focus(index + 1)
       }
 
       if (this.values.every(x => x && x.length > 0)) {
+        this.reset()
         this.$emit('submit', this.values.join(''))
       }
     },
@@ -83,8 +85,16 @@ export default {
           if (data.resp_code === 0) {
             this.$toast('已发送验证码到手机')
             this.setTimer()
+            this.focus(0)
           }
         })
+    },
+
+    focus(index) {
+      const refs = this.$refs[`input${index}`]
+      if (refs && refs[0]) {
+        refs[0].focus()
+      }
     },
   },
 }
@@ -128,7 +138,7 @@ export default {
 
 .btn-time {
   text-align: center;
-  width: 50px;
+  width: 45px;
 }
 
 .inputs {

@@ -147,6 +147,7 @@ export default {
     },
 
     onGetCode(payCode) {
+      this.verificationCodeShow = false
       this.submit(payCode)
     },
 
