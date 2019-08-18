@@ -115,7 +115,7 @@ export default {
         .post('/api-wxmp/cxxz/coupon/gainCoupon', { id })
         .then(({ data }) => {
           if (data.resp_code === 0) {
-            this.$toast('领取成功')
+            this.$toast(data.resp_msg)
           } else {
             this.$toast(data.resp_msg)
           }

@@ -111,9 +111,9 @@ export default {
   methods: {
     calc,
 
-    onTicketChange(ticket) {
-      this.ticket = ticket.value
-      this.ticketId = ticket.id
+    onTicketChange({ value, id }) {
+      this.ticket = value
+      this.ticketId = id
     },
 
     onMethodChange(method) {

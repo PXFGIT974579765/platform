@@ -28,7 +28,7 @@
         <van-icon name="cross" :size="16" class="close" @click="onClose" />
 
         <div class="ticket-list">
-          <van-radio-group :value="ticket">
+          <van-radio-group v-if="tickets.length > 0" :value="ticket">
             <van-radio
               v-for="t in tickets"
               :key="t.id"
@@ -40,6 +40,7 @@
               <div class="ticket-name">{{ t.name }}{{ t.value }}元</div>
             </van-radio>
           </van-radio-group>
+          <div class="ticket-tip" v-else>暂时没有可用的优惠券</div>
         </div>
       </div>
     </van-dialog>
@@ -76,16 +77,17 @@ export default {
       this.$http
         .get('/api-wxmp/cxxz/coupon/findCoupons', {
           params: {
-            // TODO:
-            // status: 1,
+            status: 1,
           },
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
-            this.tickets = data.datas.couponList.map(x => ({
-              ...x,
-              value: x.typeMoney,
-            }))
+            this.tickets = data.datas.couponList
+              .filter(x => x.minGoodsAmount <= this.price)
+              .map(x => ({
+                ...x,
+                value: x.typeMoney,
+              }))
           }
         })
     },
@@ -164,6 +166,10 @@ export default {
 .ticket-list {
   max-height: 60vh;
   overflow: auto;
+}
+
+.ticket-tip {
+  padding-left: 15px;
 }
 
 .ticket-item {

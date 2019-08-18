@@ -24,6 +24,8 @@
 </template>
 
 <script>
+const initValues = ['', '', '', '', '', '']
+
 export default {
   props: {
     user: {
@@ -35,7 +37,7 @@ export default {
   data() {
     return {
       time: 0,
-      values: ['', '', '', '', '', ''],
+      values: [...initValues],
     }
   },
 
@@ -46,6 +48,7 @@ export default {
   methods: {
     reset() {
       this.time = 0
+      this.values = [...initValues]
       window.clearInterval(this.timer)
     },
 
@@ -73,8 +76,8 @@ export default {
       }
 
       if (this.values.every(x => x && x.length > 0)) {
-        this.reset()
         this.$emit('submit', this.values.join(''))
+        this.reset()
       }
     },
 
