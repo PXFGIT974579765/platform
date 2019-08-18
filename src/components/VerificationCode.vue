@@ -16,7 +16,7 @@
         :key="i"
         :value="v"
         :ref="`input${i}`"
-        type="text"
+        type="number"
         @input="onInput(i, $event)"
       />
     </div>
