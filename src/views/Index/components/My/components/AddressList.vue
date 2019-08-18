@@ -57,6 +57,8 @@ export default {
               item => item.defultStatus == 1
             )
             this.defaultAddressId = defualtAddr.id
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
           } else {
             this.$toast.fail('系统繁忙')
           }
@@ -65,7 +67,7 @@ export default {
     routeAdd() {
       this.$router.push({
         path: '/my/address-edit',
-        name: 'index/my/address-add',
+        name: '/my/address-add',
         params: {},
       })
     },
@@ -73,7 +75,7 @@ export default {
       const address = this.addressList.find(item => item.id == id)
       this.$router.push({
         path: `/my/address-edit/${id}`,
-        name: 'index/my/address-edit',
+        name: '/my/address-edit',
         params: {
           address,
         },
@@ -94,6 +96,8 @@ export default {
         .then(({ data }) => {
           if (data.resp_code == 0) {
             this.$toast.success('设置成功')
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
           } else {
             this.$toast.fail('系统繁忙')
           }
@@ -111,6 +115,8 @@ export default {
             this.$toast.success('删除成功')
             const addresses = this.addressList.filter(item => item.id != id)
             this.addressList = addresses
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
           } else {
             this.$toast.fail('系统繁忙')
           }

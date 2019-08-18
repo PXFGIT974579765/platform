@@ -149,13 +149,13 @@ const myRouters = [
   },
   {
     path: '/my/address-edit',
-    name: '/index/my/address-add',
+    name: '/my/address-add',
     component: AddressEdit,
     meta: { title: '新建收货地址' },
   },
   {
     path: '/my/address-edit/:id',
-    name: '/index/my/address-edit',
+    name: '/my/address-edit',
     component: AddressEdit,
     meta: { title: '修改收货地址' },
   },

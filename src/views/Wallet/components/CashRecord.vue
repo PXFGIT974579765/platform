@@ -28,15 +28,15 @@
         >
           <div class="li flex" v-for="(record, index) in records" :key="index">
             <div class="record-item flex-col">
-              <span class="info">{{ record.reason }}</span>
+              <span class="info">余额提现</span>
               <span class="time">{{ record.createTime }}</span>
             </div>
             <div class="record-item flex-col">
-              <span :class="['amount', amountClass(record.statusName)]">{{
-                record.money
-              }}</span>
-              <span :class="['status', statusClass(record.statusName)]">{{
-                record.statusName
+              <span :class="['amount', amountClass(record.status)]">
+                {{ record.money }}
+              </span>
+              <span :class="['status', statusClass(record.status)]">{{
+                statusFilter(record.auditStatus, record.status, record.reason)
               }}</span>
             </div>
           </div>
@@ -50,16 +50,29 @@
 import { curDate } from '@/lib/format'
 
 const STATUS_CLASS = {
-  提现中: 'waiting',
-  提现失败: 'fail',
-  提现成功: 'success',
+  0: 'waiting',
+  2: 'fail',
+  1: 'success',
 }
 
 const AMOUNT_CLASS = {
-  提现中: 'waiting',
-  提现失败: 'fail',
-  提现成功: 'amount',
+  0: 'waiting',
+  2: 'fail',
+  1: 'amount',
 }
+
+const AUDIT_STATUS = {
+  0: '审核中',
+  1: '审核成功',
+  2: '审核失败',
+}
+
+const STATUS = {
+  0: '提现中',
+  1: '提现成功',
+  2: '提现失败',
+}
+
 export default {
   data() {
     return {
@@ -92,6 +105,16 @@ export default {
       if (records.length >= count) {
         this.finished = true
       }
+    },
+    statusFilter(auditStatus, status, reason) {
+      let name = AUDIT_STATUS[auditStatus]
+      if (status != 0) {
+        name = STATUS[status]
+      }
+      if (reason) {
+        name = reason
+      }
+      return name
     },
     // 拉去订单信息
     fetchList({

@@ -166,6 +166,8 @@ export default {
           if (data.resp_code == 0) {
             this.setUser(data.datas.user)
             this.$router.push('/my/distribution')
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
           } else {
             this.$toast.fail('系统繁忙')
           }
