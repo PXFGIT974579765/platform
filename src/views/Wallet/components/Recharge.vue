@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   data() {
     return {
@@ -44,6 +46,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['setUser']),
     routeRecord() {
       this.$router.push('/my/wallet/recharge/record')
     },
@@ -72,18 +75,23 @@ export default {
         })
     },
 
+    fetchInfo() {
+      this.$http
+        .get('/api-wxmp/foreignUser/wxUserInfo/userInfo')
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            const { userInfo } = data.datas
+            this.setUser(userInfo)
+          } else {
+            this.$toast.fail('系统繁忙')
+          }
+          this.$router.push('/my/wallet')
+        })
+    },
+
     pay(opts) {
-      WeixinJSBridge.invoke('getBrandWCPayRequest', opts, res => {
-        if (res.err_msg === 'get_brand_wcpay_request:ok') {
-          this.$router.push('/my/wallet/recharge/record')
-          return
-        }
-        // if (res.err_msg === 'get_brand_wcpay_request:cancel') {
-        //   // return
-        // }
-        // if (res.err_msg === 'get_brand_wcpay_request:fail') {
-        //   // return
-        // }
+      WeixinJSBridge.invoke('getBrandWCPayRequest', opts, () => {
+        this.fetchInfo()
       })
     },
   },

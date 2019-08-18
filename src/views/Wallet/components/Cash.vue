@@ -45,9 +45,7 @@ export default {
       money: null,
     }
   },
-  created() {
-    console.log(this.user)
-  },
+  created() {},
   methods: {
     ...mapActions(['setUser']),
     routeRecord() {
@@ -73,13 +71,24 @@ export default {
         })
         .then(({ data }) => {
           if (data.resp_code == 0) {
-            this.$toast.success('提现申请成功')
-            this.user.wallet -= this.money
-            this.setUser(this.user)
-            this.$router.push('/my/wallet')
+            this.$toast.success('申请成功，系统审核中')
+            this.fetchInfo()
           } else {
             this.$toast.fail('系统繁忙')
           }
+        })
+    },
+    fetchInfo() {
+      this.$http
+        .get('/api-wxmp/foreignUser/wxUserInfo/userInfo')
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            const { userInfo } = data.datas
+            this.setUser(userInfo)
+          } else {
+            this.$toast.fail('系统繁忙')
+          }
+          this.$router.push('/my/wallet')
         })
     },
   },

@@ -139,6 +139,11 @@ export default {
           this.stopLoading()
         })
     },
+
+    // 上拉加载更多
+    onLoad() {
+      this.fetchList({ pageIndex: this.page + 1 })
+    },
     onClick(_, title) {
       if (this.name == title) return
 

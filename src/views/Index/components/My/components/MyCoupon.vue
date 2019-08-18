@@ -13,11 +13,14 @@
         :key="type.status"
         :title="type.statusName"
       >
-        <ul>
-          <li v-for="item in couponFilter(type.status)" :key="item.id">
-            <coupon-card :coupon="item" />
-          </li>
-        </ul>
+        <div v-if="couponList.length > 0">
+          <ul>
+            <li v-for="item in couponFilter(type.status)" :key="item.id">
+              <coupon-card :coupon="item" />
+            </li>
+          </ul>
+        </div>
+        <div class="no-more">无更多数据</div>
       </van-tab>
     </van-tabs>
   </div>
@@ -71,6 +74,12 @@ export default {
     li {
       margin-top: 20px;
     }
+  }
+  .no-more {
+    text-align: center;
+    height: 50px;
+    line-height: 50px;
+    color: #7d7e80;
   }
 }
 </style>
