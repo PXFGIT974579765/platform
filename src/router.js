@@ -76,33 +76,33 @@ Vue.use(Router)
 const home = [
   {
     path: '/index',
-    name: 'index',
-    redirect: { name: 'index/home' },
+    name: '/index',
+    redirect: { name: '/index/home' },
     component: Index,
     children: [
       {
         path: 'home',
-        name: 'index/home',
+        name: '/index/home',
         component: Home,
       },
       {
         path: 'app',
-        name: 'index/app',
+        name: '/index/app',
         component: App,
       },
       {
         path: 'my',
-        name: 'index/my',
+        name: '/index/my',
         component: My,
       },
       {
         path: 'news',
-        name: 'index/news',
+        name: '/index/news',
         component: News,
       },
       {
         path: 'news/:id',
-        name: 'index/new',
+        name: '/index/new',
         component: New,
       },
     ],
@@ -113,67 +113,67 @@ const home = [
 const myRouters = [
   {
     path: '/my/base-info',
-    name: 'index/my/base-info',
+    name: '/index/my/base-info',
     component: BaseInfo,
     meta: { title: '个人信息', keepAlive: false },
   },
   {
     path: '/my/score',
-    name: 'index/my/score',
+    name: '/index/my/score',
     component: Score,
     meta: { title: '个人积分' },
   },
   {
     path: '/my/student-card',
-    name: 'index/my/student-card',
+    name: '/index/my/student-card',
     component: StudentCard,
     meta: { title: '上传证件' },
   },
   {
     path: '/my/sign',
-    name: 'index/my/sign',
+    name: '/index/my/sign',
     component: Sign,
     meta: { title: '签到' },
   },
   {
     path: '/my/level',
-    name: 'index/my/level',
+    name: '/index/my/level',
     component: Level,
     meta: { title: '用户等级' },
   },
   {
     path: '/my/address-list',
-    name: 'index/my/address-list',
+    name: '/index/my/address-list',
     component: AddressList,
     meta: { title: '收货地址' },
   },
   {
     path: '/my/address-edit',
-    name: 'index/my/address-add',
+    name: '/index/my/address-add',
     component: AddressEdit,
     meta: { title: '新建收货地址' },
   },
   {
     path: '/my/address-edit/:id',
-    name: 'index/my/address-edit',
+    name: '/index/my/address-edit',
     component: AddressEdit,
     meta: { title: '修改收货地址' },
   },
   {
     path: '/my/coupon',
-    name: 'index/my/coupon',
+    name: '/index/my/coupon',
     component: MyCoupon,
     meta: { title: '我的优惠券' },
   },
   {
     path: '/my/complain',
-    name: 'index/my/complain',
+    name: '/index/my/complain',
     component: Complain,
     meta: { title: '咨询投诉' },
   },
   {
     path: '/my/complain-detail/:id',
-    name: 'index/my/complain-detail',
+    name: '/index/my/complain-detail',
     component: ComplainDetail,
     meta: { title: '咨询投诉详情' },
   },
@@ -183,7 +183,7 @@ const myRouters = [
 const orderRouters = [
   {
     path: '/my/order-first',
-    name: 'index/my/order-first',
+    name: '/index/my/order-first',
     component: OrderIndex,
     meta: { title: '我的订单' },
   },
@@ -229,17 +229,17 @@ const orderRouters = [
 const group = [
   {
     path: '/group',
-    name: 'group',
+    name: '/group',
     component: GroupIndex,
   },
   {
     path: '/group/detail/:id',
-    name: 'group/detail/:id',
+    name: '/group/detail/:id',
     component: GroupDetail,
   },
   {
     path: '/group/order/:id',
-    name: 'group/order',
+    name: '/group/order',
     component: GroupOrder,
   },
 ]
@@ -248,28 +248,28 @@ const group = [
 const errand = [
   {
     path: '/errand',
-    name: 'errand',
+    name: '/errand',
     redirect: { name: 'errand/lobby' },
   },
   {
     path: '/errand/lobby',
-    name: 'errand/lobby',
+    name: '/errand/lobby',
     component: ErrandLobby,
     meta: { title: '跑腿大厅' },
   },
   {
     path: '/errand/order',
-    name: 'errand/order',
+    name: '/errand/order',
     component: ErrandOrder,
   },
   {
     path: '/errand/detail/:id',
-    name: 'errand/detail',
+    name: '/errand/detail',
     component: ErrandDetail,
   },
   {
     path: '/errand/orders',
-    name: 'errand/orders',
+    name: '/errand/orders',
     component: ErrandOrders,
   },
 ]
@@ -278,22 +278,22 @@ const errand = [
 const activity = [
   {
     path: '/activity',
-    name: 'activity',
+    name: '/activity',
     component: ActivityIndex,
   },
   {
     path: '/activity/list/:id',
-    name: 'activity/list',
+    name: '/activity/list',
     component: ActivityList,
   },
   {
     path: '/activity/detail/:id',
-    name: 'activity/detail',
+    name: '/activity/detail',
     component: ActivityDetail,
   },
   {
     path: '/activity/order/:id',
-    name: 'activity/order',
+    name: '/activity/order',
     component: ActivityOrder,
   },
 ]
@@ -417,22 +417,23 @@ const router = new Router({
     // 配送中心
     ...distribution,
     ...point,
+    { path: '*', redirect: { path: '/index/home' } },
   ],
 })
 
 // 获取真实有效微信签名URL
-function getWechatSignUrl(to) {
+function getWechatSignUrl(path) {
   if (isIos()) {
     return window.location.href
   } else {
-    return `${process.env.VUE_APP_HOST}/${to.name}`
+    return `${process.env.VUE_APP_HOST}${path}`
   }
 }
 
 router.beforeEach((to, from, next) => {
-  const { name } = to
+  const { name, path } = to
 
-  store.dispatch('setWechatSignUrl', getWechatSignUrl(to))
+  store.dispatch('setWechatSignUrl', getWechatSignUrl(path))
 
   if (name === 'entry' || name === 'accept') {
     next()
@@ -444,7 +445,7 @@ router.beforeEach((to, from, next) => {
     return
   }
 
-  local.set('redirectUrl', name)
+  local.set('redirectUrl', path)
   next('/')
 })
 

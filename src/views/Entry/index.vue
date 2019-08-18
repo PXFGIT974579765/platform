@@ -4,24 +4,13 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import local from '@/lib/local'
-import store from '@/store'
 
 export default {
   computed: mapGetters(['user']),
 
-  created() {
-    store.dispatch('clearUser')
-
+  mounted() {
     if (this.user.id) {
-      const redirectUrl = local.get('redirectUrl')
-      local.remove('redirectUrl')
-
-      if (redirectUrl) {
-        this.$router.push(redirectUrl)
-      } else {
-        this.$router.push('/index/home')
-      }
+      this.$router.push('/index/home')
       return
     }
 

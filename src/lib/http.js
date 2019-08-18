@@ -1,6 +1,6 @@
 import axios from 'axios'
 import store from '@/store'
-// import router from '@/router'
+import router from '@/router'
 
 const http = axios.create({
   baseURL: process.env.VUE_APP_API_BASE,
@@ -49,17 +49,15 @@ http.interceptors.request.use(
 http.interceptors.response.use(
   response => {
     if (!response.data) {
-      throw '网络开小差了'
+      throw new Error('网络开小差了')
     }
     return response
   },
-  function(error) {
-    console.log(error)
-    // if (error.response.status === 401) {
-    //   // TODO: remove comment
-    //   // store.dispatch('clearUser')
-    //   // router.push('/')
-    // }
+  error => {
+    if (error.response && error.response.status === 401) {
+      store.dispatch('clearUser')
+      router.push('/')
+    }
   }
 )
 

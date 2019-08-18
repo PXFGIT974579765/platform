@@ -20,17 +20,15 @@ export default {
           this.$router.push('/')
           return
         }
+
         const { accessToken, userInfo } = data.datas
         this.setUser(userInfo)
         this.setAccess(accessToken)
 
         const redirectUrl = local.get('redirectUrl')
+        local.remove('redirectUrl')
 
-        if (redirectUrl) {
-          this.$router.push(`${redirectUrl}`)
-        } else {
-          this.$router.push('/index/home')
-        }
+        this.$router.push(redirectUrl ? redirectUrl : '/index/home')
       })
   },
 }

@@ -16,10 +16,8 @@ export default {
 
   created() {
     const { goodsId } = this.$route.query
-    if (!goodsId) {
-      return
-    }
-    this.goodsId = goodsId
+    if (!goodsId) return
+
     this.$http
       .post('/api-wxmp/cxxz/order/scanOrderHD', {
         goodsId,
@@ -27,7 +25,6 @@ export default {
       .then(({ data }) => {
         if (data.resp_code == 0) {
           this.show = true
-          return
         } else {
           this.message = data.datas
         }
