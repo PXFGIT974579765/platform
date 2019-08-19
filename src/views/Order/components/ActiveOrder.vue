@@ -119,7 +119,8 @@ export default {
     configWx() {
       this.$http
         .post('/api-wxmp/cxxz/wx/getMpConfig', {
-          url: this.wechatSignUrl,
+          // url: this.wechatSignUrl,
+          url: window.location.href,
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {

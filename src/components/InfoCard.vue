@@ -72,26 +72,8 @@ export default {
   },
 
   created() {
-    this.$http
-      .post('/api-wxmp/cxxz/wx/getMpConfig', {
-        url: this.wechatSignUrl,
-      })
-      .then(({ data }) => {
-        if (data.resp_code === 0) {
-          wx.config({
-            debug: DEBUG,
-            jsApiList: ['scanQRCode', 'chooseWXPay'],
-            appId: data.datas.appId,
-            timestamp: data.datas.timestamp,
-            nonceStr: data.datas.nonceStr,
-            signature: data.datas.signature,
-          })
-
-          wx.ready(() => {
-            this.configed = true
-          })
-        }
-      })
+    alert(this.wechatSignUrl || 'nothing')
+    this.configWx()
   },
 
   methods: {
@@ -99,9 +81,34 @@ export default {
       //
     },
 
+    configWx() {
+      this.$http
+        .post('/api-wxmp/cxxz/wx/getMpConfig', {
+          // url: this.wechatSignUrl,
+          url: window.location.href,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            wx.config({
+              debug: DEBUG,
+              jsApiList: ['scanQRCode', 'chooseWXPay'],
+              appId: data.datas.appId,
+              timestamp: data.datas.timestamp,
+              nonceStr: data.datas.nonceStr,
+              signature: data.datas.signature,
+            })
+
+            wx.ready(() => {
+              this.configed = true
+            })
+          }
+        })
+    },
+
     onScan() {
       if (!this.configed) {
         this.$toast('请稍后重试')
+        this.configWx()
         return
       }
 
@@ -121,6 +128,7 @@ export default {
       wx.scanQRCode({
         needResult: 0,
         scanType: ['qrCode', 'barCode'],
+        success: () => {},
       })
     },
 

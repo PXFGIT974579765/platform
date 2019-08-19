@@ -13,10 +13,10 @@
       <span slot="icon" style="color:#07bfb7" class="iconfont icon"
         >&#xe779;</span
       >
-      <span class="value flex" v-if="userInfo.orderNotify">
+      <!-- <span class="value flex" v-if="userInfo.orderNotify">
         你有未处理的订单
         <span class="dot"></span>
-      </span>
+      </span> -->
     </van-cell>
 
     <van-cell-group class="cell-group">
@@ -42,7 +42,7 @@
       <van-cell
         class="cell"
         title="配送中心"
-        value="有新的配送订单"
+        value=""
         is-link
         to="/my/distribution"
         v-if="userInfo.isDeliveryman"
@@ -50,10 +50,10 @@
         <span slot="icon" style="color:#7849ff" class="iconfont icon"
           >&#xe77a;</span
         >
-        <span class="value flex" v-if="userInfo.distributionNotify">
+        <!-- <span class="value flex" v-if="userInfo.distributionNotify">
           有新的配送订单
           <span class="dot"></span>
-        </span>
+        </span> -->
       </van-cell>
       <van-cell class="cell" title="积分商城" is-link to="/point">
         <span slot="icon" style="color:#ffc000" class="iconfont icon"

@@ -109,8 +109,12 @@ export default {
 
     // 提交保存
     onSubmit() {
-      if (this.status != 0) {
+      if (this.status == 1) {
         this.$toast.fail('图片上传失败，请重新选择上传')
+        return
+      }
+      if (this.status == -1) {
+        this.$toast.fail('你未选择任何图片')
         return
       }
       this.$http
