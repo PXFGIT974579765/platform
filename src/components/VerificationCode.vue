@@ -53,6 +53,7 @@ export default {
     },
 
     onClose() {
+      this.reset()
       this.$emit('close')
     },
 
@@ -82,6 +83,9 @@ export default {
     },
 
     onGetCode() {
+      if (this.fetching) return
+      this.fetching = true
+
       this.$http
         .post('/api-sms/sms-internal/code', { phone: this.user.phone })
         .then(({ data }) => {
@@ -90,6 +94,10 @@ export default {
             this.setTimer()
             this.focus(0)
           }
+          this.fetching = false
+        })
+        .catch(() => {
+          this.fetching = false
         })
     },
 
