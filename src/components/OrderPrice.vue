@@ -30,7 +30,7 @@
         <div class="ticket-list">
           <van-radio-group v-if="tickets.length > 0" :value="ticket">
             <van-radio
-              v-for="t in tickets"
+              v-for="t in filterTickets(tickets)"
               :key="t.id"
               :name="t.value"
               checked-color="#07c160"
@@ -83,13 +83,17 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.tickets = data.datas.couponList
-              .filter(x => x.minGoodsAmount <= this.price)
-              .map(x => ({
-                ...x,
-                value: x.typeMoney,
-              }))
           }
         })
+    },
+
+    filterTickets(tickets) {
+      return tickets
+        .filter(x => x.minGoodsAmount <= this.price)
+        .map(x => ({
+          ...x,
+          value: x.typeMoney,
+        }))
     },
 
     onSelect() {

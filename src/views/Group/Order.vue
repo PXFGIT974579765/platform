@@ -36,7 +36,6 @@
       v-model="verificationCodeShow"
       :showConfirmButton="false"
       closeOnPopstate
-      closeOnClickOverlay
     >
       <verification-code
         :user="order.user"
@@ -246,53 +245,53 @@ export default {
         })
     },
 
-    reSubmit() {
-      // reSubmit(payCode = '') {
-      // const { address, payMethod, ticketId, ticket, buyNum, orderId } = this
-      // const { id, price } = this.order
-      // const { openId } = this.user
-      // const hasTicket = !!(
-      //   ticket > 0 &&
-      //   ticketId &&
-      //   String(ticketId).length > 0
-      // )
-      // const totalPrice = calc(`${buyNum} * ${price}`)
-      // this.$http
-      //   .post('/api-wxmp/cxxz/pay/createPay', {
-      //     mchId: '100000001',
-      //     channelId: 1,
-      //     fromType: 1,
-      //     payType: payMethod,
-      //     orderId,
-      //     goodsId: id,
-      //     goodsType: 'PT',
-      //     goodsSize: buyNum,
-      //     orderMoney: totalPrice,
-      //     oneMoney: price,
-      //     money: Math.max(0, calc(`${price}-${this.ticket}`)),
-      //     isUseScore: 0,
-      //     score: 0,
-      //     scoreMoney: 0,
-      //     isUseCoupon: ~~hasTicket,
-      //     couponNo: hasTicket ? ticketId : null,
-      //     couponMoney: ticket,
-      //     payCode,
-      //     openId,
-      //     address: address.address,
-      //     addressId: address.id,
-      //   })
-      //   .then(({ data }) => {
-      //     if (data.resp_code === 0) {
-      //       if (payMethod === 0) {
-      //         this.$toast('支付成功')
-      //         this.$router.push('/order/group')
-      //       } else {
-      //         this.pay(data.datas)
-      //       }
-      //       return
-      //     }
-      //     this.$toast(data.resp_msg)
-      //   })
+    reSubmit(payCode = '') {
+      const { address, payMethod, ticketId, ticket, buyNum, orderId } = this
+      const { id, price } = this.order
+      const { openId } = this.user
+      const hasTicket = !!(
+        ticket > 0 &&
+        ticketId &&
+        String(ticketId).length > 0
+      )
+      const totalPrice = calc(`${buyNum} * ${price}`)
+
+      this.$http
+        .post('/api-wxmp/cxxz/assemblePay/createPay ', {
+          mchId: '100000001',
+          channelId: 1,
+          fromType: 1,
+          payType: payMethod,
+          orderId,
+          goodsId: id,
+          goodsType: 'PT',
+          goodsSize: buyNum,
+          orderMoney: totalPrice,
+          oneMoney: price,
+          money: Math.max(0, calc(`${price}-${this.ticket}`)),
+          isUseScore: 0,
+          score: 0,
+          scoreMoney: 0,
+          isUseCoupon: ~~hasTicket,
+          couponNo: hasTicket ? ticketId : null,
+          couponMoney: ticket,
+          payCode,
+          openId,
+          address: address.address,
+          addressId: address.id,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            if (payMethod === 0) {
+              this.$toast('支付成功')
+              this.$router.push('/order/group')
+            } else {
+              this.pay(data.datas)
+            }
+            return
+          }
+          this.$toast(data.resp_msg)
+        })
     },
 
     pay(opts) {

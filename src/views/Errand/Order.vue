@@ -63,7 +63,6 @@
       v-model="verificationCodeShow"
       :showConfirmButton="false"
       closeOnPopstate
-      closeOnClickOverlay
     >
       <verification-code
         :user="order.user"
