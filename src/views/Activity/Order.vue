@@ -122,7 +122,13 @@ export default {
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
-            this.order = data.datas
+            const d = data.datas
+
+            this.order = {
+              ...d,
+              price: d.oneMoney,
+              title: d.goodsName,
+            }
           }
         })
     },
@@ -141,7 +147,7 @@ export default {
       if (payMethod == 0) {
         this.verificationCodeShow = true
       } else {
-        this.submit()
+        this.orderId ? this.reSubmit() : this.submit()
       }
     },
 
@@ -151,7 +157,7 @@ export default {
 
     onGetCode(payCode) {
       this.verificationCodeShow = false
-      this.submit(payCode)
+      this.orderId ? this.reSubmit(payCode) : this.submit(payCode)
     },
 
     submit(payCode = '') {
@@ -166,6 +172,49 @@ export default {
           mchId: '100000001',
           channelId: 1,
           fromType: 1,
+          payType: payMethod,
+          goodsId: id,
+          goodsType: 'HD',
+          goodsSize: 1,
+          orderMoney: price,
+          oneMoney: price,
+          money: Math.max(0, calc(`${price}-${this.ticket}`)),
+          isUseScore: 0,
+          score: 0,
+          scoreMoney: 0,
+          isUseCoupon: ~~hasTicket,
+          couponNo: hasTicket ? ticketId : null,
+          couponMoney: ticket,
+          payCode,
+          openId,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            if (payMethod === 0) {
+              this.$toast('支付成功')
+              this.$router.push('/order/active')
+            } else {
+              this.pay(data.datas)
+            }
+            return
+          }
+          this.$toast(data.resp_msg)
+        })
+    },
+
+    reSubmit(payCode = '') {
+      const { payMethod, ticketId, ticket, orderId } = this
+      const { id, price } = this.order
+      const { openId } = this.user
+
+      const hasTicket = !!(ticketId && String(ticketId).length > 0)
+
+      this.$http
+        .post('/api-wxmp/cxxz/topicPay/createPay', {
+          mchId: '100000001',
+          channelId: 1,
+          fromType: 1,
+          orderId,
           payType: payMethod,
           goodsId: id,
           goodsType: 'HD',

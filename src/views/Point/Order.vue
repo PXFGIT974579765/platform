@@ -1,8 +1,18 @@
 <template>
   <div class="order">
-    <order-good :order="order" :value="buyNum" @change="onNumChange" point />
+    <order-good
+      :order="order"
+      :value="buyNum"
+      @change="onNumChange"
+      :repay="!!orderId"
+      point
+    />
 
-    <order-distribution :address="address" @change="onAddressChange" />
+    <order-distribution
+      :address="address"
+      @change="onAddressChange"
+      :repay="!!orderId"
+    />
 
     <div class="pay">
       <div class="pay-header">
@@ -141,7 +151,23 @@ export default {
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
-            // this.goods = data.datas
+            const d = data.datas
+            this.buyNum = d.goodsSize
+
+            this.order = {
+              ...d,
+              price: d.oneMoney,
+              name: d.goodsName,
+              score: d.score / d.goodsSize,
+              picUrl: d.goodsImg,
+            }
+
+            this.address = {
+              phone: '',
+              name: '',
+              address: d.address,
+              id: d.addressId,
+            }
           }
         })
     },
@@ -173,7 +199,7 @@ export default {
       if (price > 0 && balancePay) {
         this.verificationCodeShow = true
       } else {
-        this.submit()
+        this.orderId ? this.reSubmit() : this.submit()
       }
     },
 
@@ -183,7 +209,7 @@ export default {
 
     onGetCode(payCode) {
       this.verificationCodeShow = false
-      this.submit(payCode)
+      this.orderId ? this.reSubmit(payCode) : this.submit(payCode)
     },
 
     submit(payCode = '') {
@@ -195,7 +221,7 @@ export default {
       const payType = sellType === 0 ? 1 : balancePay ? 0 : 2
 
       this.$http
-        .post('/api-wxmp/cxxz/scorePay//createOrder', {
+        .post('/api-wxmp/cxxz/scorePay/createOrder', {
           mchId: '100000001',
           channelId: 1,
           fromType: 1,
@@ -207,7 +233,53 @@ export default {
           oneMoney: price,
           money: totalPrice,
           isUseScore: 1,
-          score,
+          score: score * buyNum,
+          scoreMoney: 0,
+          isUseCoupon: 0,
+          couponNo: null,
+          couponMoney: 0,
+          payCode,
+          openId,
+          address: address.address,
+          addressId: address.id,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            if (payType === 1 || payType === 0) {
+              this.$toast(payType === 1 ? '兑换成功' : '支付成功')
+              this.$router.push('/order/goods')
+            } else {
+              this.pay(data.datas)
+            }
+            return
+          }
+          this.$toast(data.resp_msg)
+        })
+    },
+
+    reSubmit(payCode = '') {
+      const { buyNum, order, address, user, orderId } = this
+      const { id, price, score, sellType } = order
+      const { openId } = user
+      const totalPrice = calc(`${buyNum} * ${price}`)
+      const balancePay = calc(`${buyNum}*${order.price}`) <= order.user.wallet
+      const payType = sellType === 0 ? 1 : balancePay ? 0 : 2
+
+      this.$http
+        .post('/api-wxmp/cxxz/scorePay/createPay', {
+          mchId: '100000001',
+          channelId: 1,
+          fromType: 1,
+          orderId,
+          payType,
+          goodsId: id,
+          goodsType: 'JFSC',
+          goodsSize: buyNum,
+          orderMoney: totalPrice,
+          oneMoney: price,
+          money: totalPrice,
+          isUseScore: 1,
+          score: score * buyNum,
           scoreMoney: 0,
           isUseCoupon: 0,
           couponNo: null,
