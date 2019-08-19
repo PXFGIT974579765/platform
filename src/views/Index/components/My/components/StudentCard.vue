@@ -57,7 +57,18 @@ export default {
     },
     //点击选中图片
     readLocalFile: function() {
-      const localFile = document.getElementById('uploadFile').files[0]
+      const localFile = document.getElementById('uploadFile').files[0] || ''
+
+      if (!localFile) {
+        return
+      }
+
+      const fileSize = localFile.size / 1024 / 1024
+
+      if (fileSize > 10) {
+        this.$toast.fail('图片大小不能超过 10MB!')
+        return
+      }
 
       // 展示图片
       this.renderImage(localFile)

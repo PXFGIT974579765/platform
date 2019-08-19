@@ -119,21 +119,9 @@ export default {
 
     scan() {
       wx.scanQRCode({
-        needResult: 1,
+        needResult: 0,
         scanType: ['qrCode', 'barCode'],
-        success: res1 => {
-          if (res1 && res1.errMsg == 'scanQRCode:ok') {
-            const result = res1.resultStr
-            const curGoodsId = result.split('?')[1].split('=')[1]
-            this.submitSign(curGoodsId)
-          }
-        },
       })
-    },
-
-    submitSign(curGoodsId) {
-      // TODO: submit
-      console.log(curGoodsId)
     },
 
     signRoute() {
