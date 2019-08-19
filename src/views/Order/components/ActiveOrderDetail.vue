@@ -124,6 +124,7 @@ export default {
     configWx() {
       this.$http
         .post('/api-wxmp/cxxz/wx/getMpConfig', {
+          // url: window.location.href,
           url: window.location.href,
         })
         .then(({ data }) => {

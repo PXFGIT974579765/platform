@@ -422,18 +422,20 @@ const router = new Router({
 })
 
 // 获取真实有效微信签名URL
-function getWechatSignUrl(path) {
+function getWechatSignUrl(to) {
   if (isIos()) {
     return window.location.href
   } else {
-    return `${process.env.VUE_APP_HOST}${path}`
+    return `${process.env.VUE_APP_HOST}${to.name}`
   }
 }
 
 router.beforeEach((to, from, next) => {
   const { name, path } = to
 
-  store.dispatch('setWechatSignUrl', getWechatSignUrl(path))
+  // console.log(name);
+
+  store.dispatch('setWechatSignUrl', getWechatSignUrl(to))
 
   if (name === 'entry' || name === 'accept') {
     next()

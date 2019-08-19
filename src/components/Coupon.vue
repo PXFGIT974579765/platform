@@ -4,7 +4,7 @@
       <span :class="[coupon.status === 1 ? 'color0' : 'color1']">
         <span :class="[coupon.status === 3 ? 'color1' : 'color0']">￥</span>
         <span :class="['amount', coupon.status === 3 ? 'color1' : 'color0']">{{
-          coupon.minGoodsAmount
+          coupon.typeMoney
         }}</span>
       </span>
       <span
