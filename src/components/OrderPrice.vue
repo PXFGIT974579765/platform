@@ -28,7 +28,10 @@
         <van-icon name="cross" :size="16" class="close" @click="onClose" />
 
         <div class="ticket-list">
-          <van-radio-group v-if="tickets.length > 0" :value="ticket">
+          <van-radio-group
+            v-if="filterTickets(tickets).length > 0"
+            :value="ticket"
+          >
             <van-radio
               v-for="t in filterTickets(tickets)"
               :key="t.id"
@@ -92,6 +95,7 @@ export default {
         .filter(x => x.minGoodsAmount <= this.price)
         .map(x => ({
           ...x,
+          id: x.couponNo,
           value: x.typeMoney,
         }))
     },

@@ -53,6 +53,7 @@ export default {
     },
 
     onClose() {
+      this.reset()
       this.$emit('close')
     },
 
