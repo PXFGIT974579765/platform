@@ -4,6 +4,7 @@
 
     <good
       class="block"
+      :detail="!!orderId"
       :good="good"
       :addressList="addressList"
       @selectAddress="fetchPrice"
@@ -12,19 +13,25 @@
     <div class="comment block">
       <label class="input-field">
         <span>备注</span>
-        <input v-model="comment" type="text" placeholder="物品描述或配送要求" />
+        <input
+          :readonly="!!orderId"
+          v-model="comment"
+          type="text"
+          placeholder="物品描述或配送要求"
+        />
       </label>
     </div>
 
     <div class="cost block">
       <div class="block-header">
         <div class="title">费用</div>
-        <div class="block-header-link">收费标准</div>
+        <div>{{ price }}</div>
+        <!-- <div class="block-header-link">收费标准</div> -->
       </div>
-      <div class="prices">
+      <!-- <div class="prices">
         <button class="active">{{ price }}元</button>
         <button>自定义</button>
-      </div>
+      </div>-->
     </div>
 
     <div class="pay-methods">
@@ -65,7 +72,7 @@
       closeOnPopstate
     >
       <verification-code
-        :user="order.user"
+        :user="user"
         @close="onCloseCode"
         @submit="onGetCode"
       />
@@ -90,12 +97,13 @@ export default {
 
   data() {
     return {
+      orderId: null,
       comment: '',
       payMethod: 2,
       userDetail: {},
       good: {},
       addressList: [{}],
-      price: 0,
+      price: '',
       wallet: 0,
       send: {},
       disabled: false,
@@ -104,14 +112,24 @@ export default {
   },
 
   created() {
-    this.fetchData()
+    this.fetch()
   },
 
   watch: {
-    $route: 'fetchData',
+    $route: 'fetch',
   },
 
   methods: {
+    fetch() {
+      const orderId = this.$route.query.errand
+      if (orderId) {
+        this.orderId = orderId
+        this.fetchDataByOrderId(orderId)
+      } else {
+        this.fetchData()
+      }
+    },
+
     fetchData() {
       const { user, order } = this.$route.query
 
@@ -159,6 +177,45 @@ export default {
         })
     },
 
+    fetchDataByOrderId(orderId) {
+      this.$http
+        .post('/api-wxmp/cxxz/runner/findDistritionOrderDetail', {
+          id: orderId,
+          orderId: this.$route.query.order,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            const d = data.datas.detail
+
+            // TODO: value
+            this.comment = d.remark
+            this.price = 0.01
+            this.wallet = 4990
+
+            this.good = {
+              ...d,
+              goodsImg: d.goodsImg,
+              goodsName: d.goodsName,
+              pickUpAddress: d.pickUpAddress,
+              phone: d.phone,
+            }
+
+            this.userDetail = {
+              cname: d.distributionName,
+              orderNum: 10,
+              ratings: 9,
+            }
+
+            this.send = {
+              id: 'xxxxx',
+              trueName: d.userName,
+              mobile: d.userPhone,
+              address: d.sendAddress,
+            }
+          }
+        })
+    },
+
     onSubmit() {
       const { send, payMethod } = this
 
@@ -178,7 +235,7 @@ export default {
       if (payMethod == 0) {
         this.verificationCodeShow = true
       } else {
-        this.submit()
+        this.orderId ? this.reSubmit() : this.submit()
       }
     },
 
@@ -188,7 +245,7 @@ export default {
 
     onGetCode(payCode) {
       this.verificationCodeShow = false
-      this.submit(payCode)
+      this.orderId ? this.reSubmit(payCode) : this.submit(payCode)
     },
 
     submit(payCode = '') {
@@ -218,6 +275,57 @@ export default {
           payCode,
           openId,
           spOrderId: orderId,
+          distributionId: user,
+          pickUpAddress,
+          pickUpAddressId,
+          sendAddress: send.address,
+          sendAddressId: send.id,
+          userName: send.trueName,
+          userPhone: send.mobile,
+          remark: comment,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            if (payMethod === 0) {
+              this.$toast('支付成功')
+              this.$router.push('/errand/orders')
+            } else {
+              this.pay(data.datas)
+            }
+            return
+          }
+          this.$toast(data.resp_msg)
+        })
+    },
+
+    reSubmit(payCode = '') {
+      const { send, price, payMethod, comment, orderId, good } = this
+      const { user } = this.$route.query
+      const { openId } = this.user
+      const { pickUpAddress, pickUpAddressId, goodsId } = good
+
+      this.$http
+        .post('/api-wxmp/cxxz/runnerPay/createPay', {
+          mchId: '100000001',
+          channelId: 1,
+          fromType: 1,
+          orderId,
+          payType: payMethod,
+          goodsId: goodsId,
+          goodsType: 'RT',
+          goodsSize: 1,
+          orderMoney: price,
+          oneMoney: price,
+          money: price,
+          isUseScore: 0,
+          score: 0,
+          scoreMoney: 0,
+          isUseCoupon: 0,
+          couponNo: null,
+          couponMoney: 0,
+          payCode,
+          openId,
+          spOrderId: good.orderId,
           distributionId: user,
           pickUpAddress,
           pickUpAddressId,
@@ -301,6 +409,9 @@ export default {
 }
 
 .cost {
+  .block-header {
+    margin-bottom: 0;
+  }
   .prices {
     display: flex;
     margin-top: 20px;

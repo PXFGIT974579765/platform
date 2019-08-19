@@ -45,6 +45,7 @@
     </div>
 
     <van-dialog
+      v-if="!detail"
       v-model="addressShow"
       :showConfirmButton="false"
       closeOnPopstate
@@ -87,7 +88,10 @@ export default {
 
   props: {
     good: Object,
-    addressList: Array,
+    addressList: {
+      type: Array,
+      default: () => [],
+    },
     detail: {
       type: Boolean,
       default: false,
