@@ -83,7 +83,11 @@
       <button v-if="!detail.order" class="sign" @click="onSubmit">
         立即报名
       </button>
-      <button v-if="detail.order && detail.order.isScanSign == 0" class="check">
+      <button
+        v-if="detail.order && detail.order.isScanSign == 0"
+        class="check"
+        @click="qrCodeSign"
+      >
         <span class="iconfont">&#xe746;</span>现场扫码签到
       </button>
       <button
@@ -100,6 +104,14 @@
 </template>
 
 <script>
+const DEBUG = process.env.VUE_APP_WX_DEBUG === 'true' ? true : false
+
+// 进行签名的时候  Android 不用使用之前的链接， ios 需要
+let signUrl = window.location.href.split('#')[0]
+if (window.wechaturl !== undefined) {
+  signUrl = window.wechaturl
+}
+
 import Search from '@/components/Search'
 import Comment from '@/components/Comment'
 import ShareButton from '@/components/ShareButton'
@@ -115,11 +127,14 @@ export default {
     return {
       detail: {},
       people: [],
+      isConfiged: false,
+      tryCounts: 0,
     }
   },
 
   created() {
     this.fetchData()
+    this.configWx(window.location.href)
   },
 
   watch: {
@@ -127,6 +142,84 @@ export default {
   },
 
   methods: {
+    // 微信 jssdk 配置
+    configWx(url) {
+      this.tryCounts += 1
+      this.$http
+        .post('/api-wxmp/cxxz/wx/getMpConfig', {
+          url,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            wx.config({
+              debug: DEBUG,
+              jsApiList: ['scanQRCode', 'chooseWXPay'],
+              appId: data.datas.appId,
+              timestamp: data.datas.timestamp,
+              nonceStr: data.datas.nonceStr,
+              signature: data.datas.signature,
+            })
+            wx.ready(() => {
+              this.isConfiged = true
+              this.tryCounts = 0
+            })
+          }
+        })
+    },
+    // 扫码签到
+    qrCodeSign() {
+      if (!this.isConfiged) {
+        if (this.tryCounts >= 2) {
+          this.$toast.fail('请返回首页进行扫码')
+          return
+        }
+
+        this.configWx(signUrl)
+        return
+      }
+
+      wx.checkJsApi({
+        jsApiList: ['scanQRCode'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+        success: res => {
+          if (res.errMsg == 'checkJsApi:ok' && res.checkResult['scanQRCode']) {
+            wx.scanQRCode({
+              needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+              scanType: ['qrCode', 'barCode'], // 可以指定扫二维码还是一维码，默认二者都有
+              success: res1 => {
+                if (res1 && res1.errMsg == 'scanQRCode:ok') {
+                  const result = res1.resultStr // 当needResult 为 1 时，扫码返回的结果
+                  const curGoodsId = result.split('?')[1].split('=')[1]
+                  this.submitSign(curGoodsId, this.$route.params.id)
+                }
+              },
+            })
+          } else {
+            this.$toast.fail('当前版本不支持')
+          }
+        },
+      })
+    },
+    // 提交签到信息
+    submitSign(curGoodsId, goodsId) {
+      if (curGoodsId != goodsId) {
+        this.$toast.fail('签到活动不一致')
+        return
+      } else {
+        this.$http
+          .post('/api-wxmp/cxxz/order/scanOrderHD', {
+            goodsId: curGoodsId,
+          })
+          .then(({ data }) => {
+            if (data.resp_code == 0) {
+              this.$toast.success('签到成功')
+              this.fetchData()
+              return
+            } else {
+              this.$toast.fail('系统繁忙')
+            }
+          })
+      }
+    },
     fetchData() {
       this.$http
         .get('/api-wxmp/cxxz/topics/findTopic', {
