@@ -137,7 +137,7 @@ export default {
               nonceStr: data.datas.nonceStr,
               signature: data.datas.signature,
             })
-            wx.ready(function() {
+            wx.ready(() => {
               this.isConfiged = true
               this.tryCounts = 0
             })
@@ -148,7 +148,7 @@ export default {
     qrCodeSign(active) {
       if (!this.isConfiged) {
         if (this.tryCounts >= 2) {
-          this.$toast.fail('当前版本过低')
+          this.$toast.fail('请返回首页进行扫码')
           return
         }
 

@@ -21,7 +21,7 @@
     <script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
     <script>
       if (navigator.userAgent.indexOf('iPhone') !== -1) {
-        window.wechaturl = window.location + ''
+        window.wechaturl = location.href.split('#')[0]
       }
     </script>
     <!-- built files will be auto injected -->
