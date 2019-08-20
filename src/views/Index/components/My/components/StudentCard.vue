@@ -57,6 +57,7 @@ export default {
     },
     //点击选中图片
     readLocalFile: function() {
+      this.status = -1
       const localFile = document.getElementById('uploadFile').files[0] || ''
 
       if (!localFile) {
@@ -100,6 +101,10 @@ export default {
           this.resultUrl = data.datas
           this.status = 0
           this.btnName = '提交认证'
+        } else if (data.resp_msg) {
+          this.$toast.fail(data.resp_msg)
+          this.status = 1
+          this.btnName = '上传失败'
         } else {
           this.status = 1
           this.btnName = '上传失败'

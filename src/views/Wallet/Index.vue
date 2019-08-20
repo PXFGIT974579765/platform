@@ -4,7 +4,6 @@
       <div class="data">
         <div class="title flex">
           <span>账户余额(元)</span>
-          <span class="iconfont icon-help">&#xe757;</span>
         </div>
         <div class="coin">{{ user.wallet | numFilter }}</div>
         <div class="in-out flex">
