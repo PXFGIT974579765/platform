@@ -23,18 +23,27 @@
     </div>
 
     <div class="operation">
-      <router-link
+      <!-- <router-link
         v-if="order.status == 6"
         class="link"
         :to="
           `/errand/order?user=${order.distributionNo}&order=${order.orderId}`
         "
         >付款</router-link
+      > -->
+      <router-link
+        v-if="order.status == 0"
+        class="link"
+        :to="`/errand/order?errand=${order.id}&order=${order.goodsId}`"
+        >付款</router-link
       >
-      <a
+      <!-- <a
         v-if="order.status == 0 || order.status == 1"
         class="link"
         :href="`tel:${order.phone}`"
+        >联系跑腿员</a
+      > -->
+      <a v-if="order.status == 1" class="link" :href="`tel:${order.phone}`"
         >联系跑腿员</a
       >
       <button v-if="order.status == 3" class="link" @click="onClick">

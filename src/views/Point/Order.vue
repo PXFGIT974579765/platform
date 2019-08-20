@@ -110,17 +110,11 @@ export default {
   },
 
   created() {
-    const orderId = this.$route.query.order
-    if (orderId) {
-      this.orderId = orderId
-      this.fetchDataByOrderId(orderId)
-    } else {
-      this.fetchData()
-    }
+    this.fetch()
   },
 
   watch: {
-    $route: 'fetchData',
+    $route: 'fetch',
   },
 
   methods: {
@@ -132,6 +126,16 @@ export default {
 
     onAddressChange(address) {
       this.address = address
+    },
+
+    fetch() {
+      const orderId = this.$route.query.order
+      if (orderId) {
+        this.orderId = orderId
+        this.fetchDataByOrderId(orderId)
+      } else {
+        this.fetchData()
+      }
     },
 
     fetchData() {
