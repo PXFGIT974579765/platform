@@ -36,9 +36,9 @@
         </div>
         <div class="order-item">
           <span>订单状态 :</span>
-          <span>{{
-            orderStatusFilter(active.orderStatus, active.status)
-          }}</span>
+          <span>
+            {{ orderStatusFilter(active.orderStatus, active.status) }}
+          </span>
         </div>
         <div class="order-item">
           <span>个人积分 :</span>
@@ -68,7 +68,6 @@
 
 <script>
 import Card from './ActiveOrderCard'
-import { mapGetters } from 'vuex'
 
 const ORDER_STATUS = {
   0: '待付款',
@@ -88,48 +87,37 @@ const PAY_STATUS = {
 
 const DEBUG = process.env.VUE_APP_WX_DEBUG === 'true' ? true : false
 
-export default {
-  computed: mapGetters(['wechatSignUrl']),
+// 进行签名的时候  Android 不用使用之前的链接， ios 需要
+let signUrl = window.location.href.split('#')[0]
+if (window.wechaturl !== undefined) {
+  signUrl = window.wechaturl
+}
 
+export default {
   components: {
     Card,
   },
   data() {
     return {
-      active: {
-        activeNo: '557879582',
-        imgUrl: require('../images/active1.jpg'),
-        title: '刀剑2贵州赛区英雄争霸赛',
-        tag: 'race',
-        price: 20,
-        score: 20,
-        couponAmount: 0,
-        createTime: 1500000000,
-        payTime: 1500000000,
-        time: 1500000000,
-        address: '贵州大学城师范学院 同心路15号 （创星校园实训中心）',
-        signStatus: 0, // 签到状态  0 未签到 1 已签到
-        status: 0,
-        refundStatus: 0, // 0 没有退款  1 退款中  2 已退款
-      },
+      active: {},
+      isConfiged: false,
+      tryCounts: 0,
     }
   },
   created() {
     const { id } = this.$route.params
     this.fetchOrderDetail(id)
-    this.configWx()
+    this.configWx(window.location.href)
   },
   methods: {
     // 微信 jssdk 配置
-    configWx() {
+    configWx(url) {
       this.$http
         .post('/api-wxmp/cxxz/wx/getMpConfig', {
-          // url: window.location.href,
-          url: window.location.href,
+          url,
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
-            const that = this
             wx.config({
               debug: DEBUG,
               jsApiList: ['scanQRCode', 'chooseWXPay'],
@@ -139,21 +127,28 @@ export default {
               signature: data.datas.signature,
             })
             wx.ready(function() {
-              that.isConfiged = true
+              this.isConfiged = true
+              this.tryCounts = 0
             })
           }
         })
     },
     // 扫码签到
     qrCodeSign(active) {
+      if (!this.isConfiged) {
+        if (this.tryCounts >= 2) {
+          this.$toast.fail('当前版本过低')
+          return
+        }
+
+        this.configWx(signUrl)
+        return
+      }
+
       wx.checkJsApi({
         jsApiList: ['scanQRCode'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
         success: res => {
-          if (
-            this.isConfiged &&
-            res.errMsg == 'checkJsApi:ok' &&
-            res.checkResult['scanQRCode']
-          ) {
+          if (res.errMsg == 'checkJsApi:ok' && res.checkResult['scanQRCode']) {
             wx.scanQRCode({
               needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
               scanType: ['qrCode', 'barCode'], // 可以指定扫二维码还是一维码，默认二者都有
@@ -166,7 +161,7 @@ export default {
               },
             })
           } else {
-            this.$toast('当前版本不支持')
+            this.$toast.fail('当前版本不支持')
           }
         },
       })
@@ -174,7 +169,7 @@ export default {
     // 提交签到信息
     submitSign(curGoodsId, active) {
       if (curGoodsId != active.goodsId) {
-        this.$toast('签到活动不一致')
+        this.$toast.fail('签到活动不一致')
         return
       } else {
         this.$http
@@ -183,11 +178,11 @@ export default {
           })
           .then(({ data }) => {
             if (data.resp_code == 0) {
-              this.$toast('签到成功')
+              this.$toast.success('签到成功')
               this.fetchOrderDetail(this.active.orderId)
               return
             } else {
-              this.$toast('系统繁忙')
+              this.$toast.fail('系统繁忙')
             }
           })
       }

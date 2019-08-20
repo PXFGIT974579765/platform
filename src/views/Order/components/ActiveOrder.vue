@@ -42,12 +42,16 @@
 <script>
 import Search from '@/components/Search'
 import Card from './ActiveOrderCard'
-import { mapGetters } from 'vuex'
 
 const DEBUG = process.env.VUE_APP_WX_DEBUG === 'true' ? true : false
 
+// 进行签名的时候  Android 不用使用之前的链接， ios 需要
+let signUrl = window.location.href.split('#')[0]
+if (window.wechaturl !== undefined) {
+  signUrl = window.wechaturl
+}
+
 export default {
-  computed: mapGetters(['wechatSignUrl']),
   components: {
     Search,
     Card,
@@ -56,6 +60,7 @@ export default {
     return {
       activeTab: -1,
       isConfiged: false,
+      tryCounts: 0,
       keyword: '',
       page: 1,
       count: 0,
@@ -90,7 +95,7 @@ export default {
   },
   created() {
     this.fetchList({})
-    this.configWx()
+    this.configWx(window.location.href)
   },
   methods: {
     init() {
@@ -116,15 +121,14 @@ export default {
       }
     },
     // 微信 jssdk 配置
-    configWx() {
+    configWx(url) {
+      this.tryCounts += 1
       this.$http
         .post('/api-wxmp/cxxz/wx/getMpConfig', {
-          // url: this.wechatSignUrl,
-          url: window.location.href,
+          url,
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
-            const that = this
             wx.config({
               debug: DEBUG,
               jsApiList: ['scanQRCode', 'chooseWXPay'],
@@ -134,21 +138,28 @@ export default {
               signature: data.datas.signature,
             })
             wx.ready(function() {
-              that.isConfiged = true
+              this.isConfiged = true
+              this.tryCounts = 0
             })
           }
         })
     },
     // 扫码签到
     qrCodeSign(active) {
+      if (!this.isConfiged) {
+        if (this.tryCounts >= 2) {
+          this.$toast.fail('当前版本过低')
+          return
+        }
+
+        this.configWx(signUrl)
+        return
+      }
+
       wx.checkJsApi({
         jsApiList: ['scanQRCode'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
         success: res => {
-          if (
-            this.isConfiged &&
-            res.errMsg == 'checkJsApi:ok' &&
-            res.checkResult['scanQRCode']
-          ) {
+          if (res.errMsg == 'checkJsApi:ok' && res.checkResult['scanQRCode']) {
             wx.scanQRCode({
               needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
               scanType: ['qrCode', 'barCode'], // 可以指定扫二维码还是一维码，默认二者都有
@@ -161,7 +172,7 @@ export default {
               },
             })
           } else {
-            this.$toast('当前版本不支持')
+            this.$toast.fail('当前版本不支持')
           }
         },
       })
@@ -169,7 +180,7 @@ export default {
     // 提交签到信息
     submitSign(curGoodsId, active) {
       if (curGoodsId != active.goodsId) {
-        this.$toast('签到活动不一致')
+        this.$toast.fail('签到活动不一致')
         return
       } else {
         this.$http
@@ -178,11 +189,11 @@ export default {
           })
           .then(({ data }) => {
             if (data.resp_code == 0) {
-              this.$toast('签到成功')
+              this.$toast.success('签到成功')
               this.$router.push(`/order/active-detail/${active.orderId}`)
               return
             } else {
-              this.$toast('系统繁忙')
+              this.$toast.fail('系统繁忙')
             }
           })
       }

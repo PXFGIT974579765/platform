@@ -3,7 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,maximum-scale=1"
+    />
     <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
     <title>创星校园学子服务平台</title>
   </head>
@@ -17,14 +20,9 @@
     <div id="app"></div>
     <script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
     <script>
-      // wx.config({
-      //   debug: true,
-      //   appId: 'wxb31c6acd37a77081","',
-      //   timestamp: '1564912528',
-      //   nonceStr: 'H7jIySvsFUyBsRKR',
-      //   signature: '65bf90cee507ce6a6f1f3d5ebd210dd104a17a8e',
-      //   jsApiList: ['scanQRCode', 'chooseWXPay'],
-      // })
+      if (navigator.userAgent.indexOf('iPhone') !== -1) {
+        window.wechaturl = window.location + ''
+      }
     </script>
     <!-- built files will be auto injected -->
   </body>

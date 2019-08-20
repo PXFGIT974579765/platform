@@ -45,8 +45,14 @@ import { mapGetters } from 'vuex'
 
 const DEBUG = process.env.VUE_APP_WX_DEBUG === 'true' ? true : false
 
+// 进行签名的时候  Android 不用使用之前的链接， ios 需要
+let signUrl = window.location.href.split('#')[0]
+if (window.wechaturl !== undefined) {
+  signUrl = window.wechaturl
+}
+
 export default {
-  computed: mapGetters(['user', 'wechatSignUrl']),
+  computed: mapGetters(['user']),
 
   components: {
     Search,
@@ -68,12 +74,12 @@ export default {
   data() {
     return {
       value: '',
+      tryCounts: 0,
     }
   },
 
   created() {
-    alert(this.wechatSignUrl || 'nothing')
-    this.configWx()
+    this.configWx(window.location.href)
   },
 
   methods: {
@@ -81,11 +87,11 @@ export default {
       //
     },
 
-    configWx() {
+    configWx(url) {
+      this.tryCounts += 1
       this.$http
         .post('/api-wxmp/cxxz/wx/getMpConfig', {
-          // url: this.wechatSignUrl,
-          url: window.location.href,
+          url,
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
@@ -100,6 +106,7 @@ export default {
 
             wx.ready(() => {
               this.configed = true
+              this.tryCounts = 0
             })
           }
         })
@@ -107,8 +114,12 @@ export default {
 
     onScan() {
       if (!this.configed) {
-        this.$toast('请稍后重试')
-        this.configWx()
+        if (this.tryCounts >= 2) {
+          this.$toast.fail('当前版本过低')
+          return
+        }
+
+        this.configWx(signUrl)
         return
       }
 
@@ -119,7 +130,7 @@ export default {
             this.scan()
             return
           }
-          this.$toast('当前版本不支持')
+          this.$toast.fail('当前版本不支持')
         },
       })
     },
