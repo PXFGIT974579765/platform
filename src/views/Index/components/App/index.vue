@@ -84,6 +84,10 @@ export default {
       this.$http.get('/api-wxmp/cxxz/app/myAppList').then(({ data }) => {
         if (data.resp_code === 0) {
           this.myApps = data.datas
+        } else if (data.resp_msg) {
+          this.$toast.fail(data.resp_msg)
+        } else {
+          this.$toast.fail('系统繁忙')
         }
       })
     },
@@ -92,6 +96,10 @@ export default {
       this.$http.get('/api-wxmp/cxxz/app/findAppList').then(({ data }) => {
         if (data.resp_code === 0) {
           this.allApps = data.datas
+        } else if (data.resp_msg) {
+          this.$toast.fail(data.resp_msg)
+        } else {
+          this.$toast.fail('系统繁忙')
         }
       })
     },
@@ -119,8 +127,11 @@ export default {
             Toast.success('操作成功')
             this.fetchMyApps()
             return
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
+          } else {
+            this.$toast.fail('系统繁忙')
           }
-          Toast.fail('系统繁忙')
         })
     },
   },
