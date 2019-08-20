@@ -12,11 +12,11 @@
       <div class="price-group">
         <div class="price-item flex">
           <span>商品总价</span>
-          <span>￥{{ goods.goodsSize * goods.oneMoney }}</span>
+          <span>￥{{ goods.orderMoney }}</span>
         </div>
         <div class="price-item flex">
           <span>优惠</span>
-          <span>-{{ goods.couponMoney }}</span>
+          <span>￥{{ -goods.couponMoney }}</span>
         </div>
         <div class="price-item flex total">
           <span>订单总价</span>
@@ -44,7 +44,7 @@
         </div>
         <div class="order-item">
           <span>创建时间 :</span>
-          <span>{{ goods.creatTime }}</span>
+          <span>{{ goods.createTime }}</span>
         </div>
         <div class="order-item">
           <span>付款时间 :</span>

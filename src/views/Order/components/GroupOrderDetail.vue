@@ -3,11 +3,11 @@
     <div class="container">
       <GroupOrderStatusCard
         :status="group.status"
-        :orderStatus="goods.orderStatus"
+        :orderStatus="group.orderStatus"
       />
       <AddressCard :contact="group.contact" />
       <div class="goods-item">
-        <Card :goods="group" :showStatus="false" @cancelOrder="cancelOrder" />
+        <Card :group="group" :showStatus="false" @cancelOrder="cancelOrder" />
       </div>
       <div class="price-group">
         <div class="price-item flex">
@@ -16,7 +16,7 @@
         </div>
         <div class="price-item flex">
           <span>优惠</span>
-          <span>-{{ group.couponMoney }}</span>
+          <span>￥{{ -group.couponMoney }}</span>
         </div>
         <div class="price-item flex total">
           <span>订单总价</span>
@@ -46,7 +46,7 @@
         </div>
         <div class="order-item">
           <span>创建时间 :</span>
-          <span>{{ group.creatTime }}</span>
+          <span>{{ group.createTime }}</span>
         </div>
         <div class="order-item">
           <span>付款时间 :</span>
@@ -85,7 +85,7 @@
 <script>
 import GroupOrderStatusCard from './GroupOrderStatusCard'
 import AddressCard from './AddressCard'
-import Card from './GoodsOrderCard'
+import Card from './GroupOrderCard'
 
 const ORDER_STATUS = {
   0: '待付款',

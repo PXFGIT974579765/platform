@@ -20,7 +20,7 @@
     </div>
     <div class="footer">
       <div class="total">
-        共{{ group.goodsSize || 1 }}件商品 合计: ￥{{ group.money }}
+        共{{ group.goodsSize || 1 }}件商品 合计: ￥{{ group.orderMoney }}
       </div>
       <div class="btn-area">
         <!-- 待付款对应的按钮 -->
@@ -38,7 +38,7 @@
         >
         <!-- 拼团中对应的按钮 -->
         <span
-          v-if="group.orderStatus == 91"
+          v-if="group.orderStatus == 1"
           class="btn"
           @click="routeDetail(group.orderId)"
           >订单详情</span

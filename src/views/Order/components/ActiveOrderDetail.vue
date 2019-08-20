@@ -18,7 +18,7 @@
         </div>
         <div class="price-item flex">
           <span>优惠</span>
-          <span>-{{ active.couponMoney }}</span>
+          <span>￥{{ -active.couponMoney }}</span>
         </div>
         <div class="price-item flex total">
           <span>订单总价</span>
