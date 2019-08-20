@@ -73,6 +73,8 @@
             </van-radio>
           </van-radio-group>
         </div>
+
+        <button class="add-address" @click="addAddress">新增</button>
       </div>
     </van-dialog>
   </div>
@@ -88,6 +90,10 @@ export default {
 
   props: {
     good: Object,
+    distributionId: {
+      type: String,
+      default: '',
+    },
     addressList: {
       type: Array,
       default: () => [],
@@ -120,6 +126,13 @@ export default {
       this.addressDetail = this.addressList.find(({ id }) => id === value)
       this.$emit('selectAddress', this.addressDetail)
     },
+
+    addAddress() {
+      const redirect = encodeURIComponent(
+        `/errand/order?user=${this.distributionId}&order=${this.good.orderId}`
+      )
+      this.$router.push(`/my/address-edit?redirect=${redirect}`)
+    },
   },
 }
 </script>
@@ -129,6 +142,10 @@ export default {
   margin-bottom: 14px;
   padding-bottom: 20px;
   border-bottom: 1px solid #c8c8c8;
+}
+
+.address-select {
+  padding-bottom: 0;
 }
 
 .address-item {
@@ -176,5 +193,14 @@ export default {
     font-size: 13px;
     color: #029eff;
   }
+}
+
+.add-address {
+  display: block;
+  width: 100%;
+  height: 50px;
+  font-size: 15px;
+  border: solid 1px #e5e5e5;
+  color: #585858;
 }
 </style>

@@ -6,6 +6,7 @@
       class="block"
       :detail="!!orderId"
       :good="good"
+      :distributionId="userDetail.distributionId"
       :addressList="addressList"
       @selectAddress="fetchPrice"
     />

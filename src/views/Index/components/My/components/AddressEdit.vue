@@ -134,6 +134,7 @@ export default {
       if (this.err.phone) {
         return
       }
+
       this.$http
         .post('/api-wxmp/cxxz/address/saveAddress', {
           ...this.address,
@@ -141,8 +142,17 @@ export default {
         .then(({ data }) => {
           if (data.resp_code == 0) {
             this.$toast.success('保存成功')
-            this.$router.push('/my/address-list')
-          } else if (data.resp_msg) {
+            const redirect = this.$route.query.redirect
+
+            if (redirect) {
+              this.$router.replace(redirect)
+            } else {
+              this.$router.push('/my/address-list')
+            }
+            return
+          }
+
+          if (data.resp_msg) {
             this.$toast.fail(data.resp_msg)
           } else {
             this.$toast.fail('系统繁忙')
