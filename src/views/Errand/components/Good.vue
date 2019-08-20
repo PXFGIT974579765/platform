@@ -22,10 +22,10 @@
       <div v-if="!detail" class="address-item address-put">
         <div class="type">送</div>
         <div class="detail">
-          <div class="name">{{ addressList[0].address }}</div>
+          <div class="name">{{ addressDetail.address }}</div>
           <div class="phone">
             <span>联系电话</span>
-            {{ addressList[0].telephone }}
+            {{ addressDetail.mobile }}
           </div>
         </div>
         <div class="button" @click="onSelect">选择</div>
