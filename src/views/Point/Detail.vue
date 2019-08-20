@@ -49,6 +49,14 @@ import ImgSwipe from '@/components/ImgSwipe'
 import DescComment from '@/components/DescComment'
 import ShareButton from '@/components/ShareButton'
 
+const DEBUG = process.env.VUE_APP_WX_DEBUG === 'true' ? true : false
+
+// 进行签名的时候  Android 不用使用之前的链接， ios 需要
+let signUrl = window.location.href.split('#')[0]
+if (window.wechaturl !== undefined) {
+  signUrl = window.wechaturl
+}
+
 export default {
   components: {
     DescComment,
@@ -60,12 +68,14 @@ export default {
     return {
       active: 'desc',
       complete: false,
+      tryCounts: 0,
       detail: {},
     }
   },
 
   created() {
     this.fetchData()
+    this.configWx(window.location.href)
   },
 
   watch: {
@@ -73,6 +83,67 @@ export default {
   },
 
   methods: {
+    configWx(url) {
+      this.tryCounts += 1
+      this.$http
+        .post('/api-wxmp/cxxz/wx/getMpConfig', {
+          url,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            wx.config({
+              debug: DEBUG,
+              jsApiList: [
+                'updateAppMessageShareData',
+                'updateTimelineShareData',
+              ],
+              appId: data.datas.appId,
+              timestamp: data.datas.timestamp,
+              nonceStr: data.datas.nonceStr,
+              signature: data.datas.signature,
+            })
+
+            wx.ready(() => {
+              this.configed = true
+              this.tryCounts = 0
+
+              // 自定义“分享给朋友”及“分享到QQ”按钮的分享内容
+              wx.updateAppMessageShareData({
+                title: '创新校园学子服务平台', // 分享标题
+                desc: this.detail.brief, // 分享描述
+                link: url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: this.detail.listPicUrl.split('@')[0], // 分享图标
+                success: function() {
+                  // 设置成功
+                },
+              })
+
+              // 自定义“分享到朋友圈”及“分享到QQ空间”按钮的分享内容
+              wx.updateAppMessageShareData({
+                title: '创新校园学子服务平台', // 分享标题
+                desc: this.detail.brief, // 分享描述
+                link: url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: this.detail.listPicUrl.split('@')[0], // 分享图标
+                success: function() {
+                  // 设置成功
+                },
+              })
+            })
+
+            wx.error(() => {
+              if (!this.configed) {
+                if (this.tryCounts >= 2) {
+                  this.$toast.fail('当前版本过低')
+                  return
+                }
+
+                this.configWx(signUrl)
+                return
+              }
+            })
+          }
+        })
+    },
     fetchData() {
       this.$http
         .get('/api-wxmp/cxxz/goods/score/findById', {
