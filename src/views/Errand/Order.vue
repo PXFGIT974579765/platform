@@ -61,8 +61,10 @@
 
     <div class="pay">
       <div class="price">
-        支付
-        <span>￥{{ price }}元</span>
+        <div v-if="price != ''">
+          支付
+          <span>￥{{ price }}元</span>
+        </div>
       </div>
       <button :disabled="disabled" @click="onSubmit">提交订单</button>
     </div>
@@ -187,11 +189,11 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             const d = data.datas.detail
+            const user = data.datas.user
 
-            // TODO: value
             this.comment = d.remark
-            this.price = 0.01
-            this.wallet = 4990
+            this.price = d.distributionPrice
+            this.wallet = user.wallet
 
             this.good = {
               ...d,

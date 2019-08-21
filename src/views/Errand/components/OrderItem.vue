@@ -23,60 +23,45 @@
     </div>
 
     <div class="operation">
-      <!-- <router-link
-        v-if="order.status == 6"
+      <router-link
+        v-if="order.orderStatus == 0"
         class="link"
         :to="
-          `/errand/order?user=${order.distributionNo}&order=${order.orderId}`
+          `/errand/order?user=${order.distributionId}&order=${
+            order.distributionNo
+          }&errand=${order.id}`
         "
         >付款</router-link
-      > -->
-      <router-link
-        v-if="order.status == 0"
-        class="link"
-        :to="`/errand/order?errand=${order.id}&order=${order.goodsId}`"
-        >付款</router-link
       >
-      <!-- <a
-        v-if="order.status == 0 || order.status == 1"
-        class="link"
-        :href="`tel:${order.phone}`"
-        >联系跑腿员</a
-      > -->
-      <a v-if="order.status == 1" class="link" :href="`tel:${order.phone}`"
+      <button v-if="order.orderStatus == 0" class="link" @click="onCancel">
+        取消订单
+      </button>
+      <a v-if="order.orderStatus == 1" class="link" :href="`tel:${order.phone}`"
         >联系跑腿员</a
       >
-      <button v-if="order.status == 3" class="link" @click="onClick">
+      <button v-if="order.orderStatus == 3" class="link" @click="onComment">
         去评价
       </button>
-      <button v-if="order.status == 5" class="link" @click="onClick">
+      <button v-if="order.orderStatus == 5" class="link" @click="onComment">
         已经评价
       </button>
+      <button v-if="order.orderStatus == '90'" class="link">已取消</button>
       <router-link
+        v-if="order.orderStatus != 0 && order.orderStatus != '90'"
         :to="`/errand/detail/${order.id}?good=${order.goodsId}`"
         class="link"
         >订单详情</router-link
       >
     </div>
-
-    <van-dialog
-      v-model="show"
-      :showConfirmButton="false"
-      closeOnPopstate
-      closeOnClickOverlay
-    >
-      <errand-comment :user="order" @close="onClose" @comment="onComment" />
-    </van-dialog>
   </div>
 </template>
 
 <script>
-import ErrandComment from '@/components/ErrandComment'
 import Commodity from './Commodity'
 
 const status = {
   '0': {
-    text: '取货中',
+    text: '待支付',
     value: '0',
   },
   '1': {
@@ -99,26 +84,19 @@ const status = {
     text: '已评价',
     value: '5',
   },
-  '6': {
-    text: '待付款',
-    value: '6',
+  '90': {
+    text: '已取消',
+    value: '90',
   },
 }
 
 export default {
   components: {
-    ErrandComment,
     Commodity,
   },
 
   props: {
     order: Object,
-  },
-
-  data() {
-    return {
-      show: false,
-    }
   },
 
   methods: {
@@ -134,19 +112,12 @@ export default {
       return status[value].text
     },
 
-    onComment({ ratings, tags }) {
-      this.$http
-        .post('/api-wxmp/cxxz/comment/save', {
-          rates: ratings,
-          commContent: JSON.stringify(tags),
-          distributionId: this.order.distributionNo,
-        })
-        .then(({ data }) => {
-          if (data.resp_code === 0) {
-            this.$toast('评论成功')
-            this.show = false
-          }
-        })
+    onComment() {
+      this.$emit('comment', this.order)
+    },
+
+    onCancel() {
+      this.$emit('cancel', this.order.id)
     },
   },
 }

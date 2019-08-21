@@ -27,17 +27,36 @@
           @load="onLoad"
         >
           <div v-for="order in orders" :key="order.id" class="goods-item">
-            <order-item :order="order" />
+            <order-item
+              :order="order"
+              @comment="onShowComment"
+              @cancel="onCancel"
+            />
           </div>
         </van-list>
       </van-tab>
     </van-tabs>
+
+    <van-dialog
+      v-model="commentShow"
+      :showConfirmButton="false"
+      closeOnPopstate
+      closeOnClickOverlay
+    >
+      <errand-comment
+        v-if="commentShow"
+        :user="order"
+        @close="onClose"
+        @comment="onComment"
+      />
+    </van-dialog>
   </div>
 </template>
 
 <script>
 import Search from '@/components/Search'
 import OrderItem from './components/OrderItem'
+import ErrandComment from '@/components/ErrandComment'
 
 export const status = [
   {
@@ -46,19 +65,19 @@ export const status = [
   },
   {
     name: '待付款',
-    value: 6,
+    value: '0',
   },
   {
     name: '进行中',
-    value: 0,
+    value: '1',
   },
   {
     name: '已取消',
-    value: 7,
+    value: '90',
   },
   {
     name: '已完成',
-    value: 2,
+    value: '2',
   },
 ]
 
@@ -66,10 +85,12 @@ export default {
   components: {
     Search,
     OrderItem,
+    ErrandComment,
   },
 
   data() {
     return {
+      commentShow: false,
       statusList: status,
       name: status[0].name,
       active: status[0].value,
@@ -80,6 +101,7 @@ export default {
       finished: false,
       loading: true,
       orders: [],
+      order: {},
     }
   },
 
@@ -154,6 +176,41 @@ export default {
       this.status = status.find(item => item.name == title).value
 
       this.fetchList()
+    },
+
+    onCancel(id) {
+      this.$http
+        .post('/api-wxmp/cxxz/runner/cancel', {
+          id,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.$toast('取消成功')
+            this.init()
+            this.fetchList()
+          }
+        })
+    },
+
+    onShowComment(order) {
+      this.order = order
+      this.commentShow = true
+    },
+
+    onComment({ ratings, tags }) {
+      this.$http
+        .post('/api-wxmp/cxxz/comment/save', {
+          rates: ratings,
+          commContent: JSON.stringify(tags),
+          distributionId: this.order.distributionNo,
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.order.status = 5
+            this.show = false
+            this.$toast('评论成功')
+          }
+        })
     },
   },
 }

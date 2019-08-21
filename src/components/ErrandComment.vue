@@ -2,8 +2,8 @@
   <div class="errand-comment">
     <van-icon name="cross" :size="16" class="close" @click="onClose" />
 
-    <img class="avatar" src="~@/assets/images/errand_avatar.png" alt />
-    <div class="name">王多鱼</div>
+    <img class="avatar" :src="user.headImgUrl" alt />
+    <div class="name">{{ user.name }}</div>
     <div class="title">请对本次服务进行评价</div>
 
     <van-rate v-model="ratings" :size="24" color="#ffad43" />
