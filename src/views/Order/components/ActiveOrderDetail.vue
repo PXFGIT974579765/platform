@@ -6,7 +6,7 @@
           :active="active"
           :showStatus="false"
           :showPrice="false"
-          :showStatusBtn="true"
+          :showOrderStatusBtn="true"
           @cancelOrder="cancelOrder"
           @qrCodeSign="qrCodeSign"
         />
@@ -56,6 +56,21 @@
           <span>付款时间 :</span>
           <span>{{ active.endTime }}</span>
         </div>
+
+        <template v-if="active.backMoney">
+          <div class="order-item">
+            <span>退款金额 :</span>
+            <span>{{ active.backMoney.money }}</span>
+          </div>
+          <div class="order-item">
+            <span>退款编号 :</span>
+            <span>{{ active.backMoney.id }}</span>
+          </div>
+          <div class="order-item">
+            <span>退款时间 :</span>
+            <span>{{ active.backMoney.createTime }}</span>
+          </div>
+        </template>
       </div>
 
       <div class="contact flex">

@@ -62,15 +62,15 @@
         </div>
         <div class="order-item">
           <span>退款金额 :</span>
-          <span>￥{{ group.amount - group.couponAmount }}</span>
+          <span>￥{{ group.backMoney.money }}</span>
         </div>
         <div class="order-item">
           <span>退款编号 :</span>
-          <span>{{ group.refundNo }}</span>
+          <span>{{ group.backMoney.id }}</span>
         </div>
         <div class="order-item">
           <span>退款时间 :</span>
-          <span>{{ group.refundTime | dateFormat }}</span>
+          <span>{{ group.backMoney.createTime }}</span>
         </div>
       </div>
 

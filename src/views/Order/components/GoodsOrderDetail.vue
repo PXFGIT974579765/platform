@@ -5,7 +5,7 @@
         :status="goods.status"
         :orderStatus="goods.orderStatus"
       />
-      <AddressCard :contact="goods.contact" />
+      <AddressCard :contact="goods" />
       <div class="goods-item">
         <Card :goods="goods" :showStatus="false" @cancelOrder="cancelOrder" />
       </div>
@@ -88,26 +88,7 @@ export default {
   },
   data() {
     return {
-      goods: {
-        orderNo: '557879582',
-        imgUrl: require('../images/good.png'),
-        title: '华为路由器无线全千兆端口家用WIFI穿墙王大功率户型',
-        tagName: '标准套餐',
-        tagDesc: '白色-定制版',
-        num: 1, // 数量
-        price: 189, // 单价
-        couponAmount: 11, // 优惠金额
-        amount: 189, // 总金额 = 单价*数量
-        status: 0,
-        score: 200,
-        creatTime: 1500000000,
-        payTime: 1500000000,
-        contact: {
-          name: '刘国贵',
-          phone: '19985501144',
-          address: '贵州省贵阳市花溪区大学城贵州师范大学B1男生素质302寝室',
-        },
-      },
+      goods: {},
     }
   },
   created() {
