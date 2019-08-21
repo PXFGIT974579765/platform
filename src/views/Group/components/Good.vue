@@ -22,7 +22,7 @@
       position="bottom"
       :style="{ maxHeight: '75%' }"
     >
-      <manufacturer />
+      <manufacturer v-if="manufacturerShow" :id="good.brandId" />
     </van-popup>
   </div>
 </template>
@@ -56,7 +56,9 @@ export default {
     },
 
     onShowManufacturer() {
-      this.manufacturerShow = true
+      if (this.good.brandId) {
+        this.manufacturerShow = true
+      }
     },
   },
 }

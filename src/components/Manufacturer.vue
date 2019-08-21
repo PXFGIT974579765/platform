@@ -6,44 +6,111 @@
     </div>
 
     <div class="list">
-      <div class="item">
-        <img src="~@/assets/images/group_good.png" alt />
-        <div class="detail">
-          <div class="name">新款时尚简约休闲小西服阔腿短裤韩国两件</div>
-          <div class="other">
-            <div class="count">5-10人团</div>
-            <div class="result">拼团成功</div>
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        :error.sync="error"
+        error-text="请求失败，点击重新加载"
+        @load="onLoad"
+      >
+        <div v-for="o in orders" :key="o.id" class="item">
+          <img :src="o.picUrl" alt />
+          <div class="detail">
+            <div class="name">{{ o.name }}</div>
+            <div class="other">
+              <div class="count">
+                {{ o.limitMinSize }}-{{ o.limitMaxSize }}人团
+              </div>
+              <div class="result">拼团成功</div>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div class="item">
-        <img src="~@/assets/images/group_good.png" alt />
-        <div class="detail">
-          <div class="name">新款时尚简约休闲小西服阔腿短裤韩国两件</div>
-          <div class="other">
-            <div class="count">5-10人团</div>
-            <div class="result">拼团成功</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="item">
-        <img src="~@/assets/images/group_good.png" alt />
-        <div class="detail">
-          <div class="name">新款时尚简约休闲小西服阔腿短裤韩国两件</div>
-          <div class="other">
-            <div class="count">5-10人团</div>
-            <div class="result">拼团成功</div>
-          </div>
-        </div>
-      </div>
+      </van-list>
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  props: ['id', 'visible'],
+
+  data() {
+    return {
+      page: 1,
+      count: 0,
+      error: false,
+      finished: false,
+      loading: true,
+      orders: [],
+    }
+  },
+
+  created() {
+    this.fetchList()
+  },
+
+  methods: {
+    // init() {
+    //   this.page = 1
+    //   this.count = 0
+    //   this.error = false
+    //   this.finished = false
+    //   this.orders = []
+    // },
+
+    startLoading() {
+      this.loading = true
+      this.error = false
+    },
+
+    stopLoading() {
+      this.loading = false
+    },
+
+    finishCheck() {
+      const { count, orders } = this
+      if (orders.length >= count) {
+        this.finished = true
+      }
+    },
+
+    fetchList(pageIndex = 1, pageSize = 10) {
+      this.startLoading()
+
+      this.$http
+        .post('/api-wxmp/cxxz/order/pageBrandPT', {
+          goodsBrandId: this.id,
+          pageIndex,
+          pageSize,
+          status: this.status === -1 ? undefined : this.status,
+        })
+        .then(({ data }) => {
+          this.stopLoading()
+
+          if (data.resp_code !== 0) {
+            this.error = true
+            return
+          }
+
+          const { pageIndex, count } = data.datas
+          this.page = pageIndex
+          this.count = count
+          this.orders = this.orders.concat(data.datas.data)
+
+          this.finishCheck()
+        })
+        .catch(() => {
+          this.error = true
+          this.stopLoading()
+        })
+    },
+
+    onLoad() {
+      this.fetchList(this.page + 1)
+    },
+  },
+}
 </script>
 
 <style lang="less" scoped>
@@ -64,6 +131,10 @@ export default {}
 
 .desc {
   color: #ff4444;
+}
+
+.list {
+  max-height: 70vh;
 }
 
 .item {
