@@ -205,7 +205,7 @@ export default {
     },
     // 日期转化
     convertDateTime(beginTime, endTime) {
-      convertDateTime(beginTime, endTime)
+      return convertDateTime(beginTime, endTime)
     },
 
     // 提交评价

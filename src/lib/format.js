@@ -64,8 +64,8 @@ export function convertDateTime(fromDateTime, toDateTime) {
   if (fromDate == toDate) {
     return `${fromDate} ${
       weekDay[new Date(Date.parse(fromDateTime)).getDay()]
-    } ${fromTime}-${toTime}`
+    } ${fromTime} 至 ${toTime}`
   }
 
-  return `${fromDate}-${toDate}`
+  return `${fromDate} 至 ${toDate}`
 }
