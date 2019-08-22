@@ -4,7 +4,7 @@
     <div class="content">
       <div class="name ellipsis-2">{{ data.title }}</div>
       <div class="date">
-        <span>{{ data.startTime }}</span>
+        <span>{{ convertDateTime(data.startTime, data.endTime) }}</span>
         <!-- <span></span> -->
         <!-- <span>{{l.startTime}}</span> -->
       </div>
@@ -20,11 +20,17 @@
 </template>
 
 <script>
+import { convertDateTime } from '@/lib/format'
+
 export default {
   props: {
     data: {
       type: Object,
     },
+  },
+
+  methods: {
+    convertDateTime,
   },
 }
 </script>

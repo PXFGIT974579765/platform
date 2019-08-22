@@ -102,6 +102,7 @@
     <manual />
 
     <desc-comment
+      :goodId="$route.params.id"
       :active="active"
       :desc="good.goodsDesc"
       @onChange="onChange"

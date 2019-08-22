@@ -26,6 +26,7 @@
     </div>
 
     <desc-comment
+      :goodId="$route.params.id"
       :active="active"
       :desc="detail.goodsDesc"
       @onChange="onChange"

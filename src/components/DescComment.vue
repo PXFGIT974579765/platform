@@ -17,9 +17,7 @@
 
     <div v-if="active === 'desc'" class="desc" v-html="desc"></div>
     <div v-else class="comments">
-      <comment />
-      <comment />
-      <comment />
+      <comment v-for="item in list" :key="item.id" :comment="item" />
     </div>
   </div>
 </template>
@@ -33,11 +31,34 @@ export default {
   },
 
   props: {
+    goodId: String,
     active: String,
     desc: String,
   },
 
+  data() {
+    return {
+      list: [],
+    }
+  },
+
+  created() {
+    this.fetchData()
+  },
+
   methods: {
+    fetchData() {
+      this.$http
+        .get('/api-wxmp/cxxz/comment/findGoodsComment', {
+          params: { id: this.goodId },
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.list = data.datas
+          }
+        })
+    },
+
     onChange(type) {
       this.$emit('onChange', type)
     },

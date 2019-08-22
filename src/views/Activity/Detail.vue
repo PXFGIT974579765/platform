@@ -73,9 +73,7 @@
     <div class="comment-block">
       <div class="comment-header">评价</div>
       <div class="comments">
-        <comment />
-        <comment />
-        <comment />
+        <comment v-for="item in comments" :key="item.id" :comment="item" />
       </div>
     </div>
 
@@ -129,6 +127,7 @@ export default {
       people: [],
       isConfiged: false,
       tryCounts: 0,
+      comments: [],
     }
   },
 
@@ -166,6 +165,7 @@ export default {
           }
         })
     },
+
     // 扫码签到
     qrCodeSign() {
       if (!this.isConfiged) {
@@ -199,6 +199,7 @@ export default {
         },
       })
     },
+
     // 提交签到信息
     submitSign(curGoodsId, goodsId) {
       if (curGoodsId != goodsId) {
@@ -220,6 +221,7 @@ export default {
           })
       }
     },
+
     fetchData() {
       this.$http
         .get('/api-wxmp/cxxz/topics/findTopic', {
@@ -238,6 +240,20 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.people = data.datas
+          }
+        })
+
+      this.fetchComments()
+    },
+
+    fetchComments() {
+      this.$http
+        .get('/api-wxmp/cxxz/comment/findGoodsComment', {
+          params: { id: this.$route.params.id },
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.comments = data.datas
           }
         })
     },

@@ -1,12 +1,12 @@
 <template>
   <div class="comment">
     <div class="user">
-      <img src="~@/assets/images/errand_avatar.png" alt />
+      <img :src="comment.headImgUrl" alt />
       <div class="info">
-        <div class="name">小刘哥</div>
-        <div class="date">2019.06.27 12:45</div>
+        <div class="name">{{ comment.nickName }}</div>
+        <div class="date">{{ comment.createTime }}</div>
       </div>
-      <van-rate :value="4" :size="12" color="#ffad43" />
+      <van-rate :value="comment.rates" :size="12" color="#ffad43" />
     </div>
 
     <p>
@@ -16,7 +16,9 @@
 </template>
 
 <script>
-export default {}
+export default {
+  props: ['comment'],
+}
 </script>
 
 <style lang="less" scoped>
