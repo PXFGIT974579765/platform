@@ -214,6 +214,7 @@ export default {
         .post('/api-wxmp/cxxz/comment/save', {
           ...appraise,
           orderNo: this.goods.orderId,
+          goodsId: this.goods.goodsId,
           commentType: 2,
           // distributionId
         })
