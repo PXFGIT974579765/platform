@@ -22,7 +22,12 @@
       <div v-if="!detail" class="address-item address-put">
         <div class="type">送</div>
         <div class="detail">
-          <div class="name">{{ addressDetail.address }}</div>
+          <div class="name">
+            {{
+              `${addressDetail.address || ''} ${addressDetail.detailAddress ||
+                ''}`
+            }}
+          </div>
           <div class="phone">
             <span>联系电话</span>
             {{ addressDetail.mobile }}
@@ -64,7 +69,9 @@
               class="addres-item"
             >
               <div class="address-detail">
-                <div class="address-name">{{ a.address }}</div>
+                <div class="address-name">
+                  {{ `${a.address} ${a.detailAddress}` }}
+                </div>
                 <div class="contact">
                   {{ a.trueName }}
                   <span class="phone">{{ a.mobile }}</span>
