@@ -59,13 +59,6 @@
             @click="cancelOrder(active.orderId)"
             >取消活动</span
           >
-          <!-- 进行中对应的按钮 -->
-          <span
-            v-if="active.orderStatus == 1"
-            class="btn"
-            @click="cancelOrder(active.orderId)"
-            >取消活动</span
-          >
 
           <!-- 已结束对应的按钮 -->
           <span v-if="active.orderStatus == 2" class="btn" @click="onAppraise"
