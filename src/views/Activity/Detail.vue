@@ -249,7 +249,7 @@ export default {
     fetchComments() {
       this.$http
         .get('/api-wxmp/cxxz/comment/findGoodsComment', {
-          params: { id: this.$route.params.id },
+          params: { goodsId: this.$route.params.id },
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {

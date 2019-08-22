@@ -1,11 +1,6 @@
 <template>
   <div class="earn">
-    <div class="comment">
-      <p>这里可以是怎么赚积分的一些说明，告诉用户怎么才能赚取更多积分。</p>
-      <p>
-        这里可以是怎么赚积分的一些说明，告诉用户怎么才能赚取更多积分。这里可以是怎么赚积分的一些说明，告诉用户怎么才能赚取更多积分。这里可以是怎么赚积分的一些说明，告诉用户怎么才能赚取更多积分。这里可以是怎么赚积分的一些说明，告诉用户怎么才能赚取更多积分。
-      </p>
-    </div>
+    <div class="comment">{{ content }}</div>
 
     <div class="btn-wrap">
       <router-link to="/my/sign">
@@ -16,7 +11,21 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data() {
+    return {
+      content: '',
+    }
+  },
+
+  created() {
+    this.$http.get('/api-media/cxxz/score/desc').then(({ data }) => {
+      if (data.resp_code === 0) {
+        this.content = data.datas.content
+      }
+    })
+  },
+}
 </script>
 
 <style lang="less" scoped>

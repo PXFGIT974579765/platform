@@ -99,7 +99,7 @@ export default {
     }
   },
 
-  created() {
+  mounted() {
     this.fetchData()
     this.clipboard = new ClipboardJS('.clipboard')
   },

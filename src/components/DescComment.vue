@@ -50,7 +50,7 @@ export default {
     fetchData() {
       this.$http
         .get('/api-wxmp/cxxz/comment/findGoodsComment', {
-          params: { id: this.goodId },
+          params: { goodsId: this.goodId },
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {

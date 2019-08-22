@@ -1,6 +1,6 @@
 <template>
   <div class="shares clearfix">
-    <div class="share">
+    <!-- <div class="share">
       <div class="icon">
         <span class="iconfont" style="color: #6cc630">&#xe765;</span>
       </div>
@@ -23,24 +23,47 @@
         <span class="iconfont" style="color: #faba35">&#xe75a;</span>
       </div>
       <div class="name">QQ空间</div>
-    </div>
-    <div class="share">
+    </div>-->
+    <div class="share clipboard" :data-clipboard-text="url" @click="onCopyUrl">
       <div class="icon">
         <span class="iconfont" style="color: #8e9aaa">&#xe72f;</span>
       </div>
       <div class="name">复制网址</div>
     </div>
-    <div class="share">
+    <!-- <div class="share">
       <div class="icon">
         <span class="iconfont" style="color: #8e9aaa">&#xe730;</span>
       </div>
       <div class="name">二维码</div>
-    </div>
+    </div>-->
   </div>
 </template>
 
 <script>
-export default {}
+import ClipboardJS from 'clipboard'
+
+export default {
+  data() {
+    return {
+      url: '',
+    }
+  },
+
+  mounted() {
+    this.url = window.location.origin + this.$route.fullPath
+    this.clipboard = new ClipboardJS('.clipboard')
+  },
+
+  beforeDestroy() {
+    this.clipboard.destroy()
+  },
+
+  methods: {
+    onCopyUrl() {
+      this.$toast('复制成功')
+    },
+  },
+}
 </script>
 
 <style lang="less" scoped>
