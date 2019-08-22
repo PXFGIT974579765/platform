@@ -5,7 +5,7 @@
         :status="group.status"
         :orderStatus="group.orderStatus"
       />
-      <AddressCard :contact="group.contact" />
+      <AddressCard :contact="group" />
       <div class="goods-item">
         <Card :group="group" :showStatus="false" @cancelOrder="cancelOrder" />
       </div>
@@ -112,29 +112,7 @@ export default {
   },
   data() {
     return {
-      group: {
-        orderNo: '557879582',
-        imgUrl: require('../images/good.png'),
-        title: '华为路由器无线全千兆端口家用WIFI穿墙王大功率户型',
-        tagName: '标准套餐',
-        tagDesc: '白色-定制版',
-        num: 1, // 数量
-        price: 189, // 单价
-        couponAmount: 11, // 优惠金额
-        amount: 189, // 总金额 = 单价*数量
-        status: 5,
-        score: 200,
-        creatTime: 1500000000,
-        payTime: 1500000000,
-        refundNo: 1500004948, // 退款编号
-        refundTime: 150000000, // 退款时间
-        refundStatus: 1, // 0 没有退款  1 退款中  2 已退款
-        contact: {
-          name: '刘国贵',
-          phone: '19985501144',
-          address: '贵州省贵阳市花溪区大学城贵州师范大学B1男生素质302寝室',
-        },
-      },
+      group: {},
     }
   },
   created() {
@@ -174,6 +152,10 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.group = data.datas
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
+          } else {
+            this.$toast.fail('系统繁忙')
           }
         })
     },
@@ -186,6 +168,10 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.$router.push('/order/group')
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
+          } else {
+            this.$toast.fail('系统繁忙')
           }
         })
     },

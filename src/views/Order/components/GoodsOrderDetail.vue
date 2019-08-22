@@ -105,6 +105,10 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.goods = data.datas
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
+          } else {
+            this.$toast.fail('系统繁忙')
           }
         })
     },
@@ -117,6 +121,10 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.$router.push('/order/goods')
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
+          } else {
+            this.$toast.fail('系统繁忙')
           }
         })
     },

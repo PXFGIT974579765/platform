@@ -51,6 +51,10 @@ export default {
           const { couponTypes, couponList } = data.datas
           this.couponTypes = couponTypes
           this.couponList = couponList
+        } else if (data.resp_msg) {
+          this.$toast.fail(data.resp_msg)
+        } else {
+          this.$toast.fail('系统繁忙')
         }
       })
     },

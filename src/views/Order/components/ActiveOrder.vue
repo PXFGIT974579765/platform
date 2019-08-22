@@ -192,6 +192,8 @@ export default {
               this.$toast.success('签到成功')
               this.$router.push(`/order/active-detail/${active.orderId}`)
               return
+            } else if (data.resp_msg) {
+              this.$toast.fail(data.resp_msg)
             } else {
               this.$toast.fail('系统繁忙')
             }

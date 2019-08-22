@@ -133,6 +133,10 @@ export default {
             this.user.cardImg = this.resultUrl
             this.setUser(this.user)
             this.$toast.success('信息保存成功')
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
+          } else {
+            this.$toast.fail('系统繁忙')
           }
         })
     },

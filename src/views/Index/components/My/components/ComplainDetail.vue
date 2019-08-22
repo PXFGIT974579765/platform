@@ -77,6 +77,10 @@ export default {
             if (suggestionDeal.suggestionImgs) {
               this.suggestionImgs = suggestionDeal.suggestionImgs.split('@')
             }
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
+          } else {
+            this.$toast.fail('系统繁忙')
           }
         })
     },

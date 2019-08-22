@@ -25,8 +25,10 @@ export default {
       .then(({ data }) => {
         if (data.resp_code == 0) {
           this.show = true
+        } else if (data.resp_msg) {
+          this.message = data.resp_msg
         } else {
-          this.message = data.datas
+          this.message = '系统繁忙'
         }
       })
   },

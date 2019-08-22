@@ -97,6 +97,10 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.questions = data.datas
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
+          } else {
+            this.$toast.fail('系统繁忙')
           }
         })
     },
