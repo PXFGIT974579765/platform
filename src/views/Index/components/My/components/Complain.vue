@@ -68,9 +68,9 @@
           >
             <div class="title flex">
               <span class="time">{{ item.createTime }}</span>
-              <span :class="item.status | statusClass">
-                {{ item.status | statusName }}
-              </span>
+              <span :class="item.status | statusClass">{{
+                item.status | statusName
+              }}</span>
             </div>
             <div class="tag">
               [{{ item.suggestionType | tagFilter }}] {{ item.title }}
@@ -131,6 +131,10 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.complainList = data.datas.data
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
+          } else {
+            this.$toast.fail('系统繁忙')
           }
         })
     },
@@ -185,8 +189,10 @@ export default {
       httpUpload.post('/api-file/foreign/files', param).then(({ data }) => {
         if (data.resp_code == 0) {
           this.imgs.push(data.datas)
+        } else if (data.resp_msg) {
+          this.$toast.fail(data.resp_msg)
         } else {
-          this.$toast.success('上传图片失败')
+          this.$toast.fail('系统繁忙')
         }
       })
     },

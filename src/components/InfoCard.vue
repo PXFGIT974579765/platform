@@ -108,6 +108,10 @@ export default {
               this.configed = true
               this.tryCounts = 0
             })
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
+          } else {
+            this.$toast.fail('系统繁忙')
           }
         })
     },

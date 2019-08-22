@@ -282,6 +282,8 @@ export default {
       this.$http.get('/api-wxmp/cxxz/school/findSchools').then(({ data }) => {
         if (data.resp_code === 0) {
           this.school = data.datas
+        } else if (data.resp_msg) {
+          this.$toast.fail(data.resp_msg)
         } else {
           this.$toast.fail('系统繁忙')
         }

@@ -111,6 +111,8 @@ export default {
       this.$http.get('/api-wxmp/cxxz/address/findAreaAll').then(({ data }) => {
         if (data.resp_code === 0) {
           this.areaList = { ...this.createAreaList(data.datas) }
+        } else if (data.resp_msg) {
+          this.$toast.fail(data.resp_msg)
         } else {
           this.$toast.fail('系统繁忙')
         }
@@ -150,9 +152,7 @@ export default {
               this.$router.push('/my/address-list')
             }
             return
-          }
-
-          if (data.resp_msg) {
+          } else if (data.resp_msg) {
             this.$toast.fail(data.resp_msg)
           } else {
             this.$toast.fail('系统繁忙')

@@ -36,9 +36,9 @@
         </div>
         <div class="order-item">
           <span>订单状态 :</span>
-          <span>
-            {{ orderStatusFilter(active.orderStatus, active.status) }}
-          </span>
+          <span>{{
+            orderStatusFilter(active.orderStatus, active.status)
+          }}</span>
         </div>
         <div class="order-item">
           <span>个人积分 :</span>
@@ -197,6 +197,8 @@ export default {
               this.$toast.success('签到成功')
               this.fetchOrderDetail(this.active.orderId)
               return
+            } else if (data.resp_msg) {
+              this.$toast.fail(data.resp_msg)
             } else {
               this.$toast.fail('系统繁忙')
             }
@@ -212,6 +214,10 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.active = data.datas
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
+          } else {
+            this.$toast.fail('系统繁忙')
           }
         })
     },
@@ -224,6 +230,10 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.$router.push('/order/active')
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
+          } else {
+            this.$toast.fail('系统繁忙')
           }
         })
     },

@@ -237,6 +237,7 @@ export default {
         .post('/api-wxmp/cxxz/comment/save', {
           ...appraise,
           orderNo: this.group.orderId,
+          goodsId: this.group.goodsId,
           commentType: 3, // commentType 0 跑腿 1 积分 活动2 拼团 3
           // distributionId
         })

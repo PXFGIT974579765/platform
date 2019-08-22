@@ -105,6 +105,8 @@ export default {
       this.$http.get('/api-media/share/task/list').then(({ data }) => {
         if (data.resp_code === 0) {
           this.links = data.datas
+        } else if (data.resp_msg) {
+          this.$toast.fail(data.resp_msg)
         } else {
           this.$toast.fail('系统繁忙')
         }

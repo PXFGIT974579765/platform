@@ -8,10 +8,17 @@
     </div>
     <div class="desc">
       <div>
-        <span class="name">Hi {{ user.nicknameStr }}</span>
+        <span class="name"
+          >Hi
+          {{
+            user.nicknameStr.length > 4
+              ? `${user.nicknameStr.slice(0, 4)}...`
+              : user.nicknameStr
+          }}</span
+        >
         <span class="level">
-          <span class="iconfont vip-icon">&#xe770;</span
-          >{{ user.levelName || '黄金会员' }}
+          <span class="iconfont vip-icon">&#xe770;</span>
+          {{ user.levelName || '黄金会员' }}
         </span>
       </div>
       <div>
