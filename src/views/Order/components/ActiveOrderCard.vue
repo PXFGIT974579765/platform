@@ -2,15 +2,15 @@
   <div class="comp-order-active-card" v-wechat-title="$route.meta.title">
     <div class="header flex" @click="routeDetail(active.orderId)">
       <span class="order-no">活动编号: {{ active.orderId }}</span>
-      <span v-if="showOrderStatus" class="status">{{
-        orderStatusFilter(active.orderStatus, active.status)
-      }}</span>
+      <span v-if="showOrderStatus" class="status">
+        {{ orderStatusFilter(active.orderStatus, active.status) }}
+      </span>
     </div>
     <div class="img" @click="routeDetail(active.orderId)">
       <img :src="active.goodsImg" />
-      <span :class="['tag', active.orderMoney != 0 ? 'tag-race' : 'tag-pg']">{{
-        active.orderMoney != 0 ? '比赛' : '公益'
-      }}</span>
+      <span :class="['tag', active.orderMoney != 0 ? 'tag-race' : 'tag-pg']">
+        {{ active.orderMoney != 0 ? '比赛' : '公益' }}
+      </span>
     </div>
 
     <div class="title-area flex">
@@ -19,9 +19,9 @@
     </div>
     <div class="time-area">
       <span>日期</span>
-      <span class="time">{{
-        convertDateTime(active.beginTime, active.endTime)
-      }}</span>
+      <span class="time">
+        {{ convertDateTime(active.beginTime, active.endTime) }}
+      </span>
     </div>
     <div class="address-area flex">
       <span>地址</span>
@@ -40,9 +40,9 @@
         >
         <span v-else></span>
         <div>
-          <span class="btn">
-            {{ active.isScanSign === 0 ? '未签到' : '已签到' }}
-          </span>
+          <span class="btn">{{
+            active.isScanSign === 0 ? '未签到' : '已签到'
+          }}</span>
           <!-- 待付款对应的按钮 -->
           <router-link
             v-if="active.orderStatus == 0"
@@ -51,7 +51,10 @@
             >付款</router-link
           >
           <span
-            v-if="active.orderStatus == 0"
+            v-if="
+              active.orderStatus == 0 ||
+                (active.orderStatus == 1 && active.goodsStatus == 0)
+            "
             class="btn"
             @click="cancelOrder(active.orderId)"
             >取消活动</span
