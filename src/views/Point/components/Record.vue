@@ -1,57 +1,15 @@
 <template>
   <div class="record">
-    <div class="item">
-      <img src="~@/assets/images/group_item.png" alt />
+    <div v-for="good in goods" :key="good.orderId" class="item">
+      <img :src="good.goodsImg" alt />
       <div class="content">
-        <div class="name">
-          保温杯水杯定制广告杯刻字印logo活动礼品茶杯子开业赠品纪念定做
+        <div class="name">{{ good.goodsName }}</div>
+        <div class="status success">
+          {{ orderStatusList[good.orderStatus] }}
         </div>
-        <div class="status success">兑换成功</div>
         <div class="others">
-          <div class="date">2019.06.19 12:25</div>
-          <div class="count">-1000积分</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="item">
-      <img src="~@/assets/images/group_item.png" alt />
-      <div class="content">
-        <div class="name">
-          保温杯水杯定制广告杯刻字印logo活动礼品茶杯子开业赠品纪念定做
-        </div>
-        <div class="status success">兑换成功</div>
-        <div class="others">
-          <div class="date">2019.06.19 12:25</div>
-          <div class="count">-1000积分</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="item">
-      <img src="~@/assets/images/group_item.png" alt />
-      <div class="content">
-        <div class="name">
-          保温杯水杯定制广告杯刻字印logo活动礼品茶杯子开业赠品纪念定做
-        </div>
-        <div class="status success">兑换成功</div>
-        <div class="others">
-          <div class="date">2019.06.19 12:25</div>
-          <div class="count">-1000积分</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="item">
-      <img src="~@/assets/images/group_item.png" alt />
-      <div class="content">
-        <div class="name">
-          保温杯水杯定制广告杯刻字印logo活动礼品茶杯子开业赠品纪念定做
-        </div>
-        <div class="status success">兑换成功</div>
-        <div class="others">
-          <div class="date">2019.06.19 12:25</div>
-          <div class="count">-1000积分</div>
+          <div class="date">{{ good.createTime }}</div>
+          <div class="count">-{{ good.score }}积分</div>
         </div>
       </div>
     </div>
@@ -59,7 +17,88 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data() {
+    return {
+      page: 1,
+      count: 0,
+      error: false,
+      finished: false,
+      loading: true,
+      goods: [],
+      orderStatusList: {
+        0: '待付款',
+        1: '待配送',
+        2: '待提货',
+        3: '兑换成功',
+      },
+    }
+  },
+
+  created() {
+    this.fetchList({ pageIndex: this.page })
+  },
+
+  methods: {
+    init() {
+      this.page = 1
+      this.count = 0
+      this.error = false
+      this.finished = false
+      this.goods = []
+    },
+
+    startLoading() {
+      this.loading = true
+      this.error = false
+    },
+
+    stopLoading() {
+      this.loading = false
+    },
+
+    finishCheck() {
+      const { count, goods } = this
+      if (goods.length >= count) {
+        this.finished = true
+      }
+    },
+
+    fetchList({ pageIndex = 1, pageSize = 10 }) {
+      this.startLoading()
+
+      this.$http
+        .post('/api-wxmp/cxxz/order/pageJFSC', {
+          pageIndex,
+          pageSize,
+          isScoreOrder: 1,
+        })
+        .then(({ data }) => {
+          this.stopLoading()
+
+          if (data.resp_code !== 0) {
+            this.error = true
+            return
+          }
+
+          const { pageIndex, count } = data.datas
+          this.page = pageIndex
+          this.count = count
+          this.goods = this.goods.concat(data.datas.data)
+
+          this.finishCheck()
+        })
+        .catch(() => {
+          this.error = true
+          this.stopLoading()
+        })
+    },
+
+    onLoad() {
+      this.fetchList({ pageIndex: this.page + 1 })
+    },
+  },
+}
 </script>
 
 <style lang="less" scoped>
@@ -79,6 +118,7 @@ img {
 }
 
 .content {
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -97,6 +137,7 @@ img {
 
 .others {
   display: flex;
+  align-items: center;
 }
 
 .date {
