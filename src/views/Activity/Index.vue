@@ -15,24 +15,24 @@
 
               <div class="content">
                 <div class="name">
-                  <div class="tag">比赛</div>
-                  刀剑2贵州赛区英雄争霸赛
+                  <div class="tag">{{ a.categoryName }}</div>
+                  {{ a.title }}
                 </div>
 
                 <div class="detail">
                   <div class="date">
-                    <span>6月13日</span>
-                    <span>星期六</span>
-                    <span>09:00 - 12:00</span>
+                    {{ convertDateTime(a.startTime, a.endTime) }}
                   </div>
-                  <div class="address">贵州师范大学</div>
+                  <div class="address">{{ a.address }}</div>
                 </div>
 
                 <div class="others">
-                  <div class="price">免费参加</div>
+                  <div class="price">
+                    {{ a.price > 0 ? `¥${a.price}` : '免费参加' }}
+                  </div>
                   <div class="count">
-                    <span>274人报名</span>
-                    <span>限额300人</span>
+                    <span>{{ a.enroll }}人报名</span>
+                    <span>限额{{ a.quota }}人</span>
                   </div>
                 </div>
               </div>
@@ -67,6 +67,7 @@
 import Search from '@/components/Search'
 import ActivityNav from './components/ActivityNav'
 import ActivityItem from './components/ActivityItem'
+import { convertDateTime } from '@/lib/format'
 
 export default {
   components: {
@@ -107,6 +108,8 @@ export default {
   },
 
   methods: {
+    convertDateTime,
+
     fetchCategory() {
       this.$http.get('/api-wxmp/cxxz/topics/banners').then(({ data }) => {
         if (data.resp_code === 0) {
