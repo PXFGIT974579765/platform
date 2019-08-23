@@ -13,11 +13,11 @@
     <div class="inputs">
       <input
         v-for="(v, i) in values"
+        type="number"
+        class="verify-input"
         :key="i"
         :value="v"
-        :ref="`input${i}`"
-        type="number"
-        @input="onInput(i, $event)"
+        @keydown="onInput(i, $event)"
       />
     </div>
   </div>
@@ -39,6 +39,10 @@ export default {
       time: 0,
       values: [...initValues],
     }
+  },
+
+  mounted() {
+    this.inputs = document.getElementsByClassName('verify-input')
   },
 
   beforeDestroy() {
@@ -69,11 +73,23 @@ export default {
     },
 
     onInput(index, event) {
-      const value = event.data
-      this.$set(this.values, index, value)
+      event.preventDefault()
+      const oldValue = event.target.value
+      const isDelete = event.keyCode === 8
+      const value = event.key
 
-      if (index < this.values.length - 1) {
-        this.focus(index + 1)
+      if (!isDelete) {
+        if (value) {
+          this.$set(this.values, index, value)
+          if (index < this.values.length - 1) {
+            this.focus(index + 1)
+          }
+        }
+      } else {
+        if (!oldValue && index > 0) {
+          this.$set(this.values, index - 1, '')
+          this.focus(index - 1)
+        }
       }
 
       if (this.values.every(x => x && x.length > 0)) {
@@ -102,9 +118,9 @@ export default {
     },
 
     focus(index) {
-      const refs = this.$refs[`input${index}`]
-      if (refs && refs[0]) {
-        refs[0].focus()
+      const input = this.inputs && this.inputs[index]
+      if (input) {
+        input.focus()
       }
     },
   },
