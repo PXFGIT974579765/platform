@@ -6,6 +6,11 @@
       <div class="content" v-html="article.content"></div>
     </div>
 
+    <a v-if="ad.adId" :href="ad.extUrl || ad.link" class="block banner">
+      <div class="rec-block-title">{{ ad.title }}</div>
+      <img :src="ad.adImg" alt />
+    </a>
+
     <div class="block news" v-if="recommens.length > 0">
       <div class="block-header">
         <div class="block-title">相关推荐</div>
@@ -82,7 +87,8 @@ export default {
 }
 
 .article {
-  padding: 0 15px;
+  padding: 0 15px 15px;
+  border-bottom: solid 1px #e5e5e5;
 }
 
 h1 {
@@ -96,6 +102,20 @@ h1 {
 }
 
 .news {
-  margin-top: 35px;
+  margin-top: 15px;
+}
+
+.banner {
+  display: block;
+  padding: 15px;
+  font-size: 10px;
+  color: #626262;
+  background: #fff;
+
+  img {
+    display: block;
+    margin-top: 7px;
+    width: 100%;
+  }
 }
 </style>

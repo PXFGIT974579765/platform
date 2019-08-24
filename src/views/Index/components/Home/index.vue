@@ -102,8 +102,8 @@
       </van-grid>
     </div>
 
-    <div class="rec-block-wrap">
-      <a :href="ad.link" class="rec-block">
+    <div v-if="ad.adId" class="rec-block-wrap">
+      <a :href="ad.extUrl || ad.link" class="rec-block">
         <div class="rec-block-title">{{ ad.title }}</div>
         <img :src="ad.adImg" alt />
       </a>
@@ -177,13 +177,11 @@ export default {
         }
       })
 
-    this.$http
-      .get('/api-media/news-anon/news/pageAd', { params: { isDefault: 1 } })
-      .then(({ data }) => {
-        if (data.resp_code === 0) {
-          this.ad = data.datas
-        }
-      })
+    this.$http.get('/api-media/news-anon/news/pageAd').then(({ data }) => {
+      if (data.resp_code === 0) {
+        this.ad = data.datas
+      }
+    })
   },
 
   methods: {
