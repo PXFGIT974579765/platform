@@ -11,9 +11,16 @@
       </ul>
     </div>
 
-    <div class="ticket">
-      <img src="~@/assets/images/group_ad.png" alt />
-      <div class="ticket-info">
+    <div v-if="ticket.id || ad.adId" class="ticket">
+      <a v-if="ad.adId" :href="ad.extUrl || ad.link">
+        <img
+          :class="['banner-img', { 'max-width': !ticket.id }]"
+          :src="ad.adImg"
+          alt
+        />
+      </a>
+
+      <div v-if="ticket.id" :class="['ticket-info', { 'max-width': !ad.adId }]">
         <div class="ticket-name">{{ ticket.name }}</div>
         <div class="ticket-value">
           ￥
@@ -84,6 +91,7 @@ export default {
       loading: true,
       list: [],
       ticket: {},
+      ad: {},
     }
   },
 
@@ -91,6 +99,7 @@ export default {
     this.fetchCategory()
     this.fetchList(this.page)
     this.fetchTicket()
+    this.fetchAd()
   },
 
   methods: {
@@ -120,6 +129,14 @@ export default {
             this.$toast(data.resp_msg)
           }
         })
+    },
+
+    fetchAd() {
+      this.$http.get('/api-media/news-anon/news/ptAd').then(({ data }) => {
+        if (data.resp_code === 0) {
+          this.ad = data.datas
+        }
+      })
     },
 
     onFilter(filter) {
@@ -228,8 +245,11 @@ export default {
   padding: 15px;
   background: #fff;
 
-  img {
-    width: 66%;
+  .banner-img {
+    width: 60%;
+    &.max-width {
+      width: 100%;
+    }
   }
 
   .ticket-info {
@@ -242,6 +262,11 @@ export default {
     color: #fff;
     background: url(~@/assets/images/group_print.png) 0 0 no-repeat;
     background-size: 100% 100%;
+
+    &.max-width {
+      height: 110px;
+      margin-left: 0;
+    }
   }
 
   .ticket-name {
