@@ -60,17 +60,12 @@
       <button @click="onSubmit" class="submit">立即兑换</button>
     </div>
 
-    <van-dialog
-      v-model="verificationCodeShow"
-      :showConfirmButton="false"
-      closeOnPopstate
-    >
-      <verification-code
-        :user="order.user"
-        @close="onCloseCode"
-        @submit="onGetCode"
-      />
-    </van-dialog>
+    <verification-code
+      :visible="verificationCodeShow"
+      :user="order.user"
+      @close="onCloseCode"
+      @submit="onGetCode"
+    />
   </div>
 </template>
 
@@ -95,7 +90,7 @@ export default {
       orderId: null,
       order: {
         price: 0,
-        score: 1,
+        score: 0,
         user: {
           wallet: 0,
         },
@@ -180,13 +175,13 @@ export default {
       const { address, order, buyNum } = this
       const { score, price } = order
 
-      // if (order.user.isPerfect != 1) {
-      //   this.$toast('请先完善个人信息')
-      //   window.setTimeout(() => {
-      //     this.$router.push('/my/base-info')
-      //   }, 3000)
-      //   return
-      // }
+      if (order.user.isPerfect != 1) {
+        this.$toast('请先完善个人信息')
+        window.setTimeout(() => {
+          this.$router.push('/my/base-info')
+        }, 3000)
+        return
+      }
 
       if (!address.address || address.address.length === 0) {
         this.$toast('请选择自提门店')

@@ -30,17 +30,12 @@
       @submit="onSubmit"
     />
 
-    <van-dialog
-      v-model="verificationCodeShow"
-      :showConfirmButton="false"
-      closeOnPopstate
-    >
-      <verification-code
-        :user="order.user"
-        @close="onCloseCode"
-        @submit="onGetCode"
-      />
-    </van-dialog>
+    <verification-code
+      :visible="verificationCodeShow"
+      :user="order.user"
+      @close="onCloseCode"
+      @submit="onGetCode"
+    />
   </div>
 </template>
 
@@ -138,15 +133,15 @@ export default {
     },
 
     onSubmit() {
-      const { payMethod } = this
+      const { payMethod, order } = this
 
-      // if (order.user.isPerfect != 1) {
-      //   this.$toast('请先完善个人信息')
-      //   window.setTimeout(() => {
-      //     this.$router.push('/my/base-info')
-      //   }, 3000)
-      //   return
-      // }
+      if (order.user.isPerfect != 1) {
+        this.$toast('请先完善个人信息')
+        window.setTimeout(() => {
+          this.$router.push('/my/base-info')
+        }, 3000)
+        return
+      }
 
       if (payMethod == 0) {
         this.verificationCodeShow = true

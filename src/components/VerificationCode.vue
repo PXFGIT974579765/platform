@@ -1,25 +1,38 @@
 <template>
-  <div class="verification-code">
-    <van-icon name="cross" :size="16" class="close" @click="onClose" />
+  <div v-show="visible" class="verification-code">
+    <van-overlay v-show="visible"></van-overlay>
 
-    <div class="title">输入短信验证码</div>
+    <div class="verification-numbers">
+      <van-icon name="cross" :size="16" class="close" @click="onClose" />
 
-    <div class="contact">
-      <div class="phone">{{ user.phone }}</div>
-      <div class="btn" v-if="time <= 0" @click="onGetCode">点击获取验证码</div>
-      <div class="btn btn-time" v-else>{{ time }}</div>
+      <div class="title">输入短信验证码</div>
+
+      <div class="contact">
+        <div class="phone">{{ user.phone }}</div>
+        <div class="btn" v-if="time <= 0" @click="onGetCode">
+          点击获取验证码
+        </div>
+        <div class="btn btn-time" v-else>{{ time }}</div>
+      </div>
+
+      <div class="inputs">
+        <div
+          v-for="(v, i) in values"
+          :key="i"
+          class="verify-input"
+          @click="onFocus(i)"
+        >
+          {{ v }}
+        </div>
+      </div>
     </div>
 
-    <div class="inputs">
-      <input
-        v-for="(v, i) in values"
-        type="number"
-        class="verify-input"
-        :key="i"
-        :value="v"
-        @keydown="onInput(i, $event)"
-      />
-    </div>
+    <van-number-keyboard
+      :show="showKeyboard"
+      @input="onInput"
+      @delete="onDelete"
+      @blur="showKeyboard = false"
+    />
   </div>
 </template>
 
@@ -28,6 +41,10 @@ const initValues = ['', '', '', '', '', '']
 
 export default {
   props: {
+    visible: {
+      type: Boolean,
+      default: false,
+    },
     user: {
       type: Object,
       default: () => ({}),
@@ -37,16 +54,10 @@ export default {
   data() {
     return {
       time: 0,
+      current: 0,
       values: [...initValues],
+      showKeyboard: false,
     }
-  },
-
-  mounted() {
-    this.inputs = document.getElementsByClassName('verify-input')
-  },
-
-  beforeDestroy() {
-    window.clearInterval(this.timer)
   },
 
   methods: {
@@ -72,27 +83,28 @@ export default {
       }, 1000)
     },
 
-    onInput(index, event) {
-      event.preventDefault()
-      const oldValue = event.target.value
-      const isDelete = event.keyCode === 8
-      const value = event.key
+    onFocus(index) {
+      this.current = index
+      this.showKeyboard = true
+    },
 
-      if (!isDelete) {
-        if (value) {
-          this.$set(this.values, index, value)
-          if (index < this.values.length - 1) {
-            this.focus(index + 1)
-          }
-        }
+    onDelete() {
+      if (this.values[this.current]) {
+        this.$set(this.values, this.current, '')
       } else {
-        if (!oldValue && index > 0) {
-          this.$set(this.values, index - 1, '')
-          this.focus(index - 1)
-        }
+        this.current--
+        this.$set(this.values, this.current, '')
+      }
+    },
+
+    onInput(key) {
+      this.$set(this.values, this.current, key)
+
+      if (this.current < this.values.length - 1) {
+        this.current++
       }
 
-      if (this.values.every(x => x && x.length > 0)) {
+      if (this.values.every(x => !!x)) {
         this.$emit('submit', this.values.join(''))
         this.reset()
       }
@@ -108,7 +120,7 @@ export default {
           if (data.resp_code === 0) {
             this.$toast('已发送验证码到手机')
             this.setTimer()
-            this.focus(0)
+            this.onFocus(0)
           }
           this.fetching = false
         })
@@ -116,22 +128,30 @@ export default {
           this.fetching = false
         })
     },
-
-    focus(index) {
-      const input = this.inputs && this.inputs[index]
-      if (input) {
-        input.focus()
-      }
-    },
   },
 }
 </script>
 
 <style lang="less" scoped>
 .verification-code {
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.verification-numbers {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  // top: 30%;
+  bottom: 240px;
+  z-index: 2;
   text-align: center;
   padding: 30px 20px;
+  border-radius: 3px;
+  background-color: #fff;
 }
 
 .close {
@@ -173,9 +193,10 @@ export default {
   justify-content: center;
 }
 
-input {
+.verify-input {
   width: 34px;
   height: 34px;
+  line-height: 34px;
   text-align: center;
   margin: 25px 8px 0 0;
   border: 1px solid #ddd;
