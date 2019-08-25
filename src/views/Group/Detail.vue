@@ -197,9 +197,9 @@ export default {
               // 自定义“分享给朋友”及“分享到QQ”按钮的分享内容
               wx.updateAppMessageShareData({
                 title: '创新校园学子服务平台', // 分享标题
-                desc: this.detail.name, // 分享描述
+                desc: this.good.name, // 分享描述
                 link: process.env.VUE_APP_HOST + this.$route.fullPath, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                imgUrl: this.detail.picUrl, // 分享图标
+                imgUrl: this.good.picUrl, // 分享图标
                 success: function() {
                   // 设置成功
                 },
@@ -208,9 +208,9 @@ export default {
               // 自定义“分享到朋友圈”及“分享到QQ空间”按钮的分享内容
               wx.updateTimelineShareData({
                 title: '创新校园学子服务平台', // 分享标题
-                desc: this.detail.name, // 分享描述
+                desc: this.good.name, // 分享描述
                 link: process.env.VUE_APP_HOST + this.$route.fullPath, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                imgUrl: this.detail.picUrl, // 分享图标
+                imgUrl: this.good.picUrl, // 分享图标
                 success: function() {
                   // 设置成功
                 },

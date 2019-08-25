@@ -141,7 +141,6 @@ export default {
   },
 
   methods: {
-    // 微信 jssdk 配置
     configWx(url) {
       this.tryCounts += 1
       this.$http
@@ -152,7 +151,11 @@ export default {
           if (data.resp_code === 0) {
             wx.config({
               debug: DEBUG,
-              jsApiList: ['scanQRCode', 'chooseWXPay'],
+              jsApiList: [
+                'scanQRCode',
+                'updateAppMessageShareData',
+                'updateTimelineShareData',
+              ],
               appId: data.datas.appId,
               timestamp: data.datas.timestamp,
               nonceStr: data.datas.nonceStr,
@@ -160,7 +163,7 @@ export default {
             })
 
             wx.ready(() => {
-              this.isConfiged = true
+              this.configed = true
               this.tryCounts = 0
 
               // 自定义“分享给朋友”及“分享到QQ”按钮的分享内容
