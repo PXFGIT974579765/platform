@@ -29,6 +29,8 @@
       </div>
     </div>
 
+    <div class="sep" />
+
     <div class="block apps apps-all">
       <div class="block-header">
         <div class="block-title">全部应用</div>
@@ -140,8 +142,14 @@ export default {
 
 <style lang="less" scoped>
 .app {
+  min-height: 100vh;
   padding-top: 12px;
   background-color: #fff;
+}
+
+.sep {
+  height: 10px;
+  background: #f4f4f4;
 }
 
 .search {
@@ -168,24 +176,28 @@ export default {
 }
 
 .apps {
-  margin-top: 35px;
+  margin-top: 25px;
+
   .block-content {
+    margin-right: -15px;
     overflow: hidden;
   }
+
   .app-item-wrap {
     width: 33.333333%;
     float: left;
     margin-bottom: 14px;
     &:nth-child(3n + 1) {
-      padding-right: 7px;
+      padding-right: 15px;
     }
     &:nth-child(3n + 2) {
-      padding: 0 7px;
+      padding-right: 15px;
     }
     &:nth-child(3n + 3) {
-      padding-left: 7px;
+      padding-right: 15px;
     }
   }
+
   .app-item {
     display: block;
     position: relative;

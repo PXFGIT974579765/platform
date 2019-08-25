@@ -5,8 +5,6 @@
       <div class="name ellipsis-2">{{ data.title }}</div>
       <div class="date">
         <span>{{ convertDateTime(data.startTime, data.endTime) }}</span>
-        <!-- <span></span> -->
-        <!-- <span>{{l.startTime}}</span> -->
       </div>
       <div class="address">{{ data.address }}</div>
       <div class="others">

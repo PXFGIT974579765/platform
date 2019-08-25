@@ -69,17 +69,12 @@
       <button :disabled="disabled" @click="onSubmit">提交订单</button>
     </div>
 
-    <van-dialog
-      v-model="verificationCodeShow"
-      :showConfirmButton="false"
-      closeOnPopstate
-    >
-      <verification-code
-        :user="user"
-        @close="onCloseCode"
-        @submit="onGetCode"
-      />
-    </van-dialog>
+    <verification-code
+      :visible="verificationCodeShow"
+      :user="user"
+      @close="onCloseCode"
+      @submit="onGetCode"
+    />
   </div>
 </template>
 

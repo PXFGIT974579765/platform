@@ -16,7 +16,7 @@
       <!-- <span class="value flex" v-if="userInfo.orderNotify">
         你有未处理的订单
         <span class="dot"></span>
-      </span> -->
+      </span>-->
     </van-cell>
 
     <van-cell-group class="cell-group">
@@ -42,7 +42,7 @@
       <van-cell
         class="cell"
         title="配送中心"
-        value=""
+        value
         is-link
         to="/my/distribution"
         v-if="userInfo.isDeliveryman"
@@ -53,7 +53,7 @@
         <!-- <span class="value flex" v-if="userInfo.distributionNotify">
           有新的配送订单
           <span class="dot"></span>
-        </span> -->
+        </span>-->
       </van-cell>
       <van-cell class="cell" title="积分商城" is-link to="/point">
         <span slot="icon" style="color:#ffc000" class="iconfont icon"
@@ -80,10 +80,10 @@
       </van-cell>
     </van-cell-group>
 
-    <div class="ad" v-if="ad.adImg" @click="routeAd">
+    <a v-if="ad.adId" :href="ad.extUrl || ad.link" class="block banner">
+      <div class="rec-block-title">{{ ad.title }}</div>
       <img :src="ad.adImg" alt />
-      <span class="ad-title">{{ ad.title }}</span>
-    </div>
+    </a>
 
     <div class="footer">----- 哇哦，下面没有喽 -----</div>
   </div>
@@ -97,6 +97,7 @@ export default {
   components: {
     InfoCard,
   },
+
   data() {
     return {
       notice: '',
@@ -109,12 +110,15 @@ export default {
       },
     }
   },
+
   created() {
     this.fetchInfo()
     this.fetchAd()
   },
+
   methods: {
     ...mapActions(['setUser']),
+
     fetchInfo() {
       this.$http
         .get('/api-wxmp/foreignUser/wxUserInfo/userInfo')
@@ -127,13 +131,17 @@ export default {
           }
         })
     },
+
     fetchAd() {
-      this.$http.get('/api-media/news-anon/news/pageAd').then(({ data }) => {
-        if (data.resp_code === 0) {
-          this.ad = data.datas
-        }
-      })
+      this.$http
+        .get('/api-media/news-anon/news/userCenterAd')
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.ad = data.datas
+          }
+        })
     },
+
     routeAd() {
       location.href = this.ad.extUrl || this.ad.link
     },
@@ -174,22 +182,18 @@ export default {
     }
   }
 
-  .ad {
-    position: relative;
-    padding: 18px 12px;
-    background-color: #fff;
+  .banner {
+    display: block;
+    padding: 15px;
+    font-size: 10px;
+    color: #626262;
+    background: #fff;
 
     img {
-      height: 100%;
+      display: block;
+      margin-top: 7px;
       width: 100%;
     }
-  }
-
-  .ad-title {
-    position: absolute;
-    bottom: 33%;
-    left: 30%;
-    color: #f9ecec;
   }
 
   .footer {
