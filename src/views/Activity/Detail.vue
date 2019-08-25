@@ -141,7 +141,6 @@ export default {
   },
 
   methods: {
-    // 微信 jssdk 配置
     configWx(url) {
       this.tryCounts += 1
       this.$http
@@ -152,15 +151,54 @@ export default {
           if (data.resp_code === 0) {
             wx.config({
               debug: DEBUG,
-              jsApiList: ['scanQRCode', 'chooseWXPay'],
+              jsApiList: [
+                'scanQRCode',
+                'updateAppMessageShareData',
+                'updateTimelineShareData',
+              ],
               appId: data.datas.appId,
               timestamp: data.datas.timestamp,
               nonceStr: data.datas.nonceStr,
               signature: data.datas.signature,
             })
+
             wx.ready(() => {
-              this.isConfiged = true
+              this.configed = true
               this.tryCounts = 0
+
+              // 自定义“分享给朋友”及“分享到QQ”按钮的分享内容
+              wx.updateAppMessageShareData({
+                title: '创新学子服务平台', // 分享标题
+                desc: this.detail.title, // 分享描述
+                link: process.env.VUE_APP_HOST + this.$route.fullPath, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: this.detail.avatar, // 分享图标
+                success: function() {
+                  // 设置成功
+                },
+              })
+
+              // 自定义“分享到朋友圈”及“分享到QQ空间”按钮的分享内容
+              wx.updateTimelineShareData({
+                title: '创新学子服务平台', // 分享标题
+                desc: this.detail.title, // 分享描述
+                link: process.env.VUE_APP_HOST + this.$route.fullPath, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: this.detail.avatar, // 分享图标
+                success: function() {
+                  // 设置成功
+                },
+              })
+            })
+
+            wx.error(() => {
+              if (!this.configed) {
+                if (this.tryCounts >= 2) {
+                  this.$toast.fail('当前版本过低')
+                  return
+                }
+
+                this.configWx(signUrl)
+                return
+              }
             })
           }
         })
@@ -428,7 +466,7 @@ export default {
 }
 
 .comment-block {
-  margin: 10px 0 41px;
+  margin: 10px 0 66px;
   padding: 15px;
   background: #fff;
 }

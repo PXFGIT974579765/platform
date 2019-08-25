@@ -68,6 +68,7 @@ export default {
 
 <style lang="less" scoped>
 .desc-comment {
+  margin-bottom: 68px;
   background-color: #ffffff;
 }
 

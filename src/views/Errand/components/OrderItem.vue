@@ -11,7 +11,7 @@
       <div class="address-item address-get">
         <div class="type"></div>
         <div class="name van-ellipsis">
-          贵州师范大学花溪校区（创星校园学子实训中心实训中心）
+          贵州师范大学花溪校区（创星学子实训中心实训中心）
         </div>
       </div>
       <div class="address-item address-put">
@@ -27,9 +27,7 @@
         v-if="order.orderStatus == 0"
         class="link"
         :to="
-          `/errand/order?user=${order.distributionId}&order=${
-            order.distributionNo
-          }&errand=${order.id}`
+          `/errand/order?user=${order.distributionId}&order=${order.distributionNo}&errand=${order.id}`
         "
         >付款</router-link
       >
