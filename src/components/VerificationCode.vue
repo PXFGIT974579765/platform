@@ -104,7 +104,7 @@ export default {
         this.current++
       }
 
-      if (this.values.every(x => !!x)) {
+      if (this.values.every(x => String(x).length > 0)) {
         this.$emit('submit', this.values.join(''))
         this.reset()
       }
