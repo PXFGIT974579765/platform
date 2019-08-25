@@ -1,6 +1,9 @@
 <template>
   <router-link :to="`/activity/detail/${data.id}`" class="activity-item">
-    <img :src="data.itemPicUrl" alt />
+    <div class="img-wrap">
+      <img :src="data.itemPicUrl" alt />
+      <div class="tag">{{ data.categoryName }}</div>
+    </div>
     <div class="content">
       <div class="name ellipsis-2">{{ data.title }}</div>
       <div class="date">
@@ -39,10 +42,33 @@ export default {
   padding: 15px 0;
   border-top: solid 1px #dadada;
 
+  .img-wrap {
+    position: relative;
+    margin-right: 12px;
+  }
+
   img {
+    display: block;
     width: 150px;
     height: 112px;
-    margin-right: 12px;
+  }
+
+  .tag {
+    position: absolute;
+    right: 7px;
+    bottom: 7px;
+    height: 18px;
+    line-height: 18px;
+    padding: 0 6px;
+    border-radius: 2px;
+    font-size: 11px;
+    color: #fff;
+    background-image: linear-gradient(#258bfd, #258bfd),
+      linear-gradient(#ff3434, #ff3434);
+  }
+
+  .content {
+    flex: 1;
   }
 
   .name {
