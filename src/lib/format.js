@@ -40,6 +40,8 @@ export function calc(express) {
 
 // 把两个时间格式转换成人话   yyyy-MM-dd HH:mm:ss
 export function convertDateTime(fromDateTime, toDateTime) {
+  if (!fromDateTime || !toDateTime) return ''
+
   const weekDay = [
     '星期天',
     '星期一',

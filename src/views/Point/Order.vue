@@ -308,12 +308,16 @@ export default {
           this.$router.push('/order/goods')
           return
         }
-        // if (res.err_msg === 'get_brand_wcpay_request:cancel') {
-        //   // return
-        // }
-        // if (res.err_msg === 'get_brand_wcpay_request:fail') {
-        //   // return
-        // }
+
+        if (
+          res.err_msg === 'get_brand_wcpay_request:cancel' ||
+          res.err_msg === 'get_brand_wcpay_request:fail'
+        ) {
+          this.$toast('支付失败，请到订单中心重新支付')
+          setTimeout(() => {
+            this.$router.push('/order/goods')
+          }, 3000)
+        }
       })
     },
   },

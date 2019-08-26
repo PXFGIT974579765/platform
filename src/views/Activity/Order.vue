@@ -46,6 +46,7 @@ import OrderPrice from '@/components/OrderPrice'
 import OrderPay from '@/components/OrderPay'
 import OrderSubmit from '@/components/OrderSubmit'
 import VerificationCode from '@/components/VerificationCode'
+import { setTimeout } from 'timers'
 
 export default {
   components: {
@@ -214,7 +215,7 @@ export default {
           channelId: 1,
           fromType: 1,
           orderId,
-          payType: payMethod,
+          payType: price === 0 ? 3 : payMethod,
           goodsId: id,
           goodsType: 'HD',
           goodsSize: 1,
@@ -250,12 +251,16 @@ export default {
           this.$router.push('/order/active')
           return
         }
-        // if (res.err_msg === 'get_brand_wcpay_request:cancel') {
-        //   // return
-        // }
-        // if (res.err_msg === 'get_brand_wcpay_request:fail') {
-        //   // return
-        // }
+
+        if (
+          res.err_msg === 'get_brand_wcpay_request:cancel' ||
+          res.err_msg === 'get_brand_wcpay_request:fail'
+        ) {
+          this.$toast('支付失败，请到订单中心重新支付')
+          setTimeout(() => {
+            this.$router.push('/order/active')
+          }, 3000)
+        }
       })
     },
   },

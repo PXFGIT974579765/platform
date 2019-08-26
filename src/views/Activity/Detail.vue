@@ -37,9 +37,7 @@
         <div class="item date">
           <div class="item-name">日期</div>
           <div class="item-value">
-            <span>{{ detail.startTime }}</span>
-            <!-- <span>星期六</span>
-            <span>09:00 - 12:00</span>-->
+            <span>{{ convertDateTime(detail.startTime, detail.endTime) }}</span>
           </div>
         </div>
         <div class="item address">
@@ -102,6 +100,11 @@
 </template>
 
 <script>
+import { convertDateTime } from '@/lib/format'
+import Search from '@/components/Search'
+import Comment from '@/components/Comment'
+import ShareButton from '@/components/ShareButton'
+
 const DEBUG = process.env.VUE_APP_WX_DEBUG === 'true' ? true : false
 
 // 进行签名的时候  Android 不用使用之前的链接， ios 需要
@@ -109,10 +112,6 @@ let signUrl = window.location.href.split('#')[0]
 if (window.wechaturl !== undefined) {
   signUrl = window.wechaturl
 }
-
-import Search from '@/components/Search'
-import Comment from '@/components/Comment'
-import ShareButton from '@/components/ShareButton'
 
 export default {
   components: {
@@ -141,6 +140,8 @@ export default {
   },
 
   methods: {
+    convertDateTime,
+
     configWx(url) {
       this.tryCounts += 1
       this.$http
