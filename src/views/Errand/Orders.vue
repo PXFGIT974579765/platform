@@ -46,7 +46,7 @@
       <errand-comment
         v-if="commentShow"
         :user="order"
-        @close="onClose"
+        @close="onCloseComment"
         @comment="onComment"
       />
     </van-dialog>
@@ -197,12 +197,18 @@ export default {
       this.commentShow = true
     },
 
+    onCloseComment() {
+      this.commentShow = false
+    },
+
     onComment({ ratings, tags }) {
       this.$http
         .post('/api-wxmp/cxxz/comment/save', {
           rates: ratings,
-          commContent: JSON.stringify(tags),
+          commentType: 0,
+          orderNo: this.order.id,
           distributionId: this.order.distributionNo,
+          commContent: JSON.stringify(tags),
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
