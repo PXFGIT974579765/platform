@@ -27,7 +27,9 @@
         v-if="order.orderStatus == 0"
         class="link"
         :to="
-          `/errand/order?user=${order.distributionId}&order=${order.distributionNo}&errand=${order.id}`
+          `/errand/order?user=${order.distributionId}&order=${
+            order.distributionNo
+          }&errand=${order.id}`
         "
         >付款</router-link
       >
@@ -37,7 +39,7 @@
       <a v-if="order.orderStatus == 1" class="link" :href="`tel:${order.phone}`"
         >联系跑腿员</a
       >
-      <button v-if="order.orderStatus == 3" class="link" @click="onComment">
+      <button v-if="order.orderStatus == 2" class="link" @click="onComment">
         去评价
       </button>
       <button v-if="order.orderStatus == 5" class="link" @click="onComment">
