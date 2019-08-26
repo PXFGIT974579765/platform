@@ -8,7 +8,7 @@
       <div class="date">{{ info.startTime.slice(0, 10) }}</div>
       <div>
         <div>
-          {{ info.status === 0 ? '--:--' : info.endTime.slice(10, 16) }}
+          {{ info.endTime === null ? '--:--' : info.endTime.slice(10, 16) }}
         </div>
         <span>结束时间</span>
       </div>
@@ -62,7 +62,7 @@
     </div>
 
     <div class="footer">
-      <div v-if="info.status === 0" class="flex">
+      <div v-if="info.endTime === null" class="flex">
         <input
           class="flex-2"
           v-model="curSendNo"
@@ -116,6 +116,9 @@ export default {
     },
     // 完成配送提交动作
     finishSend() {
+      if (this.curSendNo === '') {
+        return
+      }
       this.$http
         .post('/api-wxmp/cxxz/distriButtion/order/callBackOrderCode', {
           id: this.id,

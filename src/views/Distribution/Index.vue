@@ -69,7 +69,10 @@ export default {
       runner: {},
       hasMsg: false,
       distriOrderId: '',
-      onduty: {},
+      onduty: {
+        startTime: '',
+        endTime: '',
+      },
     }
   },
   created() {
