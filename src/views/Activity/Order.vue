@@ -246,6 +246,12 @@ export default {
     },
 
     pay(opts) {
+      if (!opts) {
+        this.$toast('支付成功')
+        this.$router.push('/order/active')
+        return
+      }
+
       WeixinJSBridge.invoke('getBrandWCPayRequest', opts, res => {
         if (res.err_msg === 'get_brand_wcpay_request:ok') {
           this.$router.push('/order/active')

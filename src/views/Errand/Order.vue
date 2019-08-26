@@ -257,7 +257,7 @@ export default {
           mchId: '100000001',
           channelId: 1,
           fromType: 1,
-          payType: payMethod,
+          payType: price === 0 ? 3 : payMethod,
           goodsId: goodsId,
           goodsType: 'RT',
           goodsSize: 1,
@@ -308,7 +308,7 @@ export default {
           channelId: 1,
           fromType: 1,
           orderId,
-          payType: payMethod,
+          payType: price === 0 ? 3 : payMethod,
           goodsId: goodsId,
           goodsType: 'RT',
           goodsSize: 1,
@@ -348,6 +348,12 @@ export default {
     },
 
     pay(opts) {
+      if (!opts) {
+        this.$toast('支付成功')
+        this.$router.push('/errand/orders')
+        return
+      }
+
       WeixinJSBridge.invoke('getBrandWCPayRequest', opts, res => {
         if (res.err_msg === 'get_brand_wcpay_request:ok') {
           this.$router.push('/errand/orders')
