@@ -172,7 +172,7 @@ export default {
           mchId: '100000001',
           channelId: 1,
           fromType: 1,
-          payType: payMethod,
+          payType: price === 0 ? 3 : payMethod,
           goodsId: id,
           goodsType: 'HD',
           goodsSize: 1,
