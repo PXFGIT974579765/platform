@@ -54,7 +54,7 @@
         <div class="item-value">
           2元
           <span class="sep">|</span>
-          <router-link to="/news" class="price-detail">价格明细</router-link>
+          <span class="price-detail" @click="onShowPrice">价格明细</span>
         </div>
       </div>
       <div class="item">
@@ -77,6 +77,31 @@
         <div class="item-value">{{ order.remark }}</div>
       </div>
     </div>
+
+    <van-dialog
+      v-model="priceVisible"
+      :showConfirmButton="false"
+      closeOnPopstate
+      closeOnClickOverlay
+    >
+      <div class="price-comment">
+        <van-icon name="cross" :size="16" class="close" @click="onClosePrice" />
+
+        <div class="title">配送收费标准</div>
+
+        <p>
+          1、由于部分商品的重量可能存在误差，针对该计重收费的订单，系统会自动扣减重量10%后计算运费（例：结算页订单金额200元，商品总重量显示38kg，系统扣减重量10%后按34.2kg计算运费；超出重量4.2kg，向上取整至5kg，按1元/kg收续重运费5元）。如用户对扣减后的重量仍有异议，请及时联系客服沟通核实，经核实确认因商品重量误差导致用户多支付运费的，多支付运费将退还给用户
+        </p>
+        <p>2、商品重量以毛重计算（含商品销售包装的重量）。</p>
+        <p>3、计算运费的订单金额以订单最终实际支付金额为准。</p>
+        <p>
+          4、当订单拆分成多个订单配送时，按支付页面的运费标准收费，不额外收取多次配送费用。
+        </p>
+        <p>
+          5、运费的收取标准据实进行相应调整，具体以商品详情页及结算页公示的运费为准。"
+        </p>
+      </div>
+    </van-dialog>
   </div>
 </template>
 
@@ -92,6 +117,7 @@ export default {
 
   data() {
     return {
+      priceVisible: false,
       order: {
         startTime: '',
         endTime: '',
@@ -128,6 +154,14 @@ export default {
 
     onCopy() {
       Toast('复制成功')
+    },
+
+    onShowPrice() {
+      this.priceVisible = true
+    },
+
+    onClosePrice() {
+      this.priceVisible = false
     },
   },
 }
@@ -225,6 +259,31 @@ export default {
   }
   .price-detail {
     color: #ff7800;
+  }
+}
+
+.price-comment {
+  position: relative;
+  padding: 15px 15px;
+  line-height: 1.5;
+  font-size: 12px;
+
+  .close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    color: #adadad;
+    cursor: pointer;
+  }
+
+  .title {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+
+  p {
+    margin-bottom: 10px;
   }
 }
 </style>
