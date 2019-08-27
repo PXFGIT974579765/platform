@@ -75,7 +75,7 @@
       </div>
     </div>
 
-    <div class="submit">
+    <div v-show="detail.id" class="submit">
       <button
         v-if="!detail.order && detail.status != 2"
         class="sign"
