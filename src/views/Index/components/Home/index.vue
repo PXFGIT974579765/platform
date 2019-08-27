@@ -202,7 +202,7 @@ export default {
 }
 
 .home {
-  padding-bottom: 50px;
+  padding-bottom: 60px;
   background: #fff;
 }
 
