@@ -57,8 +57,16 @@
           >上门自提</span
         >
         <!-- 待评价对应的按钮 -->
-        <span v-if="goods.orderStatus == 50" class="btn" @click="onAppraise"
+        <!-- <span v-if="goods.orderStatus == 50" class="btn" @click="onAppraise"
           >待评价</span
+        > -->
+
+        <span v-if="goods.commentStatus == 1" class="btn" @click="onAppraise"
+          >待评价</span
+        >
+
+        <span v-if="goods.commentStatus == 3" class="btn" @click="onAppraise"
+          >重新评价</span
         >
         <span
           v-if="goods.orderStatus == 50"
@@ -67,8 +75,15 @@
           >订单详情</span
         >
         <!-- 已完成对应的按钮 -->
-        <span
+        <!-- <span
           v-if="goods.orderStatus == 80"
+          class="btn"
+          @click="detailAppraise(goods.orderId)"
+          >查看评价</span
+        > -->
+
+        <span
+          v-if="goods.commentStatus == 3 || goods.commentStatus == 2"
           class="btn"
           @click="detailAppraise(goods.orderId)"
           >查看评价</span
