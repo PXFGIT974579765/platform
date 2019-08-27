@@ -53,7 +53,7 @@
             <span class="value">{{ info.userPhone }}</span>
           </div>
         </div>
-        <span class="iconfont">&#xe745;</span>
+        <a :href="`tel:${info.userPhone}`" class="iconfont">&#xe745;</a>
       </div>
       <div class="remark-info">
         <span>备注</span>

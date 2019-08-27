@@ -49,9 +49,11 @@
     </div>
 
     <div v-if="good.isSuccess == 1" class="status status-success">
-      <p class="result">
+      <p :class="['result', { 'no-order': !good.order }]">
         <span class="iconfont">&#xe740;</span>
-        <span>拼团成功，商品太受欢迎了</span>
+        <span>{{
+          good.order ? '拼团成功，商品太受欢迎了' : '拼团已结束'
+        }}</span>
       </p>
 
       <div v-if="people.length > 0" class="people">
@@ -70,15 +72,19 @@
         </div>
       </div>
 
-      <button @click="toOrderList" class="group-btn">查看我的拼团订单</button>
+      <button v-if="good.order" @click="toOrderList" class="group-btn">
+        查看我的拼团订单
+      </button>
     </div>
 
     <div v-if="good.isSuccess == 2" class="status status-fail">
-      <p class="result">
+      <p :class="['result', { 'no-order': !good.order }]">
         <span class="iconfont">&#xe73e;</span>
-        <span>拼团失败，参团人数未达到最低要求</span>
+        <span>{{
+          good.order ? '拼团失败，参团人数未达到最低要求' : '拼团已结束'
+        }}</span>
       </p>
-      <p class="desc">退款金额已原路退回</p>
+      <p v-if="good.order" class="desc">退款金额已原路退回</p>
 
       <div v-if="people.length > 0" class="people">
         <img
@@ -96,7 +102,9 @@
         </div>
       </div>
 
-      <button @click="toOrderList" class="group-btn">查看退款</button>
+      <button v-if="good.order" @click="toOrderList" class="group-btn">
+        查看退款
+      </button>
     </div>
 
     <manual />
