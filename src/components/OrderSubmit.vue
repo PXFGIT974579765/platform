@@ -4,13 +4,17 @@
       实付款:
       <span>￥{{ value }}元</span>
     </div>
-    <button @click="onSubmit">立即支付</button>
+    <button :disabled="disabled" @click="onSubmit">立即支付</button>
   </div>
 </template>
 
 <script>
 export default {
   props: {
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
     value: {
       type: Number,
       default: 0,
@@ -53,12 +57,20 @@ export default {
     padding: 21px 30px;
     color: #fff;
     background: #f94141;
+
+    &[disabled] {
+      background: #999;
+    }
   }
 }
 
 .theme-green {
   button {
     background: #06c0b5;
+
+    &[disabled] {
+      background: #999;
+    }
   }
 
   .price span {

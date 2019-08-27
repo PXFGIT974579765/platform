@@ -209,15 +209,15 @@ export default {
       this.$http
         .post('/api-wxmp/cxxz/comment/save', {
           ...appraise,
-          orderNo: this.goods.orderId,
-          goodsId: this.goods.goodsId,
+          orderNo: this.active.orderId,
+          goodsId: this.active.goodsId,
           commentType: 2,
           // distributionId
         })
         .then(({ data }) => {
           if (data.resp_code == 0) {
             this.showDialog = false
-            this.goods.orderStatus = 80
+            this.active.orderStatus = 80
           } else if (data.resp_msg) {
             this.$toast.fail(data.resp_msg)
           } else {

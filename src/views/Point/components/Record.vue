@@ -1,6 +1,11 @@
 <template>
   <div class="record">
-    <div v-for="good in goods" :key="good.orderId" class="item">
+    <router-link
+      v-for="good in goods"
+      :key="good.orderId"
+      :to="`/order/goods-detail/${good.orderId}`"
+      class="item"
+    >
       <img :src="good.goodsImg" alt />
       <div class="content">
         <div class="name">{{ good.goodsName }}</div>
@@ -12,7 +17,7 @@
           <div class="count">-{{ good.score }}积分</div>
         </div>
       </div>
-    </div>
+    </router-link>
   </div>
 </template>
 

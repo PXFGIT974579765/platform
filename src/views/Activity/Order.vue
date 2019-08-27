@@ -26,6 +26,7 @@
 
     <order-submit
       theme="green"
+      :disabled="!order.user.id"
       :value="Math.max(0, calc(`${order.price}-${ticket}`))"
       @submit="onSubmit"
     />

@@ -57,7 +57,9 @@
     </div>
 
     <div class="submit-wrap">
-      <button @click="onSubmit" class="submit">立即兑换</button>
+      <button :disabled="!order.user.id" @click="onSubmit" class="submit">
+        立即兑换
+      </button>
     </div>
 
     <verification-code
@@ -378,5 +380,9 @@ export default {
   color: #fff;
   background-image: linear-gradient(#06bcbf, #06bcbf),
     linear-gradient(#07c060, #07c060);
+
+  &[disabled] {
+    background: #999;
+  }
 }
 </style>
