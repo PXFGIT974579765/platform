@@ -9,9 +9,7 @@
       <van-rate :value="comment.rates" :size="12" color="#ffad43" />
     </div>
 
-    <p>
-      "这是用户评价内容，内容一定要控制在100字以内。需不需要上传图片评价？这是用户评价内容，内容一定要控制在100字以内。需不需要上传图片评价？"
-    </p>
+    <p>{{ comment.commContent }}</p>
   </div>
 </template>
 
