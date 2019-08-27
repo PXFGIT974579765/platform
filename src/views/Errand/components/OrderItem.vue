@@ -42,7 +42,11 @@
       <button v-if="order.orderStatus == 2" class="link" @click="onComment">
         去评价
       </button>
-      <button v-if="order.orderStatus == 5" class="link" @click="onComment">
+      <button
+        v-if="order.orderStatus == 5 || order.orderStatus == 4"
+        class="link"
+        @click="onComment"
+      >
         已经评价
       </button>
       <button v-if="order.orderStatus == '90'" class="link">已取消</button>

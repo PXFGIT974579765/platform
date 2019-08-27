@@ -46,6 +46,7 @@
       <errand-comment
         v-if="commentShow"
         :user="order"
+        :comment="comment"
         @close="onCloseComment"
         @comment="onComment"
       />
@@ -102,6 +103,7 @@ export default {
       loading: true,
       orders: [],
       order: {},
+      comment: {},
     }
   },
 
@@ -194,7 +196,25 @@ export default {
 
     onShowComment(order) {
       this.order = order
-      this.commentShow = true
+
+      if (order.orderStatus != 4 && order.orderStatus != 5) {
+        this.commentShow = true
+        return
+      }
+
+      this.$http
+        .get('/api-wxmp/cxxz/comment/findComment', {
+          params: { orderId: order.id },
+        })
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            this.comment = {
+              ...data.datas,
+              commContent: JSON.parse(data.datas.commContent),
+            }
+            this.commentShow = true
+          }
+        })
     },
 
     onCloseComment() {
@@ -207,14 +227,15 @@ export default {
           rates: ratings,
           commentType: 0,
           orderNo: this.order.id,
-          distributionId: this.order.distributionNo,
+          distributionId: this.order.distributionId,
           commContent: JSON.stringify(tags),
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
-            this.order.status = 5
+            this.order.orderStatus = 4
+            this.order.status = 4
             this.show = false
-            this.$toast('评论成功')
+            this.commentShow = false
           }
         })
     },

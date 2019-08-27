@@ -4,21 +4,27 @@
 
     <img class="avatar" :src="user.headImgUrl" alt />
     <div class="name">{{ user.name }}</div>
-    <div class="title">请对本次服务进行评价</div>
 
-    <van-rate v-model="ratings" :size="24" color="#ffad43" />
+    <div v-if="!comment.id" class="title">请对本次服务进行评价</div>
+    <div v-else class="title">已对本次服务进行评价</div>
 
-    <div class="result">满意</div>
+    <van-rate v-if="!comment.id" v-model="ratings" :size="24" color="#ffad43" />
+    <van-rate v-else :value="comment.rates" :size="24" color="#ffad43" />
 
-    <div class="detail clearfix">
+    <div v-if="!comment.id" class="detail clearfix">
       <div v-for="(t, i) in tags" :key="t.tag" class="item-wrap">
         <div :class="['item', { active: t.selected }]" @click="onClick(i)">
           {{ t.tag }}
         </div>
       </div>
     </div>
+    <div v-else class="detail clearfix">
+      <div v-for="t in comment.commContent" :key="t" class="item-wrap">
+        <div class="item">{{ t }}</div>
+      </div>
+    </div>
 
-    <div class="submit">
+    <div v-if="!comment.id" class="submit">
       <button @click="onSubmit">提交评价</button>
     </div>
   </div>
@@ -28,6 +34,9 @@
 export default {
   props: {
     user: {
+      type: Object,
+    },
+    comment: {
       type: Object,
     },
   },
@@ -72,7 +81,7 @@ export default {
 .errand-comment {
   position: relative;
   text-align: center;
-  padding: 0 20px;
+  padding: 0 20px 10px;
 }
 
 .close {
