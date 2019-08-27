@@ -196,7 +196,10 @@ export default {
         })
         .then(({ data }) => {
           if (data.resp_code == 0) {
-            this.appraise = data.datas
+            this.appraise = {
+              ...data.datas,
+              commContent: JSON.parse(data.datas.commContent),
+            }
             this.showDialog = true
           } else if (data.resp_msg) {
             this.$toast.fail(data.resp_msg)

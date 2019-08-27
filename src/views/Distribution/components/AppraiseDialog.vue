@@ -28,7 +28,7 @@
             :key="item"
             :class="['tag', tagInclude(item) && 'light']"
           >
-            {{ item }}
+            {{ item.tag }}
           </div>
         </div>
         <div class="tag-item">
@@ -37,7 +37,7 @@
             :key="item"
             :class="['tag', tagInclude(item) && 'light']"
           >
-            {{ item }}
+            {{ item.tag }}
           </div>
         </div>
         <div class="tag-item">
@@ -46,7 +46,7 @@
             :key="item"
             :class="['tag', tagInclude(item) && 'light']"
           >
-            {{ item }}
+            {{ item.tag }}
           </div>
         </div>
       </div>
@@ -94,7 +94,8 @@ export default {
       this.$emit('onCancel')
     },
     tagInclude(value) {
-      return this.appraise.commContent.includes(value)
+      console.log(value)
+      return this.appraise.commContent.includes(value.tag)
     },
     index0() {
       return this.tags.filter((item, index) => index % 3 === 0)
