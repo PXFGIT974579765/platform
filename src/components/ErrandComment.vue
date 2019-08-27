@@ -59,7 +59,10 @@ export default {
 
     onSubmit() {
       const { ratings, tags } = this
-      this.$emit('comment', { ratings, tags: tags.filter(t => t.selected) })
+      this.$emit('comment', {
+        ratings,
+        tags: tags.filter(t => t.selected).map(x => x.tag),
+      })
     },
   },
 }

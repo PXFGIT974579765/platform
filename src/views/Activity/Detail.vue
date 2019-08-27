@@ -76,7 +76,11 @@
     </div>
 
     <div class="submit">
-      <button v-if="!detail.order" class="sign" @click="onSubmit">
+      <button
+        v-if="!detail.order && detail.status != 2"
+        class="sign"
+        @click="onSubmit"
+      >
         立即报名
       </button>
       <button
@@ -92,9 +96,7 @@
       >
         已扫码签到
       </button>
-      <button v-if="detail.status == 2" class="end">
-        活动结束，请对本次活动进行评价！
-      </button>
+      <button v-if="detail.status == 2" class="end">活动已结束</button>
     </div>
   </div>
 </template>
