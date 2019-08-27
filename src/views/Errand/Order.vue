@@ -215,7 +215,7 @@ export default {
     },
 
     onSubmit() {
-      const { send, payMethod } = this
+      const { send, payMethod, price } = this
 
       // if (order.user.isPerfect != 1) {
       //   this.$toast('请先完善个人信息')
@@ -230,7 +230,7 @@ export default {
         return
       }
 
-      if (payMethod == 0) {
+      if (price > 0 && payMethod == 0) {
         this.verificationCodeShow = true
       } else {
         this.orderId ? this.reSubmit() : this.submit()

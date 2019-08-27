@@ -181,7 +181,7 @@ export default {
         return
       }
 
-      if (payMethod == 0) {
+      if (order.price > 0 && payMethod == 0) {
         this.verificationCodeShow = true
       } else {
         this.orderId ? this.reSubmit() : this.submit()
