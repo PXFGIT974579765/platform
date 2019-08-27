@@ -230,7 +230,7 @@ export default {
         .then(({ data }) => {
           if (data.resp_code == 0) {
             this.showDialog = false
-            this.active.orderStatus = 80
+            this.active.commentStatus = 2
           } else if (data.resp_msg) {
             this.$toast.fail(data.resp_msg)
           } else {
