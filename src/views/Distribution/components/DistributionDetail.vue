@@ -25,7 +25,7 @@
       <div class="getNo">取单码 {{ info.orderId }}</div>
     </div>
     <div class="detail area">
-      <div class="title">跑腿编号：{{ info.pickUpCode }}</div>
+      <div class="title">跑腿编号：{{ info.orderId }}</div>
       <div class="address-price flex">
         <div class="address-area">
           <div class="from">
