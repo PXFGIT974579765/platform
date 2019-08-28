@@ -17,9 +17,12 @@
 
       <div class="contacts">
         <div class="status-detail">
-          <div class="status-name">取货中</div>
+          <div class="status-name">
+            {{ order.endTime ? '已结束' : '取货中' }}
+          </div>
           <div class="status-text">
-            跑腿员 {{ order.distributionName }} 将为您上门取货
+            跑腿员 {{ order.distributionName }}
+            {{ order.endTime ? '已完成派送' : '将为您上门取货' }}
           </div>
         </div>
         <a class="phone" :href="`tel:${order.phone}`">
