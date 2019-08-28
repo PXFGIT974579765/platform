@@ -110,12 +110,11 @@
       ></van-cell>
 
       <van-cell title="身份认证" class="cell" is-link>
-        <span v-if="!user.isReviewed" @click="routeStudentCard"
-          >请上传学生证</span
-        >
-        <span v-else class="is-authed" @click="routeStudentCard">
+        <span v-if="user.isReviewed" class="is-authed">
           <span class="iconfont">&#xe75e;</span>已认证
         </span>
+        <span v-else-if="user.cardImg">证件审核中</span>
+        <span v-else @click="routeStudentCard">请上传学生证</span>
       </van-cell>
     </van-cell-group>
 
@@ -312,6 +311,42 @@ export default {
     // 提交修改
     onSubmit() {
       if (this.err.phone || this.err.email) {
+        return
+      }
+      if (!this.user.name) {
+        this.$toast.fail('姓名不能为空')
+        return
+      }
+      if (!this.user.phone) {
+        this.$toast.fail('电话不能为空')
+        return
+      }
+      if (!this.user.email) {
+        this.$toast.fail('邮箱不能为空')
+        return
+      }
+      if (!this.user.school) {
+        this.$toast.fail('学校不能为空')
+        return
+      }
+      if (!this.user.department) {
+        this.$toast.fail('学院不能为空')
+        return
+      }
+      if (!this.admission) {
+        this.$toast.fail('入学时间不能为空')
+        return
+      }
+      if (!this.user.majors) {
+        this.$toast.fail('专业不能为空')
+        return
+      }
+      if (!this.user.clas) {
+        this.$toast.fail('班级不能为空')
+        return
+      }
+      if (!this.user.cardImg) {
+        this.$toast.fail('请上传证件')
         return
       }
       this.$http

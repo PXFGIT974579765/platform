@@ -39,7 +39,7 @@ export default {
     return {
       imgs: [],
       resultUrl: '',
-      btnName: '提交认证',
+      btnName: '完成提交',
       status: -1, // -1 无状态 0 成功 1 失败
     }
   },
@@ -99,8 +99,10 @@ export default {
       httpUpload.post('/api-file/foreign/files', param).then(({ data }) => {
         if (data.resp_code == 0) {
           this.resultUrl = data.datas
+          this.user.cardImg = this.resultUrl
+          this.setUser(this.user)
           this.status = 0
-          this.btnName = '提交认证'
+          this.btnName = '完成提交'
         } else if (data.resp_msg) {
           this.$toast.fail(data.resp_msg)
           this.status = 1
@@ -122,23 +124,24 @@ export default {
         this.$toast.fail('你未选择任何图片')
         return
       }
-      this.$http
-        .post('/api-wxmp/cxxz/registerUser/registerUserInfo', {
-          ...this.user,
-          cardImg: this.resultUrl,
-        })
-        .then(({ data }) => {
-          if (data.resp_code === 0) {
-            this.status = -1
-            this.user.cardImg = this.resultUrl
-            this.setUser(this.user)
-            this.$toast.success('信息保存成功')
-          } else if (data.resp_msg) {
-            this.$toast.fail(data.resp_msg)
-          } else {
-            this.$toast.fail('系统繁忙')
-          }
-        })
+      this.$router.push('/my/base-info')
+      // this.$http
+      //   .post('/api-wxmp/cxxz/registerUser/registerUserInfo', {
+      //     ...this.user,
+      //     cardImg: this.resultUrl,
+      //   })
+      //   .then(({ data }) => {
+      //     if (data.resp_code === 0) {
+      //       this.status = -1
+      //       this.user.cardImg = this.resultUrl
+      //       this.setUser(this.user)
+      //       this.$toast.success('信息保存成功')
+      //     } else if (data.resp_msg) {
+      //       this.$toast.fail(data.resp_msg)
+      //     } else {
+      //       this.$toast.fail('系统繁忙')
+      //     }
+      //   })
     },
   },
 }
