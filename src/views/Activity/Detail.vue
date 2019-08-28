@@ -259,6 +259,8 @@ export default {
           if (data.resp_code == 0) {
             this.$toast.success('签到成功')
             this.fetchData()
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
           } else {
             this.$toast.fail('系统繁忙')
           }
