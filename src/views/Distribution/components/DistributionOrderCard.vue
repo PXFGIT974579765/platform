@@ -24,9 +24,7 @@
       <div class="total">共 1 件商品 合计: ￥{{ order.distributionPrice }}</div>
       <div class="btn-area">
         <span v-if="order.status !== 5" class="btn">用户未评价</span>
-        <span v-else class="btn" @click="onShowDialog(order.orderId)"
-          >已评价</span
-        >
+        <span v-else class="btn" @click="onShowDialog(order.id)">已评价</span>
         <router-link :to="`/my/distribution-detail/${order.id}`" class="btn"
           >查看详情</router-link
         >
