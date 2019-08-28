@@ -25,7 +25,7 @@
         <div class="tag-item">
           <div
             v-for="item in index0()"
-            :key="item"
+            :key="item.tag"
             :class="['tag', tagInclude(item) && 'light']"
           >
             {{ item.tag }}
@@ -34,7 +34,7 @@
         <div class="tag-item">
           <div
             v-for="item in index1()"
-            :key="item"
+            :key="item.tag"
             :class="['tag', tagInclude(item) && 'light']"
           >
             {{ item.tag }}
@@ -43,7 +43,7 @@
         <div class="tag-item">
           <div
             v-for="item in index2()"
-            :key="item"
+            :key="item.tag"
             :class="['tag', tagInclude(item) && 'light']"
           >
             {{ item.tag }}
@@ -94,7 +94,6 @@ export default {
       this.$emit('onCancel')
     },
     tagInclude(value) {
-      console.log(value)
       return this.appraise.commContent.includes(value.tag)
     },
     index0() {
