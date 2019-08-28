@@ -26,8 +26,10 @@ export default {
         if (data.resp_code == 0) {
           this.show = true
         } else if (data.resp_msg) {
+          this.show = true
           this.message = data.resp_msg
         } else {
+          this.show = true
           this.message = '系统繁忙'
         }
       })
