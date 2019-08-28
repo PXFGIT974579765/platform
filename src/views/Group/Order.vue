@@ -168,6 +168,14 @@ export default {
     onSubmit() {
       const { address, payMethod, order } = this
 
+      if (order.orders && order.orders.length > 0) {
+        this.$toast('您有未支付的拼团，请到订单中心支付')
+        window.setTimeout(() => {
+          this.$router.push('/order/group')
+        }, 3000)
+        return
+      }
+
       if (order.user.isPerfect != 1) {
         this.$toast('请先完善个人信息')
         window.setTimeout(() => {
