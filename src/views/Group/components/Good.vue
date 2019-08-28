@@ -14,7 +14,7 @@
     </div>
     <div class="good-name">{{ good.name }}</div>
     <div class="good-verdor" @click="onShowManufacturer">
-      厂商：贵州省莫白传媒科技有限公司
+      厂商：{{ good.brandName }}
     </div>
 
     <van-popup
