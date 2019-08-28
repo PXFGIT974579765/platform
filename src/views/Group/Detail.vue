@@ -65,10 +65,11 @@
           alt
         />
         <div
+          v-if="people.length > 4"
           class="people-item people-stat"
           src="~@/assets/images/errand_avatar.png"
         >
-          5人
+          {{ people.length - 4 }}人
         </div>
       </div>
 
