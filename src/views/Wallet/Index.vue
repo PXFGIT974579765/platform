@@ -30,11 +30,11 @@
           >&#xe756;</span
         >
       </van-cell>
-      <van-cell title="提现" class="cell" is-link to="/my/wallet/cash">
+      <!-- <van-cell title="提现" class="cell" is-link to="/my/wallet/cash">
         <span slot="icon" style="color:#ff7d7d" class="iconfont icon"
           >&#xe755;</span
         >
-      </van-cell>
+      </van-cell> -->
     </van-cell-group>
   </div>
 </template>
