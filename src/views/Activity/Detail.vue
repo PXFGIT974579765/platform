@@ -84,14 +84,18 @@
         立即报名
       </button>
       <button
-        v-if="detail.order && detail.order.isScanSign == 0"
+        v-if="
+          detail.status != 2 && detail.order && detail.order.isScanSign == 0
+        "
         class="check"
         @click="qrCodeSign"
       >
         <span class="iconfont">&#xe746;</span>现场扫码签到
       </button>
       <button
-        v-if="detail.order && detail.order.isScanSign == 1"
+        v-if="
+          detail.status != 2 && detail.order && detail.order.isScanSign == 1
+        "
         class="check checked"
       >
         已扫码签到
