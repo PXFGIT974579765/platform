@@ -166,7 +166,7 @@ export default {
             })
 
             wx.ready(() => {
-              this.configed = true
+              this.isConfiged = true
               this.tryCounts = 0
 
               // 自定义“分享给朋友”及“分享到QQ”按钮的分享内容
@@ -193,16 +193,19 @@ export default {
             })
 
             wx.error(() => {
-              if (!this.configed) {
+              if (!this.isConfiged) {
                 if (this.tryCounts >= 2) {
                   this.$toast.fail('当前版本过低')
                   return
                 }
 
                 this.configWx(signUrl)
-                return
               }
             })
+          } else if (data.resp_msg) {
+            this.$toast.fail(data.resp_msg)
+          } else {
+            this.$toast.fail('系统繁忙')
           }
         })
     },
@@ -246,21 +249,20 @@ export default {
       if (curGoodsId != goodsId) {
         this.$toast.fail('签到活动不一致')
         return
-      } else {
-        this.$http
-          .post('/api-wxmp/cxxz/order/scanOrderHD', {
-            goodsId: curGoodsId,
-          })
-          .then(({ data }) => {
-            if (data.resp_code == 0) {
-              this.$toast.success('签到成功')
-              this.fetchData()
-              return
-            } else {
-              this.$toast.fail('系统繁忙')
-            }
-          })
       }
+
+      this.$http
+        .post('/api-wxmp/cxxz/order/scanOrderHD', {
+          goodsId: curGoodsId,
+        })
+        .then(({ data }) => {
+          if (data.resp_code == 0) {
+            this.$toast.success('签到成功')
+            this.fetchData()
+          } else {
+            this.$toast.fail('系统繁忙')
+          }
+        })
     },
 
     fetchData() {
