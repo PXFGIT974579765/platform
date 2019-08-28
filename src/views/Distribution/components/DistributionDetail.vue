@@ -123,6 +123,7 @@ export default {
         .post('/api-wxmp/cxxz/distriButtion/order/callBackOrderCode', {
           id: this.id,
           code: this.curSendNo,
+          orderId: this.info.orderId,
         })
         .then(({ data }) => {
           if (data.resp_code == 0) {
