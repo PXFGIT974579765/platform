@@ -14,7 +14,7 @@
       :repay="!!orderId"
     />
 
-    <div class="pay">
+    <div v-if="order.score > 0 || order.price > 0" class="pay">
       <div class="pay-header">
         <div class="title">支付方式</div>
       </div>
@@ -197,7 +197,7 @@ export default {
 
       const balancePay = calc(`${buyNum}*${order.price}`) <= order.user.wallet
 
-      if (price > 0 && balancePay) {
+      if ((price > 0 && balancePay) || score > 0) {
         this.verificationCodeShow = true
       } else {
         this.orderId ? this.reSubmit() : this.submit()
@@ -226,7 +226,7 @@ export default {
           mchId: '100000001',
           channelId: 1,
           fromType: 1,
-          payType: price === 0 ? 3 : payType,
+          payType: payType == 1 ? 1 : price === 0 ? 3 : payType,
           goodsId: id,
           goodsType: 'JFSC',
           goodsSize: buyNum,
