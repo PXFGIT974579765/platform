@@ -86,7 +86,7 @@
           v-if="
             goods.commentStatus == 3 ||
               goods.commentStatus == 2 ||
-              group.commentStatus == 4
+              goods.commentStatus == 4
           "
           class="btn"
           @click="detailAppraise(goods.orderId)"
