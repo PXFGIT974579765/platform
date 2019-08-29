@@ -83,7 +83,11 @@
         > -->
 
         <span
-          v-if="goods.commentStatus == 3 || goods.commentStatus == 2"
+          v-if="
+            goods.commentStatus == 3 ||
+              goods.commentStatus == 2 ||
+              group.commentStatus == 4
+          "
           class="btn"
           @click="detailAppraise(goods.orderId)"
           >查看评价</span
