@@ -61,9 +61,9 @@
           >
 
           <!-- 已结束对应的按钮 -->
-          <span v-if="active.orderStatus == 2" class="btn" @click="onAppraise"
+          <!-- <span v-if="active.orderStatus == 2" class="btn" @click="onAppraise"
             >待评价</span
-          >
+          > -->
 
           <!-- 待评价对应的按钮 -->
           <!-- <span v-if="active.orderStatus == 50" class="btn" @click="onAppraise"
