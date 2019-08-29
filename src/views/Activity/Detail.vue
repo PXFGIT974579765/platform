@@ -77,7 +77,11 @@
 
     <div v-show="detail.id" class="submit">
       <button
-        v-if="!detail.order && detail.status != 2"
+        v-if="
+          !detail.order &&
+            detail.status != 2 &&
+            dateEnable(detail.bmStartTime, detail.bmEndTime)
+        "
         class="sign"
         @click="onSubmit"
       >
@@ -147,6 +151,16 @@ export default {
 
   methods: {
     convertDateTime,
+
+    dateEnable(start, end) {
+      if (!start || !end) return true
+
+      start = new Date(start.replace(' ', 'T'))
+      end = new Date(end.replace(' ', 'T'))
+      const now = Date.now()
+
+      return now >= start && now <= end
+    },
 
     configWx(url) {
       this.tryCounts += 1
