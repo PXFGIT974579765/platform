@@ -66,7 +66,9 @@
           <span>￥{{ price }}元</span>
         </div>
       </div>
-      <button :disabled="disabled" @click="onSubmit">提交订单</button>
+      <button :disabled="!good.goodsId || disabled" @click="onSubmit">
+        提交订单
+      </button>
     </div>
 
     <verification-code
