@@ -1,6 +1,6 @@
 <template>
   <div class="new-info">
-    <span class="new-date">{{ date }}</span>
+    <span class="new-date">{{ date.split(' ')[0] }}</span>
     <!-- <span class="new-read">阅读：{{ read }} 次</span> -->
   </div>
 </template>
@@ -8,7 +8,10 @@
 <script>
 export default {
   props: {
-    date: String,
+    date: {
+      type: String,
+      default: '',
+    },
     read: Number,
   },
 }

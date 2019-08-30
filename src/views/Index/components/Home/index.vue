@@ -17,9 +17,9 @@
       </router-link>
     </nav>
 
-    <div class="notice">
+    <router-link v-if="notice" to="/activity" class="notice">
       <span class="iconfont">&#xe728;</span>HI 别忘了参加今天的活动哦！
-    </div>
+    </router-link>
 
     <div class="activity">
       <div class="block-header">
@@ -143,10 +143,17 @@ export default {
       ad: {
         link: '',
       },
+      notice: false,
     }
   },
 
   created() {
+    this.$http.post('/api-wxmp/cxxz/order/findOrderNowHD').then(({ data }) => {
+      if (data.resp_code === 0) {
+        this.notice = !!data.datas
+      }
+    })
+
     this.$http
       .get('/api-wxmp/cxxz/topics/findRecommendTopic')
       .then(({ data }) => {
@@ -261,6 +268,7 @@ nav {
 }
 
 .notice {
+  display: block;
   margin: 18px 15px 42px;
   padding: 15px;
   font-size: 16px;
@@ -294,6 +302,8 @@ nav {
 }
 
 .activity {
+  margin-top: 36px;
+
   .block-header {
     padding: 0 15px;
   }
