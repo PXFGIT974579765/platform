@@ -291,7 +291,7 @@ export default {
 
 <style lang="less" scoped>
 .status {
-  padding: 20px 15px 35px;
+  padding: 20px 15px 20px;
   background: #fff;
 }
 
@@ -386,6 +386,10 @@ export default {
       display: inline-block;
       vertical-align: middle;
     }
+  }
+
+  .no-order {
+    margin-bottom: 0;
   }
 
   .people {
