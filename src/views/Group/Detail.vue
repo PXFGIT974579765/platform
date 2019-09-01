@@ -6,7 +6,7 @@
       v-if="good.isSuccess != 1 && good.isSuccess != 2"
       class="status status-normal"
     >
-      <div class="count">
+      <div v-if="!expire" class="count">
         <span>已有</span>
         <span class="value">{{ people.length }}</span>
         <span>人</span>
@@ -18,7 +18,7 @@
         <span v-else>，已经达到最低人数了</span>
       </div>
 
-      <div v-if="during != null" class="date">
+      <div v-if="!expire && during != null" class="date">
         <span class="name">剩余</span>
         <span class="value">{{ during | day | padding }}</span>
         <span class="sep">:</span>
@@ -29,7 +29,7 @@
         <span class="value">{{ during | second | padding }}</span>
       </div>
 
-      <div v-if="people.length > 0" class="people">
+      <div v-if="!expire && people.length > 0" class="people">
         <img
           v-for="p in people.slice(0, 5)"
           :key="p.orderId"
@@ -38,14 +38,21 @@
         />
       </div>
 
-      <div v-if="good.order && good.orderStatus == 1" class="complete">
+      <div
+        v-if="!expire && good.order && good.orderStatus == 1"
+        class="complete"
+      >
         <span class="iconfont">&#xe75e;</span>已参团，等待满员
       </div>
-      <button v-if="!good.order" class="group-btn" @click="onClick">
+      <button v-if="!expire && !good.order" class="group-btn" @click="onClick">
         我要参团
       </button>
 
-      <invitation wireframe @click="onShowShare">邀请好友参团</invitation>
+      <invitation v-if="!expire" wireframe @click="onShowShare"
+        >邀请好友参团</invitation
+      >
+
+      <div v-if="expire" class="expire">拼团已结束</div>
     </div>
 
     <div v-if="good.isSuccess == 1" class="status status-success">
@@ -162,6 +169,14 @@ export default {
       lastDate: null,
       during: null,
     }
+  },
+
+  computed: {
+    expire() {
+      const end = this.good.limitEndDate
+      if (!end) return false
+      return new Date(end.replace(' ', 'T')) < Date.now()
+    },
   },
 
   created() {
@@ -326,6 +341,10 @@ export default {
     .sep {
       margin: 0 4px;
     }
+  }
+
+  .expire {
+    text-align: center;
   }
 
   .people {

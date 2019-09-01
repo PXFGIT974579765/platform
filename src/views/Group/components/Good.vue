@@ -22,7 +22,11 @@
       position="bottom"
       :style="{ maxHeight: '75%' }"
     >
-      <manufacturer v-if="manufacturerShow" :id="good.brandId" />
+      <manufacturer
+        v-if="manufacturerShow"
+        :id="good.brandId"
+        :name="good.brandName"
+      />
     </van-popup>
   </div>
 </template>
