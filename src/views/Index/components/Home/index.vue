@@ -304,6 +304,10 @@ nav {
 .activity {
   margin-top: 36px;
 
+  img {
+    border-radius: 9px;
+  }
+
   .block-header {
     padding: 0 15px;
   }

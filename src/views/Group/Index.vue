@@ -327,8 +327,7 @@ export default {
   background: #fff;
 
   img {
-    // TODO: height
-    height: 165px;
+    border-radius: 4px 4px 0 0;
     background-color: #fff;
   }
 
@@ -350,6 +349,7 @@ export default {
 
   .price {
     flex: 1;
+    text-align: left;
     font-size: 12px;
     color: #ff2d2d;
     span {
