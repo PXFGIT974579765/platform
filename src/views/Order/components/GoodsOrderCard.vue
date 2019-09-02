@@ -3,7 +3,13 @@
     <div class="header flex" @click="routeDetail(goods.orderId)">
       <span class="order-no">订单编号: {{ goods.orderId }}</span>
       <span v-if="showOrderStatus" class="status">
-        {{ orderStatusFilter(goods.orderStatus, goods.status) }}
+        {{
+          orderStatusFilter(
+            goods.orderStatus,
+            goods.status,
+            goods.isDistribution
+          )
+        }}
       </span>
     </div>
     <div class="content flex" @click="routeGoodsPage(goods.goodsId)">
@@ -43,19 +49,30 @@
           @click="routeDetail(goods.orderId)"
           >配货中</span
         >
-        <!-- 待提货对应的按钮 -->
+
+        <template v-if="goods.isDistribution != 1">
+          <!-- 待提货对应的按钮 -->
+          <router-link
+            v-if="goods.orderStatus == 2"
+            :to="`/errand/lobby?order=${goods.orderId}`"
+            class="btn"
+            >找跑腿</router-link
+          >
+          <span
+            v-if="goods.orderStatus == 2"
+            class="btn"
+            @click="routeDetail(goods.orderId)"
+            >上门自提</span
+          >
+        </template>
+
         <router-link
-          v-if="goods.orderStatus == 2"
-          :to="`/errand/lobby?order=${goods.orderId}`"
+          v-if="detail && goods.isDistribution == 1"
+          :to="`/errand/detail/${goods.distribution.id}?good=${goods.goodsId}`"
           class="btn"
-          >找跑腿</router-link
+          >查看跑腿</router-link
         >
-        <span
-          v-if="goods.orderStatus == 2"
-          class="btn"
-          @click="routeDetail(goods.orderId)"
-          >上门自提</span
-        >
+
         <!-- 待评价对应的按钮 -->
         <!-- <span v-if="goods.orderStatus == 50" class="btn" @click="onAppraise"
           >待评价</span
@@ -69,7 +86,9 @@
           >重新评价</span
         >
         <span
-          v-if="goods.orderStatus == 50"
+          v-if="
+            !detail && (goods.orderStatus == 50 || goods.isDistribution == 1)
+          "
           class="btn"
           @click="routeDetail(goods.orderId)"
           >订单详情</span
@@ -151,6 +170,10 @@ export default {
         return {}
       },
     },
+    detail: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -229,7 +252,7 @@ export default {
     },
 
     // 状态显示过滤
-    orderStatusFilter: function(orderStatus, status) {
+    orderStatusFilter: function(orderStatus, status, distributionStatus) {
       let name = ''
       // 订单状态
       switch (orderStatus) {
@@ -249,6 +272,11 @@ export default {
           name = payStatus
         }
       }
+
+      if (distributionStatus == 1) {
+        name = '已找跑腿'
+      }
+
       return name
     },
   },

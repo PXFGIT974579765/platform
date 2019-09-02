@@ -19,8 +19,8 @@
               <span>{{ detail.readCount }}</span>
             </div>
             <div class="share-count">
-              <span class="iconfont">&#xe748;</span>
-              <span>{{ detail.shareCount || 0 }}</span>
+              <!-- <span class="iconfont">&#xe748;</span>
+              <span>{{ detail.shareCount || 0 }}</span> -->
             </div>
             <share-button />
           </div>

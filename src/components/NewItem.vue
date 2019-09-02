@@ -2,7 +2,7 @@
   <div class="new">
     <div class="new-desc">
       <div class="new-title">{{ title }}</div>
-      <new-info :date="date" :read="read" />
+      <new-info :date="date.split(' ')[0]" :read="read" />
     </div>
     <img :src="image" alt />
   </div>
@@ -18,7 +18,10 @@ export default {
 
   props: {
     title: String,
-    date: String,
+    date: {
+      type: String,
+      default: '',
+    },
     read: Number,
     image: String,
   },

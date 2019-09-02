@@ -55,7 +55,7 @@
       <div class="item">
         <div class="item-name">跑腿费用</div>
         <div class="item-value">
-          2元
+          {{ order.distributionPrice }} 元
           <span class="sep">|</span>
           <span class="price-detail" @click="onShowPrice">价格明细</span>
         </div>

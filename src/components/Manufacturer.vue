@@ -1,7 +1,7 @@
 <template>
   <div class="manufacturer">
     <div class="header">
-      <div class="title">厂商：贵州省莫白传媒科技有限公司</div>
+      <div class="title">厂商：{{ name }}</div>
       <div class="desc">往期拼团</div>
     </div>
 
@@ -33,7 +33,7 @@
 
 <script>
 export default {
-  props: ['id', 'visible'],
+  props: ['id', 'name', 'visible'],
 
   data() {
     return {

@@ -7,7 +7,12 @@
       />
       <AddressCard :contact="group" />
       <div class="goods-item">
-        <Card :group="group" :showStatus="false" @cancelOrder="cancelOrder" />
+        <Card
+          :group="group"
+          :showStatus="false"
+          @cancelOrder="cancelOrder"
+          detail
+        />
       </div>
       <div class="price-group">
         <div class="price-item flex">
