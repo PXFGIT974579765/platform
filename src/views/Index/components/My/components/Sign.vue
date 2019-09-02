@@ -256,8 +256,10 @@ export default {
       border-radius: 50%;
       background-color: #e3fffd;
       color: #07c1b2;
-      font-size: 20px;
+      font-size: 24px;
       text-align: center;
+      height: 45px;
+      line-height: 42px;
     }
 
     .btn_sign {
