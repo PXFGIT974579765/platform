@@ -190,7 +190,7 @@ export default {
         return
       }
 
-      if (score > order.user.integral) {
+      if (score * buyNum > order.user.integral) {
         this.$toast('积分不足')
         return
       }

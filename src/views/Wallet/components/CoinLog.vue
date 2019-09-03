@@ -30,14 +30,7 @@
                   <span class="time">{{ coinLog.createTime }}</span>
                 </div>
                 <div class="record-item flex-col">
-                  <span
-                    :class="[
-                      'amount',
-                      coinLog.operateType === 1 && coinLog.money > 0
-                        ? 'out'
-                        : 'in',
-                    ]"
-                  >
+                  <span :class="['amount', coinLog.money < 0 ? 'out' : 'in']">
                     ￥
                     {{
                       coinLog.operateType === 1 && coinLog.money > 0 ? '-' : ''
