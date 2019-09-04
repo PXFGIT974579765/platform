@@ -47,7 +47,6 @@ import OrderPrice from '@/components/OrderPrice'
 import OrderPay from '@/components/OrderPay'
 import OrderSubmit from '@/components/OrderSubmit'
 import VerificationCode from '@/components/VerificationCode'
-import { setTimeout } from 'timers'
 
 export default {
   components: {
@@ -272,7 +271,7 @@ export default {
           res.err_msg === 'get_brand_wcpay_request:fail'
         ) {
           this.$toast('支付失败，请到订单中心重新支付')
-          setTimeout(() => {
+          window.setTimeout(() => {
             this.$router.push('/order/active')
           }, 3000)
         }

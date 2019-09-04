@@ -171,18 +171,30 @@
         @change="onAdmissionChange"
       />
     </van-action-sheet>
+
+    <verification-code
+      :visible="verificationCodeShow"
+      :user="user"
+      @close="onCloseCode"
+      @submit="onGetCode"
+    />
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { curDate } from '@/lib/format'
+import VerificationCode from '@/components/VerificationCode'
 
 const ERR = {
   EMAIL: '邮箱格式错误',
   PHONE: '手机格式错误',
 }
 export default {
+  components: {
+    VerificationCode,
+  },
+
   computed: mapGetters(['user']),
 
   data() {
@@ -198,9 +210,15 @@ export default {
         phone: '',
         email: '',
       },
+      originPhone: '',
+      verificationCodeShow: false,
     }
   },
-  created() {},
+
+  created() {
+    this.originPhone = this.user.phone
+  },
+
   methods: {
     ...mapActions(['setUser']),
 
@@ -321,43 +339,67 @@ export default {
         this.$toast.fail('电话不能为空')
         return
       }
-      if (!this.user.email) {
-        this.$toast.fail('邮箱不能为空')
+      if (!this.user.gender) {
+        this.$toast.fail('性别不能为空')
         return
       }
-      if (!this.user.school) {
-        this.$toast.fail('学校不能为空')
-        return
+      // if (!this.user.email) {
+      //   this.$toast.fail('邮箱不能为空')
+      //   return
+      // }
+      // if (!this.user.school) {
+      //   this.$toast.fail('学校不能为空')
+      //   return
+      // }
+      // if (!this.user.department) {
+      //   this.$toast.fail('学院不能为空')
+      //   return
+      // }
+      // if (!this.admission) {
+      //   this.$toast.fail('入学时间不能为空')
+      //   return
+      // }
+      // if (!this.user.majors) {
+      //   this.$toast.fail('专业不能为空')
+      //   return
+      // }
+      // if (!this.user.clas) {
+      //   this.$toast.fail('班级不能为空')
+      //   return
+      // }
+      // if (!this.user.cardImg) {
+      //   this.$toast.fail('请上传证件')
+      //   return
+      // }
+
+      if (this.originPhone !== this.user.phone) {
+        this.verificationCodeShow = true
+      } else {
+        this.submit()
       }
-      if (!this.user.department) {
-        this.$toast.fail('学院不能为空')
-        return
-      }
-      if (!this.admission) {
-        this.$toast.fail('入学时间不能为空')
-        return
-      }
-      if (!this.user.majors) {
-        this.$toast.fail('专业不能为空')
-        return
-      }
-      if (!this.user.clas) {
-        this.$toast.fail('班级不能为空')
-        return
-      }
-      if (!this.user.cardImg) {
-        this.$toast.fail('请上传证件')
-        return
-      }
+    },
+
+    onCloseCode() {
+      this.verificationCodeShow = false
+    },
+
+    onGetCode(payCode) {
+      this.verificationCodeShow = false
+      this.submit(payCode)
+    },
+
+    submit(payCode = '') {
       this.$http
         .post('/api-wxmp/cxxz/registerUser/registerUserInfo', {
           ...this.user,
           admission: this.admission,
+          payCode,
         })
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.$toast.success('保存成功')
             this.setUser(this.user)
+            this.originPhone = this.user.phone
           } else if (data.resp_msg) {
             this.$toast.fail(data.resp_msg)
           } else {

@@ -82,7 +82,7 @@
       </div>
     </div>
 
-    <div class="block group">
+    <!-- <div class="block group">
       <div class="block-header">
         <div class="block-title">最新拼团</div>
         <router-link to="/group" class="block-header-link">更多</router-link>
@@ -100,7 +100,7 @@
           </div>
         </van-grid-item>
       </van-grid>
-    </div>
+    </div> -->
 
     <div v-if="ad.adId" class="rec-block-wrap">
       <a :href="ad.extUrl || ad.link" class="rec-block">
