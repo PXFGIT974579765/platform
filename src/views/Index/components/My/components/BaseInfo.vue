@@ -14,7 +14,7 @@
         value-class="right-20"
       />
 
-      <van-cell title="姓名" class="cell" is-link>
+      <van-cell title="* 姓名" title-class="must" class="cell" is-link>
         <van-field
           v-model="user.name"
           class="input"
@@ -24,7 +24,7 @@
         />
       </van-cell>
 
-      <van-cell title="性别" class="cell">
+      <van-cell title="* 性别" title-class="must" class="cell">
         <van-radio-group v-model="user.gender" class="group flex">
           <van-radio :name="1" checked-color="#07c160" class="radio"
             >男</van-radio
@@ -35,7 +35,7 @@
         </van-radio-group>
       </van-cell>
 
-      <van-cell title="手机号码" class="cell" is-link>
+      <van-cell title="* 手机号码" title-class="must" class="cell" is-link>
         <van-field
           v-model="user.phone"
           class="input"
@@ -413,6 +413,9 @@ export default {
 
 <style lang="less" scoped>
 .page-my-base-info {
+  .must {
+    color: red;
+  }
   .cell-group {
     &:not(:first-child) {
       margin-top: 15px;
