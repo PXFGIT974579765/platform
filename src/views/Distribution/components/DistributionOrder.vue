@@ -19,22 +19,24 @@
         :title="item.name"
         :name="item.value"
       >
-        <van-list
-          v-model="loading"
-          :finished="finished"
-          finished-text="没有更多了"
-          :error.sync="error"
-          error-text="请求失败，点击重新加载"
-          @load="onLoad"
-        >
-          <div
-            v-for="order in distributions"
-            :key="order.id"
-            class="goods-item"
+        <van-pull-refresh v-model="loading" @refresh="onRefresh">
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            :error.sync="error"
+            error-text="请求失败，点击重新加载"
+            @load="onLoad"
           >
-            <Card :order="order" @onShowDialog="onShowDialog" />
-          </div>
-        </van-list>
+            <div
+              v-for="order in distributions"
+              :key="order.id"
+              class="goods-item"
+            >
+              <Card :order="order" @onShowDialog="onShowDialog" />
+            </div>
+          </van-list>
+        </van-pull-refresh>
       </van-tab>
     </van-tabs>
 
@@ -168,6 +170,21 @@ export default {
     onLoad() {
       this.fetchList({ pageIndex: this.page + 1 })
     },
+
+    // 下拉刷新
+    onRefresh() {
+      this.init()
+
+      const orderStatus = this.statusList.find(item => item.name == this.name)
+        .value
+      this.page = 1
+
+      if (orderStatus == -1) {
+        this.fetchList({ pageIndex: this.page })
+      } else {
+        this.fetchList({ pageIndex: this.page, orderStatus })
+      }
+    },
     onClick(_, title) {
       if (this.name == title) return
 
@@ -219,6 +236,10 @@ export default {
     height: 55px;
     padding: 13px 20px;
     background-color: #fff;
+  }
+
+  .van-pull-refresh {
+    overflow: unset;
   }
 
   .goods-item {

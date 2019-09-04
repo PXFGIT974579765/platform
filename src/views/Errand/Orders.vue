@@ -18,22 +18,24 @@
         :title="item.name"
         :name="`${item.value}`"
       >
-        <van-list
-          v-model="loading"
-          :finished="finished"
-          finished-text="没有更多了"
-          :error.sync="error"
-          error-text="请求失败，点击重新加载"
-          @load="onLoad"
-        >
-          <div v-for="order in orders" :key="order.id" class="goods-item">
-            <order-item
-              :order="order"
-              @comment="onShowComment"
-              @cancel="onCancel"
-            />
-          </div>
-        </van-list>
+        <van-pull-refresh v-model="loading" @refresh="onRefresh">
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            :error.sync="error"
+            error-text="请求失败，点击重新加载"
+            @load="onLoad"
+          >
+            <div v-for="order in orders" :key="order.id" class="goods-item">
+              <order-item
+                :order="order"
+                @comment="onShowComment"
+                @cancel="onCancel"
+              />
+            </div>
+          </van-list>
+        </van-pull-refresh>
       </van-tab>
     </van-tabs>
 
@@ -108,7 +110,7 @@ export default {
   },
 
   created() {
-    this.fetchList(this.page)
+    this.fetchList({ pageIndex: this.page })
   },
 
   methods: {
@@ -136,7 +138,7 @@ export default {
       }
     },
 
-    fetchList(pageIndex = 1, pageSize = 10) {
+    fetchList({ pageIndex = 1, pageSize = 10 }) {
       this.startLoading()
 
       this.$http
@@ -167,7 +169,17 @@ export default {
     },
 
     onLoad() {
-      this.fetchList(this.page + 1)
+      this.fetchList({ pageIndex: this.page + 1 })
+    },
+
+    // 下拉刷新
+    onRefresh() {
+      this.init()
+
+      this.status = status.find(item => item.name == this.name).value
+      this.page = 1
+
+      this.fetchList({ pageIndex: this.page })
     },
 
     onTabClick(_, title) {
@@ -177,7 +189,7 @@ export default {
       this.name = title
       this.status = status.find(item => item.name == title).value
 
-      this.fetchList()
+      this.fetchList({})
     },
 
     onCancel(id) {
@@ -189,7 +201,7 @@ export default {
           if (data.resp_code === 0) {
             this.$toast('取消成功')
             this.init()
-            this.fetchList()
+            this.fetchList({})
           }
         })
     },
@@ -247,6 +259,10 @@ export default {
 .header {
   padding: 13px 20px;
   background: #fff;
+}
+
+.van-pull-refresh {
+  overflow: unset;
 }
 
 .van-tab__pane {

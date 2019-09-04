@@ -3,6 +3,7 @@
     <div class="search-block">
       <search placeholder="请输入关键字搜索" v-model="keyword" :light="true" />
     </div>
+
     <van-tabs
       v-model="active"
       title-active-color="#06bcbf"
@@ -18,18 +19,20 @@
         :key="item.value"
         :title="item.name"
       >
-        <van-list
-          v-model="loading"
-          :finished="finished"
-          finished-text="没有更多了"
-          :error.sync="error"
-          error-text="请求失败，点击重新加载"
-          @load="onLoad"
-        >
-          <div v-for="good in goods" :key="good.id" class="goods-item">
-            <Card :goods="good" @cancelOrder="cancelOrder" />
-          </div>
-        </van-list>
+        <van-pull-refresh v-model="loading" @refresh="onRefresh">
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            :error.sync="error"
+            error-text="请求失败，点击重新加载"
+            @load="onLoad"
+          >
+            <div v-for="good in goods" :key="good.id" class="goods-item">
+              <Card :goods="good" @cancelOrder="cancelOrder" />
+            </div>
+          </van-list>
+        </van-pull-refresh>
       </van-tab>
     </van-tabs>
   </div>
@@ -140,6 +143,21 @@ export default {
     onLoad() {
       this.fetchList({ pageIndex: this.page + 1 })
     },
+    // 下拉刷新
+    onRefresh() {
+      this.init()
+
+      const orderStatus = this.orderStatusList.find(
+        item => item.name == this.name
+      ).value
+      this.page = 1
+
+      if (orderStatus == -1) {
+        this.fetchList({ pageIndex: this.page })
+      } else {
+        this.fetchList({ pageIndex: this.page, orderStatus })
+      }
+    },
     onClick(_, title) {
       if (this.name == title) return
 
@@ -169,6 +187,10 @@ export default {
     height: 55px;
     padding: 13px 20px;
     background-color: #fff;
+  }
+
+  .van-pull-refresh {
+    overflow: unset;
   }
 
   .goods-item {
