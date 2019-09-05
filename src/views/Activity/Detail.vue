@@ -6,7 +6,7 @@
 
     <div class="activity">
       <div class="activity-detail">
-        <img :src="detail.avatar" alt />
+        <img :src="detail.scenePicUrl" alt />
 
         <div class="activity-content">
           <div class="name">
