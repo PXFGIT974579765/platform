@@ -141,7 +141,7 @@ import Invitation from './components/Invitation'
 import DescComment from '@/components/DescComment'
 import Share from '@/components/Share'
 
-const DEBUG = process.env.VUE_APP_WX_DEBUG === 'true' ? true : false
+// const DEBUG = process.env.VUE_APP_WX_DEBUG === 'true' ? true : false
 // 进行签名的时候  Android 不用使用之前的链接， ios 需要
 let signUrl = window.location.href.split('#')[0]
 if (window.wechaturl !== undefined) {
@@ -203,7 +203,7 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             wx.config({
-              debug: DEBUG,
+              debug: false,
               jsApiList: [
                 'updateAppMessageShareData',
                 'updateTimelineShareData',
