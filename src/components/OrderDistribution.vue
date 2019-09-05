@@ -3,7 +3,7 @@
     <div class="header">
       <div class="title">配送方式</div>
       <div v-if="!repay" class="method" @click="onSelect">选择自提门店</div>
-      <van-icon v-if="!repay" name="arrow" color="#a8a8a8" />
+      <van-icon v-if="!repay" name="arrow" color="#f00" />
       <!-- <div class="link">说明</div> -->
     </div>
 
@@ -125,6 +125,7 @@ export default {
 
   .method {
     margin-right: 8px;
+    color: #f00;
   }
 }
 
