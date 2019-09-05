@@ -41,7 +41,7 @@
 <script>
 import Search from '@/components/Search'
 import PersonDesc from '@/components/PersonDesc'
-import { mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 
 // const DEBUG = process.env.VUE_APP_WX_DEBUG === 'true' ? true : false
 
@@ -52,8 +52,6 @@ if (window.wechaturl !== undefined) {
 }
 
 export default {
-  computed: mapGetters(['user']),
-
   components: {
     Search,
     PersonDesc,
@@ -75,16 +73,31 @@ export default {
     return {
       value: '',
       tryCounts: 0,
+      user: {},
     }
   },
 
   created() {
     this.configWx(window.location.href)
+    this.fetchInfo()
   },
 
   methods: {
+    ...mapActions(['setUser']),
     onSearch() {
       //
+    },
+
+    fetchInfo() {
+      this.$http
+        .get('/api-wxmp/foreignUser/wxUserInfo/userInfo')
+        .then(({ data }) => {
+          if (data.resp_code === 0) {
+            const { userInfo } = data.datas
+            this.user = userInfo
+            this.setUser(userInfo)
+          }
+        })
     },
 
     configWx(url) {

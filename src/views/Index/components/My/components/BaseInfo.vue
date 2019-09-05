@@ -339,7 +339,7 @@ export default {
         this.$toast.fail('电话不能为空')
         return
       }
-      if (!this.user.gender) {
+      if (this.user.gender != 0 && this.user.gender != 1) {
         this.$toast.fail('性别不能为空')
         return
       }
