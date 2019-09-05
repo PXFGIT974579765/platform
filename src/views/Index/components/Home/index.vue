@@ -69,7 +69,8 @@
         <router-link
           v-for="d in dynamicNews"
           :key="d.contentId"
-          :to="`/index/news/${d.contentId}`"
+          @click.native="routeDynamic(d)"
+          to=""
           class="new-link"
         >
           <new-item
@@ -194,6 +195,13 @@ export default {
   methods: {
     onSearch() {
       //
+    },
+    routeDynamic(d) {
+      if (d.extUrl) {
+        location.href = d.extUrl
+      } else if (d.contentId) {
+        this.$router.push(`/index/news/${d.contentId}`)
+      }
     },
   },
 }
