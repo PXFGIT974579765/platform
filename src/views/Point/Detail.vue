@@ -40,7 +40,13 @@
         </div>
         <div v-if="detail.price > 0" class="money">+￥{{ detail.price }}元</div>
       </div>
-      <button class="submit-btn" @click="onClick">立即支付</button>
+      <button
+        :disabled="detail.goodsSize - detail.sellVolume <= 0"
+        class="submit-btn"
+        @click="onClick"
+      >
+        {{ detail.goodsSize - detail.sellVolume > 0 ? '立即支付' : '库存不足' }}
+      </button>
     </div>
   </div>
 </template>
@@ -268,6 +274,10 @@ export default {
     line-height: 58px;
     color: #fff;
     background: #06c0b5;
+
+    &[disabled] {
+      background: #999;
+    }
   }
 }
 </style>

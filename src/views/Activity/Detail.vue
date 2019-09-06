@@ -20,13 +20,13 @@
             </div>
             <div class="share-count">
               <!-- <span class="iconfont">&#xe748;</span>
-              <span>{{ detail.shareCount || 0 }}</span> -->
+              <span>{{ detail.shareCount || 0 }}</span>-->
             </div>
             <share-button />
           </div>
           <div class="others">
             <div class="price">¥{{ detail.price }}</div>
-            <div class="points">
+            <div v-if="detail.sendScore && detail.sendScore > 0" class="points">
               成功参与可获 {{ detail.sendScore }} 积分奖励
             </div>
           </div>
