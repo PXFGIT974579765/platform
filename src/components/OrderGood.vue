@@ -28,7 +28,12 @@
 
     <div v-if="!group" class="num">
       <div class="name">购买数量</div>
-      <van-stepper :disabled="repay" :value="value" @change="onChange" />
+      <van-stepper
+        :disabled="repay"
+        :value="value"
+        :max="Math.max(order.goodsSize - order.sellVolume, 1) || 1"
+        @change="onChange"
+      />
     </div>
   </div>
 </template>

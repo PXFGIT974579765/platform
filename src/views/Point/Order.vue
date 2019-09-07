@@ -161,6 +161,7 @@ export default {
               name: d.goodsName,
               score: d.score / d.goodsSize,
               picUrl: d.goodsImg,
+              sellVolume: d.sellVolume || 0,
             }
 
             this.address = {
@@ -175,7 +176,7 @@ export default {
 
     onSubmit() {
       const { address, order, buyNum } = this
-      const { score, price } = order
+      const { score, price, goodsSize, sellVolume } = order
 
       if (order.user.isPerfect != 1) {
         this.$toast('请先完善个人信息')
@@ -192,6 +193,11 @@ export default {
 
       if (score * buyNum > order.user.integral) {
         this.$toast('积分不足')
+        return
+      }
+
+      if (goodsSize - sellVolume < buyNum) {
+        this.$toast('库存不足')
         return
       }
 
