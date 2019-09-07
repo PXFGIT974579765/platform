@@ -104,7 +104,7 @@
       <van-cell
         title="入学时间"
         class="cell"
-        :value="`${user.admission || admission}年`"
+        :value="`${user.inYear || inYear}年`"
         is-link
         @click="selectAdmission"
       ></van-cell>
@@ -202,7 +202,7 @@ export default {
       showSchool: false,
       showDepartment: false,
       showAdmission: false,
-      admission: curDate('yyyy'),
+      inYear: curDate('yyyy'),
       school: [],
       departmentList: [],
       currentDate: new Date(),
@@ -245,7 +245,7 @@ export default {
     onAdmissionChange(picker) {
       const values = picker.getValues()
       const year = `${values[0]}`
-      this.admission = year
+      this.inYear = year
     },
 
     // 学院选择
@@ -392,7 +392,7 @@ export default {
       this.$http
         .post('/api-wxmp/cxxz/registerUser/registerUserInfo', {
           ...this.user,
-          admission: this.admission,
+          inYear: this.inYear,
           payCode,
         })
         .then(({ data }) => {
