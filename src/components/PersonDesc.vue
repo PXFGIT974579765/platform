@@ -16,10 +16,10 @@
               : user.nicknameStr
           }}</span
         >
-        <span class="level">
+        <router-link to="/my/level" class="level">
           <span class="iconfont vip-icon">&#xe770;</span>
           {{ user.levelName || '黄金会员' }}
-        </span>
+        </router-link>
       </div>
       <div>
         <span class="iconfont">&#xe771;</span>
@@ -100,6 +100,7 @@ export default {
   padding: 0 5px;
   border-radius: 6px;
   font-size: 12px;
+  color: #fff;
   background-image: linear-gradient(25deg, #eec983 0%, #f7dcb2 100%),
     linear-gradient(#0cde8d, #0cde8d);
   background-blend-mode: normal, normal;
