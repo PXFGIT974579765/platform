@@ -65,7 +65,7 @@
 
     <div class="intro">
       <div class="intro-header">介绍</div>
-      <div v-html="detail.content"></div>
+      <div class="intro-detail" v-html="detail.content"></div>
     </div>
 
     <div class="comment-block">
@@ -476,11 +476,11 @@ export default {
   margin: 10px 0;
   padding: 15px;
   background: #fff;
+}
 
-  p {
-    font-size: 12px;
-    line-height: 1.5;
-  }
+.intro-detail {
+  line-height: 1.5;
+  font-size: 14px;
 }
 
 .intro-header,

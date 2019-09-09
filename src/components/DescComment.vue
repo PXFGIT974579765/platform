@@ -94,6 +94,6 @@ export default {
 .desc {
   padding: 15px;
   line-height: 1.5;
-  font-size: 12px;
+  font-size: 14px;
 }
 </style>
