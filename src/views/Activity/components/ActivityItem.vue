@@ -1,7 +1,10 @@
 <template>
   <router-link :to="`/activity/detail/${data.id}`" class="activity-item">
     <div class="img-wrap">
-      <img :src="data.scenePicUrl" alt />
+      <div
+        class="image"
+        :style="{ backgroundImage: `url(${data.scenePicUrl})` }"
+      />
       <div class="tag">{{ data.categoryName }}</div>
     </div>
     <div class="content">
@@ -47,10 +50,11 @@ export default {
     margin-right: 12px;
   }
 
-  img {
-    display: block;
+  .image {
     width: 150px;
     height: 112px;
+    background-position: 50% 50%;
+    background-size: cover;
   }
 
   .tag {

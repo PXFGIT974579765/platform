@@ -29,7 +29,10 @@
           :to="`/point/detail/${l.id}`"
         >
           <div class="list-item">
-            <img :src="l.picUrl" alt />
+            <div
+              class="image"
+              :style="{ backgroundImage: `url(${l.picUrl})` }"
+            />
             <div class="name ellipsis-2">{{ l.name }}</div>
             <div class="point">
               <span class="count">{{ l.score }}</span
@@ -176,9 +179,11 @@ export default {
     border-radius: 4px;
   }
 
-  img {
+  .image {
     height: 165px;
     border-radius: 4px 4px 0px 0px;
+    background-position: 50% 50%;
+    background-size: cover;
   }
 
   .name {
