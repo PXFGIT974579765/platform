@@ -104,7 +104,7 @@
       <van-cell
         title="入学时间"
         class="cell"
-        :value="`${user.inYear || inYear}年`"
+        :value="`${inYear}年`"
         is-link
         @click="selectAdmission"
       ></van-cell>
@@ -217,6 +217,9 @@ export default {
 
   created() {
     this.originPhone = this.user.phone
+    if (this.user.inYear) {
+      this.inYear = this.user.inYear
+    }
   },
 
   methods: {
@@ -398,6 +401,7 @@ export default {
         .then(({ data }) => {
           if (data.resp_code === 0) {
             this.$toast.success('保存成功')
+            this.user.inYear = this.inYear
             this.setUser(this.user)
             this.originPhone = this.user.phone
           } else if (data.resp_msg) {

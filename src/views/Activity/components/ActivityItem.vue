@@ -1,7 +1,7 @@
 <template>
   <router-link :to="`/activity/detail/${data.id}`" class="activity-item">
     <div class="img-wrap">
-      <img :src="data.itemPicUrl" alt />
+      <img :src="data.scenePicUrl" alt />
       <div class="tag">{{ data.categoryName }}</div>
     </div>
     <div class="content">
