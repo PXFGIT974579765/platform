@@ -49,7 +49,10 @@
           <div class="van-clearfix">
             <div class="list-item-wrap" v-for="l in list" :key="l.id">
               <router-link :to="`/group/detail/${l.id}`" class="list-item">
-                <img :src="l.picUrl" alt />
+                <div
+                  class="image"
+                  :style="{ backgroundImage: `url(${l.picUrl})` }"
+                />
                 <div class="name ellipsis-2">{{ l.name }}</div>
                 <div class="detail">
                   <div class="price">
@@ -326,9 +329,12 @@ export default {
   border-radius: 4px;
   background: #fff;
 
-  img {
+  .image {
+    height: 165px;
     border-radius: 4px 4px 0 0;
     background-color: #fff;
+    background-position: 50% 50%;
+    background-size: cover;
   }
 
   .name {
