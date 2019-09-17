@@ -114,7 +114,7 @@
           <span class="iconfont">&#xe75e;</span>已认证
         </span>
         <span v-else-if="user.cardImg">证件审核中</span>
-        <span v-else @click="routeStudentCard">请上传学生证</span>
+        <span v-else @click="routeStudentCard">请上传学生证/一卡通</span>
       </van-cell>
     </van-cell-group>
 
